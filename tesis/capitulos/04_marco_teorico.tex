@@ -1,0 +1,116 @@
+\chapter{Marco Teórico}\label{cap:marco}
+El marco teórico reúne los fundamentos matemáticos que sustentan el funcionamiento de una red neuronal artificial y los fundamentos técnicos del lenguaje Rust que justifican su elección. Cada ecuación de este capítulo tiene una implementación directa en el código fuente del proyecto.
+
+\section{Fundamentos de álgebra lineal}
+\subsection{Vectores y matrices}
+Un vector $\mathbf{x}\in\mathbb{R}^{n}$ es una lista ordenada de $n$ números reales, interpretada en este trabajo como vector columna. Una matriz $\mathbf{W}\in\mathbb{R}^{m\times n}$ es un arreglo rectangular de $m$ filas y $n$ columnas \citep{strang2016}. En la implementación, las matrices se almacenan en un único arreglo contiguo en orden por filas (\emph{row-major}), de modo que el elemento $w_{ij}$ ocupa la posición $i\cdot n + j$.
+
+\subsection{Operaciones fundamentales}
+Sean $\mathbf{x},\mathbf{y}\in\mathbb{R}^{n}$ y $\mathbf{A}\in\mathbb{R}^{m\times k}$, $\mathbf{B}\in\mathbb{R}^{k\times n}$. Las operaciones implementadas son:
+\begin{align}
+\mathbf{x}\cdot\mathbf{y} &= \sum_{i=1}^{n} x_i y_i, &&\text{(producto punto, } O(n)\text{)}\label{eq:dot}\\
+(\mathbf{A}\mathbf{B})_{ij} &= \sum_{l=1}^{k} a_{il}\, b_{lj}, &&\text{(producto matricial, } O(mkn)\text{)}\label{eq:matmul}\\
+(\mathbf{x}\odot\mathbf{y})_i &= x_i\, y_i, &&\text{(producto de Hadamard, } O(n)\text{)}\label{eq:hadamard}\\
+(\mathbf{A}^{\top})_{ij} &= a_{ji}, &&\text{(transpuesta, } O(mk)\text{)}\label{eq:transpuesta}\\
+(\mathbf{x}\,\mathbf{y}^{\top})_{ij} &= x_i\, y_j. &&\text{(producto exterior, } O(n^2)\text{)}\label{eq:outer}
+\end{align}
+Estas operaciones solo están definidas cuando las dimensiones son compatibles; por ejemplo, el producto $\mathbf{A}\mathbf{B}$ exige que el número de columnas de $\mathbf{A}$ coincida con el número de filas de $\mathbf{B}$. En el proyecto, toda violación de dimensiones produce un error explícito en lugar de un resultado incorrecto.
+
+\section{La neurona artificial}
+La neurona artificial, inspirada en el modelo de \citet{mcculloch1943} y en el perceptrón de \citet{rosenblatt1958}, recibe un vector de entradas $\mathbf{x}\in\mathbb{R}^{n}$, lo combina linealmente con un vector de pesos $\mathbf{w}\in\mathbb{R}^{n}$ y un sesgo $b\in\mathbb{R}$, y aplica una función de activación $f$:
+\begin{equation}
+z = \mathbf{w}\cdot\mathbf{x} + b = \sum_{i=1}^{n} w_i x_i + b, \qquad a = f(z).\label{eq:neurona}
+\end{equation}
+La suma ponderada $z$ define un hiperplano en el espacio de entradas. Por ello, una única neurona solo puede separar clases que sean linealmente separables, limitación que \citet{minsky1969} formalizaron con el ejemplo de la compuerta XOR.
+
+\section{Funciones de activación}
+Las funciones de activación introducen no linealidad; sin ellas, la composición de varias capas seguiría siendo una transformación lineal \citep{goodfellow2016}.
+
+\subsection{Función Sigmoid}
+\begin{equation}
+\sigma(z) = \frac{1}{1+e^{-z}}, \qquad \sigma'(z) = \sigma(z)\,\bigl(1-\sigma(z)\bigr).\label{eq:sigmoid}
+\end{equation}
+La derivada se obtiene aplicando la regla del cociente: $\sigma'(z) = \frac{e^{-z}}{(1+e^{-z})^2} = \frac{1}{1+e^{-z}}\cdot\frac{e^{-z}}{1+e^{-z}} = \sigma(z)(1-\sigma(z))$. Su valor máximo es $0.25$ en $z=0$, lo que explica la lentitud del aprendizaje cuando las neuronas se saturan \citep{lecun1998}. Para evitar desbordamientos numéricos, la implementación usa la forma equivalente $\sigma(z) = e^{z}/(1+e^{z})$ cuando $z<0$.
+
+\subsection{Función ReLU}
+\begin{equation}
+\mathrm{ReLU}(z) = \max(0, z), \qquad \mathrm{ReLU}'(z) = \begin{cases}1 & z>0\\ 0 & z\le 0\end{cases}\label{eq:relu}
+\end{equation}
+ReLU es computacionalmente económica y mitiga el desvanecimiento del gradiente en redes profundas \citep{glorot2010,he2015}. En $z=0$ la derivada no existe; por convención se adopta el valor $0$.
+
+\subsection{Función lineal}
+Para problemas de regresión se utiliza la identidad $f(z)=z$, cuya derivada es $f'(z)=1$.
+
+\section{Función de pérdida: error cuadrático medio}
+Dado un vector de predicciones $\hat{\mathbf{y}}\in\mathbb{R}^{n}$ y un vector objetivo $\mathbf{y}\in\mathbb{R}^{n}$, el error cuadrático medio y su gradiente son:
+\begin{equation}
+\mathcal{L}(\hat{\mathbf{y}},\mathbf{y}) = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2, \qquad \frac{\partial\mathcal{L}}{\partial \hat{y}_i} = \frac{2}{n}(\hat{y}_i - y_i).\label{eq:mse}
+\end{equation}
+El MSE es siempre no negativo y vale cero únicamente cuando la predicción coincide exactamente con el objetivo \citep{bishop2006}.
+
+\section{Red neuronal multicapa}
+Una red multicapa (\emph{multilayer perceptron}) organiza las neuronas en $L$ capas densas. Para la capa $l$ con $n_{l-1}$ entradas y $n_l$ neuronas, los parámetros son la matriz $\mathbf{W}^{(l)}\in\mathbb{R}^{n_l\times n_{l-1}}$ y el vector $\mathbf{b}^{(l)}\in\mathbb{R}^{n_l}$. La propagación hacia adelante es:
+\begin{equation}
+\mathbf{z}^{(l)} = \mathbf{W}^{(l)}\mathbf{a}^{(l-1)} + \mathbf{b}^{(l)}, \qquad \mathbf{a}^{(l)} = f^{(l)}\bigl(\mathbf{z}^{(l)}\bigr), \qquad \mathbf{a}^{(0)} = \mathbf{x}.\label{eq:forward}
+\end{equation}
+El teorema de aproximación universal garantiza que una red con una sola capa oculta y un número suficiente de neuronas con activación sigmoidal puede aproximar cualquier función continua en un dominio compacto con precisión arbitraria \citep{cybenko1989,hornik1989}.
+
+\section{Retropropagación del error}
+La retropropagación (\emph{backpropagation}) calcula eficientemente el gradiente de la pérdida respecto a todos los parámetros aplicando la regla de la cadena desde la salida hacia la entrada \citep{rumelhart1986}. Se define el error local de la capa $l$ como $\boldsymbol{\delta}^{(l)} = \partial\mathcal{L}/\partial\mathbf{z}^{(l)}$.
+
+\subsection{Derivación paso a paso}
+Para la capa de salida $L$, por la regla de la cadena:
+\begin{equation}
+\delta_j^{(L)} = \frac{\partial\mathcal{L}}{\partial a_j^{(L)}}\cdot\frac{\partial a_j^{(L)}}{\partial z_j^{(L)}} = \frac{2}{n_L}\bigl(a_j^{(L)}-y_j\bigr)\, f'\bigl(z_j^{(L)}\bigr)
+\;\Longrightarrow\; \boldsymbol{\delta}^{(L)} = \nabla_{\mathbf{a}}\mathcal{L}\odot f'\bigl(\mathbf{z}^{(L)}\bigr).\label{eq:deltaL}
+\end{equation}
+Para una capa oculta $l$, cada $z_j^{(l)}$ influye en la pérdida a través de todas las neuronas $k$ de la capa siguiente:
+\begin{equation}
+\begin{split}
+\delta_j^{(l)} &= \sum_{k}\frac{\partial\mathcal{L}}{\partial z_k^{(l+1)}}\frac{\partial z_k^{(l+1)}}{\partial a_j^{(l)}}\frac{\partial a_j^{(l)}}{\partial z_j^{(l)}} = \Bigl(\sum_k w_{kj}^{(l+1)}\delta_k^{(l+1)}\Bigr) f'\bigl(z_j^{(l)}\bigr)\\
+\Longrightarrow\quad \boldsymbol{\delta}^{(l)} &= \bigl(\mathbf{W}^{(l+1)\top}\boldsymbol{\delta}^{(l+1)}\bigr)\odot f'\bigl(\mathbf{z}^{(l)}\bigr).
+\end{split}\label{eq:deltal}
+\end{equation}
+Como $z_j^{(l)} = \sum_i w_{ji}^{(l)}a_i^{(l-1)} + b_j^{(l)}$, los gradientes de los parámetros resultan:
+\begin{equation}
+\frac{\partial\mathcal{L}}{\partial\mathbf{W}^{(l)}} = \boldsymbol{\delta}^{(l)}\,\mathbf{a}^{(l-1)\top}, \qquad \frac{\partial\mathcal{L}}{\partial\mathbf{b}^{(l)}} = \boldsymbol{\delta}^{(l)}.\label{eq:gradW}
+\end{equation}
+El costo de la retropropagación es del mismo orden que el de la propagación hacia adelante, $O(P)$, donde $P$ es el número total de parámetros, lo que la hace mucho más eficiente que estimar cada derivada por separado \citep{baydin2018}.
+
+\section{Descenso de gradiente}
+El descenso de gradiente actualiza cada parámetro en dirección opuesta al gradiente, con una tasa de aprendizaje $\alpha>0$:
+\begin{equation}
+\mathbf{W}^{(l)} \leftarrow \mathbf{W}^{(l)} - \alpha\,\frac{\partial\mathcal{L}}{\partial\mathbf{W}^{(l)}}, \qquad \mathbf{b}^{(l)} \leftarrow \mathbf{b}^{(l)} - \alpha\,\frac{\partial\mathcal{L}}{\partial\mathbf{b}^{(l)}}.\label{eq:gd}
+\end{equation}
+En la variante estocástica (SGD) utilizada en este proyecto, la actualización se realiza después de cada muestra \citep{bottou2010}. Una tasa $\alpha$ muy pequeña produce un aprendizaje extremadamente lento; una tasa excesiva provoca oscilaciones, divergencia o saturación de las neuronas \citep{ruder2016}. Este comportamiento se verifica experimentalmente en la Sección~\ref{sec:exp2}.
+
+\section{Inicialización de pesos}
+Si todos los pesos se inicializan con el mismo valor, las neuronas de una capa reciben gradientes idénticos y nunca se diferencian. Por ello se emplea inicialización aleatoria uniforme en $[-\ell,\ell]$ con la regla de \citet{glorot2010} para Sigmoid y lineal, y la de \citet{he2015} para ReLU:
+\begin{equation}
+\ell_{\text{Xavier}} = \sqrt{\frac{6}{n_{\text{in}}+n_{\text{out}}}}, \qquad \ell_{\text{He}} = \sqrt{\frac{6}{n_{\text{in}}}}.\label{eq:init}
+\end{equation}
+
+\section{Verificación numérica de gradientes}
+Para comprobar que las derivadas analíticas están correctamente implementadas se compara cada componente del gradiente con su aproximación por diferencias centrales \citep{lecun1998,goodfellow2016}:
+\begin{equation}
+\frac{\partial\mathcal{L}}{\partial\theta} \approx \frac{\mathcal{L}(\theta+\varepsilon)-\mathcal{L}(\theta-\varepsilon)}{2\varepsilon}, \qquad \text{error relativo} = \frac{|g_{\text{num}}-g_{\text{ana}}|}{\max(|g_{\text{num}}|+|g_{\text{ana}}|,\,10^{-12})}.\label{eq:gradcheck}
+\end{equation}
+El error de truncamiento de esta aproximación es $O(\varepsilon^{2})$, por lo que un error relativo muy pequeño indica que la retropropagación es correcta.
+
+\section{Métricas de evaluación}
+Para clasificación se utiliza la exactitud (\emph{accuracy}), definida como la proporción de muestras correctamente clasificadas, y la matriz de confusión $\mathbf{C}\in\mathbb{N}^{K\times K}$, cuyo elemento $c_{ij}$ cuenta las muestras de clase real $i$ predichas como clase $j$. En clasificación multiclase con codificación \emph{one-hot}, la clase predicha es $\hat{k} = \arg\max_k \hat{y}_k$ \citep{bishop2006}.
+
+\section{Fundamentos técnicos de Rust}
+Rust es un lenguaje de programación de sistemas compilado, con tipado estático y fuerte, diseñado para ofrecer seguridad de memoria sin recolector de basura \citep{klabnik2023,matsakis2014}.
+
+\subsection{Propiedad, préstamos y tiempos de vida}
+El modelo de propiedad (\emph{ownership}) establece que cada valor tiene un único dueño y se libera automáticamente cuando su dueño sale de ámbito. Los préstamos (\emph{borrowing}) permiten referencias inmutables múltiples (\texttt{\&T}) o una única referencia mutable (\texttt{\&mut T}), lo que elimina en tiempo de compilación las carreras de datos y los accesos a memoria liberada \citep{blandy2021}. \citet{jung2018} demostraron formalmente la solidez de estas garantías en el proyecto RustBelt.
+
+\subsection{Manejo explícito de errores}
+Rust no utiliza excepciones. Las operaciones que pueden fallar devuelven \texttt{Result<T, E>}, que obliga al programador a tratar el error explícitamente. El operador \texttt{?} propaga el error al llamador de forma concisa. En este proyecto, toda operación de álgebra lineal devuelve \texttt{Result} con un tipo \texttt{MathError} que describe la operación y las dimensiones incompatibles.
+
+\subsection{Traits y abstracciones de costo cero}
+Los \emph{traits} definen comportamiento compartido, similar a las interfaces de otros lenguajes. El proyecto define los traits \texttt{ActivationFn} y \texttt{LossFn}, lo que permite añadir nuevas funciones sin modificar la red. Gracias a la monomorfización, estas abstracciones no tienen costo en tiempo de ejecución.
+
+\subsection{Cargo y pruebas integradas}
+Cargo es el gestor de paquetes y sistema de compilación de Rust. Permite compilar en modo depuración o optimizado (\texttt{--release}), ejecutar pruebas unitarias con \texttt{cargo test}, analizar el código con \texttt{cargo clippy} y generar documentación a partir de los comentarios \texttt{///} \citep{klabnik2023}.

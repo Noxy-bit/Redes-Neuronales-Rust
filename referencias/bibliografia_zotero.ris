@@ -1,0 +1,362 @@
+TY  - BOOK
+AU  - American Psychological Association
+PY  - 2020
+TI  - Publication manual of the American Psychological Association
+ET  - 7
+DO  - 10.1037/0000165-000
+PB  - American Psychological Association
+ID  - apa2020
+ER  - 
+
+TY  - STAT
+AU  - Asamblea Legislativa Plurinacional de Bolivia
+PY  - 2011
+TI  - Ley N.º 164: Ley General de Telecomunicaciones, Tecnologías de Información y Comunicación
+PB  - Gaceta Oficial del Estado Plurinacional de Bolivia
+ID  - bolivia2011
+ER  - 
+
+TY  - JOUR
+AU  - Baydin, Atılım Güneş
+AU  - Pearlmutter, Barak A.
+AU  - Radul, Alexey Andreyevich
+AU  - Siskind, Jeffrey Mark
+PY  - 2018
+TI  - Automatic differentiation in machine learning: A survey
+JO  - Journal of Machine Learning Research
+VL  - 18
+IS  - 153
+UR  - https://jmlr.org/papers/v18/17-468.html
+SP  - 1
+EP  - 43
+ID  - baydin2018
+ER  - 
+
+TY  - BOOK
+AU  - Bishop, Christopher M.
+PY  - 2006
+TI  - Pattern recognition and machine learning
+PB  - Springer
+ID  - bishop2006
+ER  - 
+
+TY  - BOOK
+AU  - Blandy, Jim
+AU  - Orendorff, Jason
+AU  - Tindall, Leonora F. S.
+PY  - 2021
+TI  - Programming Rust: Fast, safe systems development
+ET  - 2
+PB  - O'Reilly Media
+ID  - blandy2021
+ER  - 
+
+TY  - CPAPER
+AU  - Bottou, Léon
+PY  - 2010
+TI  - Large-scale machine learning with stochastic gradient descent
+T2  - Proceedings of COMPSTAT'2010
+DO  - 10.1007/978-3-7908-2604-3_16
+SP  - 177
+EP  - 186
+PB  - Physica-Verlag
+ID  - bottou2010
+ER  - 
+
+TY  - JOUR
+AU  - Cybenko, George
+PY  - 1989
+TI  - Approximation by superpositions of a sigmoidal function
+JO  - Mathematics of Control, Signals and Systems
+VL  - 2
+IS  - 4
+DO  - 10.1007/BF02551274
+SP  - 303
+EP  - 314
+ID  - cybenko1989
+ER  - 
+
+TY  - BOOK
+AU  - Deisenroth, Marc Peter
+AU  - Faisal, A. Aldo
+AU  - Ong, Cheng Soon
+PY  - 2020
+TI  - Mathematics for machine learning
+DO  - 10.1017/9781108679930
+PB  - Cambridge University Press
+ID  - deisenroth2020
+ER  - 
+
+TY  - CPAPER
+AU  - Glorot, Xavier
+AU  - Bengio, Yoshua
+PY  - 2010
+TI  - Understanding the difficulty of training deep feedforward neural networks
+T2  - Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics
+VL  - 9
+UR  - https://proceedings.mlr.press/v9/glorot10a.html
+SP  - 249
+EP  - 256
+PB  - PMLR
+ID  - glorot2010
+ER  - 
+
+TY  - BOOK
+AU  - Goodfellow, Ian
+AU  - Bengio, Yoshua
+AU  - Courville, Aaron
+PY  - 2016
+TI  - Deep learning
+UR  - https://www.deeplearningbook.org/
+PB  - MIT Press
+ID  - goodfellow2016
+ER  - 
+
+TY  - BOOK
+AU  - Haykin, Simon
+PY  - 2009
+TI  - Neural networks and learning machines
+ET  - 3
+PB  - Pearson Education
+ID  - haykin2009
+ER  - 
+
+TY  - CPAPER
+AU  - He, Kaiming
+AU  - Zhang, Xiangyu
+AU  - Ren, Shaoqing
+AU  - Sun, Jian
+PY  - 2015
+TI  - Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification
+T2  - Proceedings of the IEEE International Conference on Computer Vision
+DO  - 10.1109/ICCV.2015.123
+SP  - 1026
+EP  - 1034
+PB  - IEEE
+ID  - he2015
+ER  - 
+
+TY  - BOOK
+AU  - Hernández Sampieri, Roberto
+AU  - Mendoza Torres, Christian Paulina
+PY  - 2018
+TI  - Metodología de la investigación: Las rutas cuantitativa, cualitativa y mixta
+PB  - McGraw-Hill Interamericana
+ID  - hernandez2018
+ER  - 
+
+TY  - JOUR
+AU  - Hornik, Kurt
+AU  - Stinchcombe, Maxwell
+AU  - White, Halbert
+PY  - 1989
+TI  - Multilayer feedforward networks are universal approximators
+JO  - Neural Networks
+VL  - 2
+IS  - 5
+DO  - 10.1016/0893-6080(89)90020-8
+SP  - 359
+EP  - 366
+ID  - hornik1989
+ER  - 
+
+TY  - JOUR
+AU  - Jung, Ralf
+AU  - Jourdan, Jacques-Henri
+AU  - Krebbers, Robbert
+AU  - Dreyer, Derek
+PY  - 2018
+TI  - RustBelt: Securing the foundations of the Rust programming language
+JO  - Proceedings of the ACM on Programming Languages
+VL  - 2
+IS  - POPL
+DO  - 10.1145/3158154
+SP  - 66:1
+EP  - 66:34
+ID  - jung2018
+ER  - 
+
+TY  - BOOK
+AU  - Klabnik, Steve
+AU  - Nichols, Carol
+PY  - 2023
+TI  - The Rust programming language
+ET  - 2
+UR  - https://doc.rust-lang.org/book/
+PB  - No Starch Press
+ID  - klabnik2023
+ER  - 
+
+TY  - CHAP
+AU  - LeCun, Yann
+AU  - Bottou, Léon
+AU  - Orr, Genevieve B.
+AU  - Müller, Klaus-Robert
+ED  - Orr, Genevieve B.
+ED  - Müller, Klaus-Robert
+PY  - 1998
+TI  - Efficient BackProp
+T2  - Neural networks: Tricks of the trade
+DO  - 10.1007/3-540-49430-8_2
+SP  - 9
+EP  - 50
+PB  - Springer
+ID  - lecun1998
+ER  - 
+
+TY  - JOUR
+AU  - LeCun, Yann
+AU  - Bengio, Yoshua
+AU  - Hinton, Geoffrey
+PY  - 2015
+TI  - Deep learning
+JO  - Nature
+VL  - 521
+IS  - 7553
+DO  - 10.1038/nature14539
+SP  - 436
+EP  - 444
+ID  - lecun2015
+ER  - 
+
+TY  - RPRT
+AU  - Maslej, Nestor
+AU  - Fattorini, Loredana
+AU  - Perrault, Raymond
+AU  - Parli, Vanessa
+AU  - Reuel, Anka
+AU  - Brynjolfsson, Erik
+AU  - Etchemendy, John
+AU  - Ligett, Katrina
+AU  - Lyons, Terah
+AU  - Manyika, James
+AU  - Niebles, Juan Carlos
+AU  - Shoham, Yoav
+AU  - Wald, Russell
+AU  - Clark, Jack
+PY  - 2024
+TI  - The AI Index 2024 annual report
+UR  - https://aiindex.stanford.edu/report/
+PB  - AI Index Steering Committee, Institute for Human-Centered AI, Stanford University
+ID  - maslej2024
+ER  - 
+
+TY  - JOUR
+AU  - Matsakis, Nicholas D.
+AU  - Klock, Felix S., II
+PY  - 2014
+TI  - The Rust language
+JO  - ACM SIGAda Ada Letters
+VL  - 34
+IS  - 3
+DO  - 10.1145/2692956.2663188
+SP  - 103
+EP  - 104
+ID  - matsakis2014
+ER  - 
+
+TY  - JOUR
+AU  - McCulloch, Warren S.
+AU  - Pitts, Walter
+PY  - 1943
+TI  - A logical calculus of the ideas immanent in nervous activity
+JO  - The Bulletin of Mathematical Biophysics
+VL  - 5
+IS  - 4
+DO  - 10.1007/BF02478259
+SP  - 115
+EP  - 133
+ID  - mcculloch1943
+ER  - 
+
+TY  - BOOK
+AU  - Minsky, Marvin
+AU  - Papert, Seymour
+PY  - 1969
+TI  - Perceptrons: An introduction to computational geometry
+PB  - MIT Press
+ID  - minsky1969
+ER  - 
+
+TY  - BOOK
+AU  - Nielsen, Michael A.
+PY  - 2015
+TI  - Neural networks and deep learning
+UR  - http://neuralnetworksanddeeplearning.com/
+PB  - Determination Press
+ID  - nielsen2015
+ER  - 
+
+TY  - JOUR
+AU  - Rosenblatt, Frank
+PY  - 1958
+TI  - The perceptron: A probabilistic model for information storage and organization in the brain
+JO  - Psychological Review
+VL  - 65
+IS  - 6
+DO  - 10.1037/h0042519
+SP  - 386
+EP  - 408
+ID  - rosenblatt1958
+ER  - 
+
+TY  - GEN
+AU  - Ruder, Sebastian
+PY  - 2016
+TI  - An overview of gradient descent optimization algorithms
+DO  - 10.48550/arXiv.1609.04747
+PB  - arXiv
+ID  - ruder2016
+ER  - 
+
+TY  - JOUR
+AU  - Rumelhart, David E.
+AU  - Hinton, Geoffrey E.
+AU  - Williams, Ronald J.
+PY  - 1986
+TI  - Learning representations by back-propagating errors
+JO  - Nature
+VL  - 323
+IS  - 6088
+DO  - 10.1038/323533a0
+SP  - 533
+EP  - 536
+ID  - rumelhart1986
+ER  - 
+
+TY  - BOOK
+AU  - Russell, Stuart
+AU  - Norvig, Peter
+PY  - 2021
+TI  - Artificial intelligence: A modern approach
+ET  - 4
+PB  - Pearson
+ID  - russell2021
+ER  - 
+
+TY  - GEN
+AU  - Stack Overflow
+PY  - 2024
+TI  - 2024 Stack Overflow developer survey
+UR  - https://survey.stackoverflow.co/2024/
+PB  - Stack Overflow
+ID  - stackoverflow2024
+ER  - 
+
+TY  - BOOK
+AU  - Strang, Gilbert
+PY  - 2016
+TI  - Introduction to linear algebra
+ET  - 5
+PB  - Wellesley-Cambridge Press
+ID  - strang2016
+ER  - 
+
+TY  - RPRT
+AU  - UNESCO
+PY  - 2022
+TI  - Recommendation on the ethics of artificial intelligence
+UR  - https://unesdoc.unesco.org/ark:/48223/pf0000381137
+PB  - United Nations Educational, Scientific and Cultural Organization
+ID  - unesco2022
+ER  - 

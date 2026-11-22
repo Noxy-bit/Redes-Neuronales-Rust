@@ -1,0 +1,12 @@
+\chapter{Conclusiones}\label{cap:conclusiones}
+A partir de la implementación y de los resultados experimentales reales, se presentan las conclusiones del proyecto organizadas según los objetivos planteados.
+
+\begin{enumerate}[leftmargin=2em,itemsep=4pt]
+\item \textbf{Objetivo general.} Se construyó una red neuronal multicapa funcional en Rust utilizando únicamente la biblioteca estándar, sin crates de aprendizaje automático ni de álgebra lineal, capaz de resolver problemas de regresión, de lógica no lineal y de clasificación de patrones.
+\item \textbf{Álgebra lineal (OE1).} Las estructuras \texttt{Vector} y \texttt{Matrix} implementan todas las operaciones requeridas y detectan los errores de dimensión mediante \texttt{Result}, lo que evita resultados incorrectos silenciosos.
+\item \textbf{Activaciones y pérdida (OE2).} Las derivadas analíticas de Sigmoid, ReLU, lineal y MSE coinciden con sus aproximaciones numéricas, lo que valida su implementación.
+\item \textbf{Red y aprendizaje (OE3).} La retropropagación implementada en forma matricial reproduce fielmente las ecuaciones derivadas en el marco teórico y permite entrenar topologías arbitrarias de forma reproducible.
+\item \textbf{Verificación (OE4).} Las 52 pruebas automatizadas se aprueban en su totalidad, incluida la verificación numérica de gradientes en redes de hasta tres capas.
+\item \textbf{Experimentos (OE5).} La regresión $y=2x$ alcanzó un MSE de \EunoMseFin; el perceptrón de una capa se estancó en \EdosAccPer{} de exactitud en XOR mientras la red 2-4-1 logró \EdosAccMul, lo que confirma la necesidad de capas ocultas para problemas no lineales; y la clasificación de vocales obtuvo \EtresAccPru{} de exactitud sobre muestras con ruido no vistas.
+\item \textbf{Rendimiento (OE6).} El binario optimizado ocupa \BinKiB~KiB y entrena cualquiera de los experimentos en fracciones de segundo, lo que demuestra que los fundamentos del aprendizaje automático pueden estudiarse con equipos convencionales.
+\end{enumerate}

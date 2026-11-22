@@ -1,0 +1,102 @@
+% ================= CARÁTULA =================
+\begin{titlepage}
+\centering
+{\large\bfseries UNIVERSIDAD AUTÓNOMA GABRIEL RENÉ MORENO\par}
+\vspace{2pt}
+{\bfseries FACULTAD DE INGENIERÍA EN CIENCIAS DE LA COMPUTACIÓN\\ Y TELECOMUNICACIONES\par}
+\vspace{10pt}
+\includegraphics[height=3.6cm]{\LogoFICCT}\par
+\vspace{10pt}
+{\small \Evento\par}
+\vspace{14pt}
+{\color{marino}\rule{0.8\textwidth}{0.8pt}\par\vspace{6pt}
+\LARGE\bfseries \Titulo\par\vspace{6pt}\rule{0.8\textwidth}{0.8pt}\par}
+\vspace{8pt}
+{\large Proyecto N.º \ProyNum\par}
+{\small \Version\par}
+\vspace{10pt}
+\begin{tabular}{@{}rl@{}}
+\textbf{Materia:} & \Materia{} -- \Sigla \\
+\textbf{Grupo:} & \Grupo \\
+\textbf{Docente tutor:} & \DocenteTutor{} (\CodigoDocente) \\
+\textbf{Coordinador IICCT:} & \CoordinadorIICCT{} \\
+\end{tabular}\par
+\vspace{10pt}
+{\bfseries Integrantes\par}\vspace{2pt}
+{\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Nombre completo & ORCID \\
+\midrule
+Ronal Miranda Vasquez & 0009-0003-9735-4920 \\
+Oscar Alejandro Nava Orihuela & 0009-0001-0485-3030 \\
+Carla Olivia Cano Quispe & 0009-0009-5668-8290 \\
+Diana Nayely Diaz Mamani & 0009-0003-0550-4996 \\
+Julio Cesar Piuca Achocalla & 0009-0004-0056-5201 \\
+\bottomrule
+\end{tabular}\par}
+\vfill
+{\bfseries \Ciudad, \Anio\par}
+\end{titlepage}
+
+% ================= IDENTIFICACIÓN DE INVESTIGADORES =================
+\setcounter{page}{2}
+\chapter*{Identificación de Investigadores y ORCID}
+\addcontentsline{toc}{chapter}{Identificación de Investigadores y ORCID}
+ORCID (\emph{Open Researcher and Contributor ID}) es un identificador digital persistente, gratuito y único de dieciséis dígitos que distingue a cada investigador de forma inequívoca, aun cuando existan homónimos o variaciones en la escritura de su nombre. Al vincularse con revistas, repositorios y bases de datos, ORCID permite que la producción científica de cada autor sea atribuida correctamente y pueda rastrearse a lo largo de toda su trayectoria académica. Los integrantes del equipo registraron su identificador como parte de la formación en investigación promovida por el Instituto de Investigación de la FICCT (IICCT).
+
+\begin{table}[H]
+\caption{Integrantes del equipo de investigación}\label{tab:integrantes}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}X l >{\raggedright}p{2.3cm} l l >{\raggedright\arraybackslash}p{2.4cm}@{}}
+\toprule
+Nombre completo & Registro & Carrera & Grupo & ORCID & Rol \\
+\midrule
+Ronal Miranda Vasquez & 226159787 & Ing. Informática & SH-SD & 0009-0003-9735-4920 & Investigador -- Expositor \\
+Oscar Alejandro Nava Orihuela & 226037215 & Ing. Informática & SH-SD & 0009-0001-0485-3030 & Investigador -- Expositor \\
+Carla Olivia Cano Quispe & 224026879 & Ing. Informática & SH-SD & 0009-0009-5668-8290 & Investigadora -- Expositora \\
+Diana Nayely Diaz Mamani & 225028190 & Ing. Sistemas & SH-SD & 0009-0003-0550-4996 & Investigadora -- Expositora \\
+Julio Cesar Piuca Achocalla & 224028782 & Ing. Informática & SH-SD & 0009-0004-0056-5201 & Investigador -- Expositor \\
+\bottomrule
+\end{tabularx}
+\par\smallskip{\footnotesize\emph{Nota.} Los roles específicos de cada integrante (implementación, pruebas, documentación y exposición) se detallan en los anexos y pueden ajustarse por el equipo.}
+\end{table}
+
+% ================= AGRADECIMIENTOS =================
+\chapter*{Agradecimientos}
+\addcontentsline{toc}{chapter}{Agradecimientos}
+Al \textbf{\DocenteTutor}, docente de la asignatura Programación 1 (\Sigla), por su guía académica, su exigencia formativa y el respaldo técnico brindado durante el desarrollo de este proyecto.
+
+Al \textbf{\CoordinadorIICCT}, Coordinador del Instituto de Investigación de la FICCT (IICCT) y organizador de la Feria Facultativa FICCT-UAGRM, por el impulso permanente a los semilleros de investigación y por las orientaciones metodológicas que hicieron posible estructurar este trabajo.
+
+A la \textbf{Universidad Autónoma Gabriel René Moreno (UAGRM)}, a la \textbf{Facultad de Ingeniería en Ciencias de la Computación y Telecomunicaciones (FICCT)} y al \textbf{Instituto de Investigación (IICCT)}, por el espacio formativo e institucional que brindan a los estudiantes de los primeros semestres.
+
+A nuestras familias y a cada compañero de equipo, por el esfuerzo colaborativo, la paciencia y el compromiso sostenido durante el desarrollo del proyecto.
+
+% ================= RESUMEN / ABSTRACT =================
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+El presente trabajo documenta la construcción de una red neuronal artificial multicapa implementada desde cero en el lenguaje Rust, utilizando exclusivamente su biblioteca estándar y sin recurrir a \emph{frameworks} de aprendizaje automático ni a bibliotecas externas de álgebra lineal. El proyecto se desarrolló de forma incremental: primero se implementaron vectores y matrices con validación de dimensiones mediante el tipo \texttt{Result}; luego las funciones de activación Sigmoid, ReLU y lineal con sus derivadas analíticas; la función de pérdida de error cuadrático medio (MSE); y finalmente neuronas, capas densas y una red con propagación hacia adelante, retropropagación del error y descenso de gradiente. La corrección del cálculo de gradientes se verificó mediante \emph{gradient checking} numérico dentro de un conjunto de 52 pruebas automatizadas. Se ejecutaron tres experimentos reales y reproducibles (semilla 42): la regresión $y = 2x$ alcanzó un MSE final de \EunoMseFin{}; en la compuerta XOR, el perceptrón de una capa se estancó en una exactitud de \EdosAccPer{} mientras que la red 2-4-1 logró \EdosAccMul{} con MSE de \EdosMseMul{}; y la clasificación de vocales A, E, I, O, U representadas en matrices binarias de $5\times5$ obtuvo \EtresAccPru{} de exactitud sobre \EtresNPru{} muestras de prueba con ruido. Los resultados demuestran que es posible comprender y construir los fundamentos del aprendizaje automático con herramientas abiertas y de bajo costo computacional.
+
+\medskip\noindent\textbf{Palabras clave:} redes neuronales artificiales, retropropagación, descenso de gradiente, Rust, álgebra lineal, aprendizaje automático.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+This work documents the construction of a multilayer artificial neural network implemented from scratch in the Rust programming language, using only its standard library and without any machine learning frameworks or external linear algebra libraries. The project was developed incrementally: vectors and matrices with dimension checking through the \texttt{Result} type; Sigmoid, ReLU and linear activation functions with analytical derivatives; the mean squared error (MSE) loss; and finally neurons, dense layers and a network with forward propagation, error backpropagation and gradient descent. Gradient correctness was verified through numerical gradient checking within a suite of 52 automated tests. Three real and reproducible experiments were executed (seed 42): the $y = 2x$ regression reached a final MSE of \EunoMseFin{}; on the XOR gate, the single-layer perceptron stalled at \EdosAccPer{} accuracy while the 2-4-1 network reached \EdosAccMul{} with an MSE of \EdosMseMul{}; and the classification of the vowels A, E, I, O, U encoded as $5\times5$ binary matrices achieved \EtresAccPru{} accuracy on \EtresNPru{} noisy test samples. The results show that the foundations of machine learning can be understood and built with open, low-cost tools.
+
+\medskip\noindent\textbf{Keywords:} artificial neural networks, backpropagation, gradient descent, Rust, linear algebra, machine learning.
+
+% ================= ÍNDICES =================
+\clearpage
+{\singlespacing
+\renewcommand{\contentsname}{Índice General}
+\tableofcontents
+\renewcommand{\listfigurename}{Índice de Figuras}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Índice de Figuras}
+\listoffigures
+\renewcommand{\listtablename}{Índice de Tablas}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Índice de Tablas}
+\listoftables
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Lista de Códigos}
+\lstlistoflistings
+}

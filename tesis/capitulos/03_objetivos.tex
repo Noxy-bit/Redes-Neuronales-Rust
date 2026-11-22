@@ -1,0 +1,18 @@
+\chapter{Objetivo General}\label{cap:objgeneral}
+El objetivo general orienta la totalidad del proyecto y define el resultado verificable que se espera alcanzar.
+
+\begin{nota}[Objetivo general]
+Desarrollar una red neuronal artificial multicapa desde cero utilizando el lenguaje Rust y únicamente su biblioteca estándar, implementando sus fundamentos matemáticos (álgebra lineal, funciones de activación, función de pérdida, retropropagación y descenso de gradiente) y validando su funcionamiento mediante pruebas unitarias y tres experimentos reproducibles de complejidad progresiva.
+\end{nota}
+
+\chapter{Objetivos Específicos}\label{cap:objespecificos}
+Los objetivos específicos descomponen el objetivo general en metas concretas y medibles, alineadas con las fases de desarrollo del proyecto.
+
+\begin{enumerate}[label=\textbf{OE\arabic*.},leftmargin=3.2em,itemsep=4pt]
+\item Implementar estructuras de vectores y matrices con operaciones de suma, resta, producto punto, multiplicación matricial, producto de Hadamard, escalamiento y transpuesta, con validación de dimensiones mediante el tipo \texttt{Result}.
+\item Implementar las funciones de activación Sigmoid, ReLU y lineal con sus derivadas analíticas, y la función de pérdida de error cuadrático medio (MSE) con su gradiente.
+\item Construir neuronas, capas densas y una red multicapa con inicialización reproducible mediante un generador pseudoaleatorio propio, propagación hacia adelante, retropropagación del error y entrenamiento por descenso de gradiente.
+\item Verificar la corrección de la implementación mediante pruebas unitarias en cada módulo, incluida la comparación entre gradientes analíticos y numéricos (\emph{gradient checking}).
+\item Ejecutar y analizar tres experimentos progresivos ---regresión $y=2x$, compuerta XOR y clasificación de vocales A, E, I, O, U--- exportando métricas reales (pérdida, exactitud y matriz de confusión) a archivos CSV.
+\item Medir el rendimiento real del motor (tiempos de entrenamiento e inferencia y tamaño del binario) compilado en modo \emph{release}.
+\end{enumerate}
