@@ -30,3 +30,28 @@ La contextualización y justificación deben estructurarse con enfoque de embudo
   - Mostrar de forma destacada el **Número de Proyecto (`#[NRO_PROYECTO]`)** configurable.
   - Incluir **código QR grande** ("Escanea para más información") en el banner y en las credenciales/tríptico.
   - En credenciales: nombre completo, registro universitario, carrera, rol (`Expositor`), logo RN + sellos FICCT/IICCT y marco opcional para foto del estudiante.
+
+## 5. Requisitos oficiales de entrega (Moodle — `Documento-Final-REVISADO`)
+- **Cierre oficial:** Miércoles 25 de noviembre de 2026, 23:55.
+- **Secciones obligatorias (deben figurar de forma explícita y localizable en el Índice General):**
+  1. Carátula
+  2. Índice (General, Figuras, Tablas y Lista de Códigos)
+  3. Contextualización (multinivel: internacional, nacional, departamental, regional/provincial y local)
+  4. Planteamiento del Problema
+  5. Justificación
+  6. Objetivo General
+  7. Objetivos Específicos
+  8. Marco Teórico (fundamentos matemáticos de redes neuronales + fundamentos técnicos de Rust)
+  9. Descripción de la Propuesta Solución (arquitectura modular, implementación por fases en Rust, prueba de escritorio, 3 experimentos reales `y=2x`, `XOR` y vocales `A-E-I-O-U`, gráficas 300 DPI y validación/benchmarks)
+  10. Conclusiones y Recomendaciones
+  11. Bibliografía (formato APA 7ª edición)
+  12. Anexos (código fuente completo, manual Cargo, listado de `.drawio`, roles del equipo y Carta de Compromiso)
+- **Número de proyecto:** Mantener el número oficial asignado en la carátula y en todo el kit gráfico; si todavía no existe número asignado, usar **`0`** como valor por defecto configurable (`PROY_NUM=0`).
+- **Nomenclatura exacta del entregable final:** Además del `.docx` editable, el script de compilación debe exportar el PDF final exactamente como **`tesis/build/Proy-<NUM>-Doc-Final.PDF`** (ej. `Proy-0-Doc-Final.PDF`).
+
+## 6. Estándar oficial de Logos y Trípticos FICCT (`feria/`)
+- **Logos (`feria/logos/`):** Entregar el logo vectorial RN limpio en formato `.svg`, `.png` con fondo transparente (300 DPI) en versión clara y oscura, y un `.pdf` presentable listo para `Entrega-LOGOS`. Prohibido usar imágenes con marcas de agua o baja resolución.
+- **Tríptico doble cara (`feria/triptico/`):** Hoja Carta apaisada (6 caras con guías de pliegue):
+  - *Cara exterior:* (1) Portada con logos UAGRM, FICCT, IICCT, `Proyecto #<NUM>`, logo RN, título y eslogan; (2) Contraportada con integrantes, materia `INF120`, correos/repositorio y código QR grande ("Escanea para más información"); (3) Solapa con sección "¿Quiénes somos?" y el impacto de abrir la "caja negra" de la IA.
+  - *Cara interior:* (4) Contexto y problemática; (5) Objetivo general y objetivos específicos; (6) Propuesta técnica en Rust puro + resultados reales de los 3 experimentos.
+- **Control de calidad editorial:** Verificar cero faltas de ortografía, cero texto de relleno (*Lorem ipsum*) y contraste legible tanto en pantalla como impreso.
