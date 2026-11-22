@@ -55,3 +55,9 @@ La contextualización y justificación deben estructurarse con enfoque de embudo
   - *Cara exterior:* (1) Portada con logos UAGRM, FICCT, IICCT, `Proyecto #<NUM>`, logo RN, título y eslogan; (2) Contraportada con integrantes, materia `INF120`, correos/repositorio y código QR grande ("Escanea para más información"); (3) Solapa con sección "¿Quiénes somos?" y el impacto de abrir la "caja negra" de la IA.
   - *Cara interior:* (4) Contexto y problemática; (5) Objetivo general y objetivos específicos; (6) Propuesta técnica en Rust puro + resultados reales de los 3 experimentos.
 - **Control de calidad editorial:** Verificar cero faltas de ortografía, cero texto de relleno (*Lorem ipsum*) y contraste legible tanto en pantalla como impreso.
+
+## 7. Nombres oficiales confirmados y reglas de Entrega-LOGOS
+- **Docente Tutor (Programación 1 - INF120):** MSc. Ing. Víctor Hugo Acosta Ortega.
+- **Organizador Feria / Coordinador IICCT:** MSc. Edwin Vargas Yapura.
+- **Número de proyecto inicial:** 0 (variable editable PROY_NUM=0 hasta confirmar #Fila en la lista oficial de la Feria 2-2026).
+- **Requisitos exactos de Entrega-LOGOS (cierre miércoles 25 nov 23:59):** colores representativos al dominio, sin texto recargado (isotipo o siglas RN), vectorial limpio sin marcas de agua, exportar como `feria/logos/Proy-<NUM>-LOGO.PDF` (+ SVG y PNG transparente).
