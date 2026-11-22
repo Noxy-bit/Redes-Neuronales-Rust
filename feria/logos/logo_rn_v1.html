@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: letter; margin: 0; }
+  body {
+    margin: 0; height: 100vh; display: flex;
+    align-items: center; justify-content: center; background: #ffffff;
+  }
+  svg { width: 460px; height: 460px; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B122B"/>
+      <stop offset="100%" stop-color="#131B3A"/>
+    </linearGradient>
+    <linearGradient id="syn" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#A855F7" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <!-- Fondo circular y anillo técnico -->
+  <circle cx="250" cy="250" r="228" fill="url(#bg)" stroke="url(#ring)" stroke-width="14"/>
+  <circle cx="250" cy="250" r="204" fill="none" stroke="#00D4FF" stroke-opacity="0.25" stroke-width="2" stroke-dasharray="10 8"/>
+  <!-- Conexiones sinápticas (3 -> 4 -> 2) -->
+  <g stroke="url(#syn)" stroke-width="4" stroke-linecap="round" opacity="0.85">
+    <line x1="145" y1="155" x2="250" y2="120"/><line x1="145" y1="155" x2="250" y2="195"/>
+    <line x1="145" y1="155" x2="250" y2="270"/><line x1="145" y1="155" x2="250" y2="345"/>
+    <line x1="145" y1="232" x2="250" y2="120"/><line x1="145" y1="232" x2="250" y2="195"/>
+    <line x1="145" y1="232" x2="250" y2="270"/><line x1="145" y1="232" x2="250" y2="345"/>
+    <line x1="145" y1="310" x2="250" y2="120"/><line x1="145" y1="310" x2="250" y2="195"/>
+    <line x1="145" y1="310" x2="250" y2="270"/><line x1="145" y1="310" x2="250" y2="345"/>
+    <line x1="250" y1="120" x2="355" y2="190"/><line x1="250" y1="120" x2="355" y2="275"/>
+    <line x1="250" y1="195" x2="355" y2="190"/><line x1="250" y1="195" x2="355" y2="275"/>
+    <line x1="250" y1="270" x2="355" y2="190"/><line x1="250" y1="270" x2="355" y2="275"/>
+    <line x1="250" y1="345" x2="355" y2="190"/><line x1="250" y1="345" x2="355" y2="275"/>
+  </g>
+  <!-- Nodos Capa Entrada (cian) -->
+  <g fill="#0B122B" stroke="#00D4FF" stroke-width="6">
+    <circle cx="145" cy="155" r="18"/><circle cx="145" cy="232" r="18"/><circle cx="145" cy="310" r="18"/>
+  </g>
+  <g fill="#00D4FF">
+    <circle cx="145" cy="155" r="7"/><circle cx="145" cy="232" r="7"/><circle cx="145" cy="310" r="7"/>
+  </g>
+  <!-- Nodos Capa Oculta (azul-púrpura) -->
+  <g fill="#0B122B" stroke="#6366F1" stroke-width="6">
+    <circle cx="250" cy="120" r="17"/><circle cx="250" cy="195" r="17"/>
+    <circle cx="250" cy="270" r="17"/><circle cx="250" cy="345" r="17
+cd ~/Proyectos/Redes-Neuronales-Rust
+
+cat << 'EOF' >> AGENTS.md
+
+## 7. Nombres oficiales confirmados y reglas de `Entrega-LOGOS.`
+- **Docente Tutor (Programación 1 - INF120):** MSc. Ing. Víctor Hugo Acosta Ortega.
+- **Organizador Feria / Coordinador IICCT:** MSc. Edwin Vargas Yapura.
+- **Número de proyecto inicial:** `0` (variable editable `PROY_NUM=0` hasta confirmar `#Fila` en la lista oficial de la Feria 2-2026).
+- **Requisitos exactos de `Entrega-LOGOS.` (cierre miércoles 25 nov 23:59):**
+  - Definir colores representativos al dominio del proyecto (IA / Redes Neuronales / Rust).
+  - **Sin texto recargado** (priorizar isotipo puro o como máximo siglas `RN`).
+  - Formas/esquemas vectoriales limpios (SVG / PDF vectorial) sin marcas de agua.
+  - Exportar entregable exactamente como `feria/logos/Proy-<NUM>-LOGO.PDF` (además de `.svg` y `.png` transparente).
