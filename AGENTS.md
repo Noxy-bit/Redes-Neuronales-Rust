@@ -46,7 +46,7 @@ La contextualización y justificación deben estructurarse con enfoque de embudo
   10. Conclusiones y Recomendaciones
   11. Bibliografía (formato APA 7ª edición)
   12. Anexos (código fuente completo, manual Cargo, listado de `.drawio`, roles del equipo y Carta de Compromiso)
-- **Número de proyecto:** Mantener el número oficial asignado en la carátula y en todo el kit gráfico; si todavía no existe número asignado, usar **`0`** como valor por defecto configurable (`PROY_NUM=0`).
+- **Número de proyecto:** Mantener el número oficial asignado (**`38`**) en la carátula y en todo el kit gráfico como valor por defecto configurable (`PROY_NUM=38`).
 - **Nomenclatura exacta del entregable final:** Además del `.docx` editable, el script de compilación debe exportar el PDF final exactamente como **`tesis/build/Proy-<NUM>-Doc-Final.PDF`** (ej. `Proy-0-Doc-Final.PDF`).
 
 ## 6. Estándar oficial de Logos y Trípticos FICCT (`feria/`)
@@ -59,5 +59,5 @@ La contextualización y justificación deben estructurarse con enfoque de embudo
 ## 7. Nombres oficiales confirmados y reglas de Entrega-LOGOS
 - **Docente Tutor (Programación 1 - INF120):** MSc. Ing. Víctor Hugo Acosta Ortega.
 - **Organizador Feria / Coordinador IICCT:** MSc. Edwin Vargas Yapura.
-- **Número de proyecto inicial:** 0 (variable editable PROY_NUM=0 hasta confirmar #Fila en la lista oficial de la Feria 2-2026).
+- **Número de proyecto asignado:** 38 (variable editable PROY_NUM=38, lista oficial de la Feria 2-2026).
 - **Requisitos exactos de Entrega-LOGOS (cierre miércoles 25 nov 23:59):** colores representativos al dominio, sin texto recargado (isotipo o siglas RN), vectorial limpio sin marcas de agua, exportar como `feria/logos/Proy-<NUM>-LOGO.PDF` (+ SVG y PNG transparente).

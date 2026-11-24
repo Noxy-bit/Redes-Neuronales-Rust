@@ -11,7 +11,7 @@ import argparse, base64, csv, io, math, re, shutil, subprocess, sys
 from pathlib import Path
 
 # ======================= PARÁMETROS EDITABLES (una línea cada uno) =======================
-PROY_NUM = "0"
+PROY_NUM = "38"
 REPO_URL = "https://github.com/Noxy-bit/Redes-Neuronales-Rust"
 FORMATOS = {  # nombre: (ancho_cm, alto_cm, ajustes de maquetación en rem = 1 % del ancho)
     "60x160": (60, 160, dict(lateral=5, franja=13, hueco=2.6, emblema=26, titulo=84, red=70, flujo=86,
@@ -159,25 +159,22 @@ def svg_isotipo():
     return f"""<svg class="emblema" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 <defs>{GRADS}
 <linearGradient id="gL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00D4FF"/><stop offset="1" stop-color="#A855F7"/></linearGradient>
-<radialGradient id="gF" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#1A2A66"/><stop offset="1" stop-color="#0A1027"/></radialGradient>
-<linearGradient id="gRN" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#7DE8FF"/><stop offset="1" stop-color="#B98CFF"/></linearGradient></defs>
+<radialGradient id="gF" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#1A2A66"/><stop offset="1" stop-color="#0A1027"/></radialGradient></defs>
 <circle cx="250" cy="250" r="244" fill="#00D4FF" opacity=".08"/>
 <circle cx="250" cy="250" r="232" fill="url(#gF)" stroke="url(#gC)" stroke-width="12"/>
 <circle cx="250" cy="250" r="208" fill="none" stroke="#00D4FF" stroke-opacity=".3" stroke-width="2.5" stroke-dasharray="10 9"/>
 <g stroke="url(#gL)" stroke-width="4" stroke-linecap="round" opacity=".8">{''.join(lineas)}</g>
 {''.join(nodos)}
 <ellipse cx="250" cy="398" rx="168" ry="34" fill="none" stroke="#00D4FF" stroke-width="4" opacity=".55" transform="rotate(-7 250 398)"/>
-<text x="250" y="436" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="104" fill="url(#gRN)" letter-spacing="6">RN</text>
+<text x="250" y="436" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="104" fill="#FFFFFF" letter-spacing="6">RN</text>
 <circle cx="414" cy="378" r="7" fill="#F97316"/>
 </svg>"""
 
 
 def svg_titulo():
     return """<svg class="titulo" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="gT" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
-<stop offset="0" stop-color="#00D4FF"/><stop offset=".55" stop-color="#5B7CFF"/><stop offset="1" stop-color="#A855F7"/></linearGradient></defs>
 <text x="500" y="140" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="150" fill="#FFFFFF" textLength="640" lengthAdjust="spacingAndGlyphs">REDES</text>
-<text x="500" y="285" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="128" fill="url(#gT)" textLength="1000" lengthAdjust="spacingAndGlyphs">NEURONALES</text>
+<text x="500" y="285" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="128" fill="#00D4FF" textLength="900" lengthAdjust="spacingAndGlyphs">NEURONALES</text>
 <text x="500" y="395" text-anchor="middle" font-family="Orbitron" font-weight="800" font-size="74" fill="#FFFFFF" textLength="900" lengthAdjust="spacingAndGlyphs">DESDE CERO EN <tspan fill="#F97316">RUST</tspan></text>
 </svg>"""
 
