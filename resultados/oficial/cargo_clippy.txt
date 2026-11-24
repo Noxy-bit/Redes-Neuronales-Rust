@@ -1,0 +1,281 @@
+    Checking libc v0.2.191
+    Checking cfg-if v1.0.5
+    Checking zerocopy v0.8.63
+    Checking getrandom v0.3.4
+    Checking rand_core v0.9.5
+    Checking ppv-lite86 v0.2.21
+    Checking rand_chacha v0.9.0
+    Checking rand v0.9.5
+    Checking neural-network v0.1.0 (neural-network)
+warning: use of deprecated function `rand::thread_rng`: Renamed to `rng`
+   --> src/math/vector.rs:132:29
+    |
+132 |         let mut rng = rand::thread_rng();
+    |                             ^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `rand::Rng::gen_range`: Renamed to `random_range`
+   --> src/math/vector.rs:136:27
+    |
+136 |             data.push(rng.gen_range(-1.0..1.0));
+    |                           ^^^^^^^^^
+
+warning: struct `Matrix` is never constructed
+ --> src/math/matrix.rs:3:12
+  |
+3 | pub struct Matrix<T> {
+  |            ^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new`, `get`, and `set` are never used
+  --> src/math/matrix.rs:10:12
+   |
+ 9 | impl<T> Matrix<T> {
+   | ----------------- associated items in this implementation
+10 |     pub fn new(rows: usize, columns: usize, data: Vec<T>) -> Self {
+   |            ^^^
+...
+24 |     pub fn get(&self, row: usize, column: usize) -> &T {
+   |            ^^^
+...
+32 |     pub fn set(&mut self, row: usize, column: usize, value: T) {
+   |            ^^^
+
+warning: method `transpose` is never used
+  --> src/math/matrix.rs:42:12
+   |
+41 | impl<T: Copy> Matrix<T> {
+   | ----------------------- method in this implementation
+42 |     pub fn transpose(&self) -> Matrix<T> {
+   |            ^^^^^^^^^
+
+warning: method `print` is never used
+  --> src/math/matrix.rs:57:12
+   |
+56 | impl<T: std::fmt::Display> Matrix<T> {
+   | ------------------------------------ method in this implementation
+57 |     pub fn print(&self) {
+   |            ^^^^^
+
+warning: method `add` is never used
+  --> src/math/matrix.rs:76:12
+   |
+72 | / impl<T> Matrix<T>
+73 | | where
+74 | |     T: Add<Output = T> + Copy,
+   | |______________________________- method in this implementation
+75 |   {
+76 |       pub fn add(&self, other: &Matrix<T>) -> Matrix<T> {
+   |              ^^^
+
+warning: method `sub` is never used
+  --> src/math/matrix.rs:95:12
+   |
+91 | / impl<T> Matrix<T>
+92 | | where
+93 | |     T: Sub<Output = T> + Copy,
+   | |______________________________- method in this implementation
+94 |   {
+95 |       pub fn sub(&self, other: &Matrix<T>) -> Matrix<T> {
+   |              ^^^
+
+warning: method `multiply_scalar` is never used
+   --> src/math/matrix.rs:121:12
+    |
+117 | / impl<T> Matrix<T>
+118 | | where
+119 | |     T: Mul<Output = T> + Copy,
+    | |______________________________- method in this implementation
+120 |   {
+121 |       pub fn multiply_scalar(&self, escalar: T) -> Matrix<T> {
+    |              ^^^^^^^^^^^^^^^
+
+warning: method `multiply` is never used
+   --> src/math/matrix.rs:135:12
+    |
+131 | / impl<T> Matrix<T>
+132 | | where
+133 | |     T: Mul<Output = T> + Add<Output = T> + Default + Copy,
+    | |__________________________________________________________- method in this implementation
+134 |   {
+135 |       pub fn multiply(&self, other: &Matrix<T>) -> Matrix<T> {
+    |              ^^^^^^^^
+
+warning: method `add_bias` is never used
+   --> src/math/matrix.rs:166:12
+    |
+162 | / impl<T> Matrix<T>
+163 | | where
+164 | |     T: Add<Output = T> + Copy,
+    | |______________________________- method in this implementation
+165 |   {
+166 |       pub fn add_bias(&self, bias: &Matrix<T>) -> Matrix<T> {
+    |              ^^^^^^^^
+
+warning: method `map` is never used
+   --> src/math/matrix.rs:189:12
+    |
+185 | / impl<T> Matrix<T>
+186 | | where
+187 | |     T: Copy,
+    | |____________- method in this implementation
+188 |   {
+189 |       pub fn map<F>(&self, f: F) -> Matrix<T>
+    |              ^^^
+
+warning: associated function `zeros` is never used
+   --> src/math/matrix.rs:213:12
+    |
+209 | / impl<T> Matrix<T>
+210 | | where
+211 | |     T: From<u8> + Copy,
+    | |_______________________- associated function in this implementation
+212 |   {
+213 |       pub fn zeros(rows: usize, columns: usize) -> Matrix<T> {
+    |              ^^^^^
+
+warning: method `multiply_elementwise` is never used
+   --> src/math/matrix.rs:228:12
+    |
+224 | / impl<T> Matrix<T>
+225 | | where
+226 | |     T: Mul<Output = T> + Copy,
+    | |______________________________- method in this implementation
+227 |   {
+228 |       pub fn multiply_elementwise(&self, other: &Matrix<T>) -> Matrix<T> {
+    |              ^^^^^^^^^^^^^^^^^^^^
+
+warning: associated function `random` is never used
+   --> src/math/matrix.rs:245:12
+    |
+244 | impl Matrix<f32> {
+    | ---------------- associated function in this implementation
+245 |     pub fn random(rows: usize, columns: usize) -> Matrix<f32> {
+    |            ^^^^^^
+
+warning: methods `is_empty` and `set` are never used
+  --> src/math/vector.rs:20:12
+   |
+ 8 | impl<T> Vector<T> {
+   | ----------------- methods in this implementation
+...
+20 |     pub fn is_empty(&self) -> bool {
+   |            ^^^^^^^^
+...
+38 |     pub fn set(&mut self, index: usize, value: T) {
+   |            ^^^
+
+warning: method `add` is never used
+  --> src/math/vector.rs:54:12
+   |
+53 | impl<T: Copy + Add<Output = T>> Vector<T> {
+   | ----------------------------------------- method in this implementation
+54 |     pub fn add(&self, other: &Vector<T>) -> Vector<T> {
+   |            ^^^
+
+warning: method `sub` is never used
+  --> src/math/vector.rs:69:12
+   |
+68 | impl<T: Copy + Sub<Output = T>> Vector<T> {
+   | ----------------------------------------- method in this implementation
+69 |     pub fn sub(&self, other: &Vector<T>) -> Vector<T> {
+   |            ^^^
+
+warning: method `multiply_scalar` is never used
+  --> src/math/vector.rs:84:12
+   |
+83 | impl<T: Copy + Mul<Output = T>> Vector<T> {
+   | ----------------------------------------- method in this implementation
+84 |     pub fn multiply_scalar(&self, scalar: T) -> Vector<T> {
+   |            ^^^^^^^^^^^^^^^
+
+warning: method `map` is never used
+   --> src/math/vector.rs:114:12
+    |
+113 | impl<T: Copy> Vector<T> {
+    | ----------------------- method in this implementation
+114 |     pub fn map<F>(&self, mut function: F) -> Vector<T>
+    |            ^^^
+
+warning: associated function `random` is never used
+   --> src/math/vector.rs:129:12
+    |
+128 | impl Vector<f32> {
+    | ---------------- associated function in this implementation
+129 |     pub fn random(size: usize) -> Self {
+    |            ^^^^^^
+
+warning: associated function `relu` is never used
+ --> src/neural/activation.rs:4:12
+  |
+3 | impl Activacion {
+  | --------------- associated function in this implementation
+4 |     pub fn relu(value: f32) -> f32 {
+  |            ^^^^
+
+warning: struct `Network` is never constructed
+ --> src/neural/network.rs:5:12
+  |
+5 | pub struct Network {
+  |            ^^^^^^^
+
+warning: associated items `new` and `forward` are never used
+  --> src/neural/network.rs:10:12
+   |
+ 9 | impl Network {
+   | ------------ associated items in this implementation
+10 |     pub fn new(layers: Vec<Layer>) -> Self {
+   |            ^^^
+...
+16 |     pub fn forward(&self, inputs: &Vector<f32>) -> Vector<f32> {
+   |            ^^^^^^^
+
+warning: name `MSE` contains a capitalized acronym
+ --> src/learning/loss.rs:1:12
+  |
+1 | pub struct MSE;
+  |            ^^^ help: consider making the acronym lowercase, except the initial letter: `Mse`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#upper_case_acronyms
+  = note: `#[warn(clippy::upper_case_acronyms)]` on by default
+
+error: any number modulo 1 will be 0
+  --> src/experiments/vowels.rs:76:12
+   |
+76 |         if epoch % REPORT_EVERY == 0 || epoch == 1 {
+   |            ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#modulo_one
+   = note: `#[deny(clippy::modulo_one)]` on by default
+
+warning: the loop variable `output` is used to index `VOCALS`
+   --> src/experiments/vowels.rs:100:31
+    |
+100 |                 for output in 0..VOCALS.len() {
+    |                               ^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_range_loop
+    = note: `#[warn(clippy::needless_range_loop)]` on by default
+help: consider using an iterator and enumerate()
+    |
+100 -                 for output in 0..VOCALS.len() {
+100 +                 for (output, <item>) in VOCALS.iter().enumerate() {
+    |
+
+warning: the loop variable `output` is used to index `VOCALS`
+   --> src/experiments/vowels.rs:180:23
+    |
+180 |         for output in 0..VOCALS.len() {
+    |                       ^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_range_loop
+help: consider using an iterator and enumerate()
+    |
+180 -         for output in 0..VOCALS.len() {
+180 +         for (output, <item>) in VOCALS.iter().enumerate() {
+    |
+
+warning: `neural-network` (bin "neural-network") generated 27 warnings
+error: could not compile `neural-network` (bin "neural-network") due to 1 previous error; 27 warnings emitted

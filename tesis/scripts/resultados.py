@@ -171,10 +171,56 @@ macro("BinKiB", bm[0]["tamano_binario_kib"])
 macro("BenchSO", bm[0]["so"])
 macro("BenchArch", bm[0]["cpu_arch"].replace("_", "\\_"))
 
+# ---------- Repositorio oficial lanorrron/neural-network (resultados/oficial/) ----------
+def leer_of(n):
+    with open(RES / "oficial" / n, encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+of = {r["metrica"]: r["valor"] for r in leer_of("resumen.csv")}
+for nombre, clave in (("OfCommit", "commit"), ("OfRustc", "rustc"), ("OfBinKiB", "binario_kib"),
+                      ("OfPruebas", "pruebas"), ("OfClippyErr", "clippy_errores"),
+                      ("OfClippyWarn", "clippy_advertencias"), ("OfWarnBuild", "advertencias_compilacion"),
+                      ("OfLinEpocas", "lineal_epocas"), ("OfLinAlpha", "lineal_alpha"), ("OfLinN", "lineal_muestras"),
+                      ("OfLinPeso", "lineal_peso"), ("OfBoolEpocas", "booleano_epocas"), ("OfBoolAlpha", "booleano_alpha"),
+                      ("OfBoolW", "booleano_w"), ("OfBoolB", "booleano_b"), ("OfBoolPcero", "booleano_p0"),
+                      ("OfBoolPuno", "booleano_p1"), ("OfVocEpocas", "vocales_epocas"), ("OfVocAlpha", "vocales_alpha"),
+                      ("OfVocCambioFin", "vocales_cambio_final"), ("OfParedLin", "pared_s_lineal"),
+                      ("OfParedBool", "pared_s_booleano"), ("OfParedVoc", "pared_s_vocales"),
+                      ("OfCompLin", "computo_ms_lineal"), ("OfCompBool", "computo_ms_booleano"),
+                      ("OfCompVoc", "computo_ms_vocales")):
+    macro(nombre, of[clave])
+macro("OfLinMseIni", f(of["lineal_mse_inicial"], 2))
+macro("OfLinMseFin", sci(of["lineal_mse_final"]))
+macro("OfLinBias", sci(of["lineal_bias"], 1))
+macro("OfVocConfMin", f"{float(of['vocales_confianza_min']):.2f}\\,\\%")
+macro("OfVocConfMax", f"{float(of['vocales_confianza_max']):.2f}\\,\\%")
+macro("OfVocalAProb", f"{float(of['vocal_a_prob']):.2f}\\,\\%")
+macro("OfBoolAcc", pct(of["booleano_exactitud"]))
+macro("OfVocAcc", pct(of["vocales_exactitud"]))
+
+ol = leer_of("lineal.csv")
+TO1 = "\n".join(f"{r['epoca']} & {float(r['peso']):.7f} & {float(r['bias']):.7f} & {sci(r['mse'])} \\\\"
+                for r in ol if int(r["epoca"]) in (0, 20, 40, 60, 100, 200, 400, 600, 800, 1000) or r is ol[-1])
+TO2 = "\n".join(f"{r['x']} & {r['esperado']} & {r['prediccion']} & {r['error']} \\\\" for r in leer_of("lineal_predicciones.csv"))
+ob = leer_of("booleano.csv")
+TO3 = "\n".join(f"{r['epoca']} & {float(r['grad_w']):+.6f} & {float(r['grad_b']):+.6f} & {float(r['w']):.6f} & "
+                f"{float(r['b']):.6f} & {float(r['p_verdadero_x0']):.4f} & {float(r['p_verdadero_x1']):.4f} \\\\"
+                for r in ob if int(r["epoca"]) in (1, 2, 5, 10, 25, 50, 100, 150, 200, 250))
+ov = leer_of("vocales.csv")
+pv = {r["esperada"]: r for r in leer_of("vocales_predicciones.csv")}
+pa = {r["vocal"]: r["probabilidad_pct"] for r in leer_of("vocal_a.csv")}
+TO4 = "\n".join(f"{v} & " + " & ".join(f"{float(ov[e - 1]['p_' + v]):.2f}" for e in (1, 10, 50, 100, 500))
+                + f" & {pv[v]['reconocida']} & {float(pv[v]['confianza_pct']):.2f} & {float(pa[v]):.2f} \\\\" for v in "AEIOU")
+TO5 = "\n".join(f"{n} & \\texttt{{cargo run -- {a}}} & {of['pared_s_' + k]} & {of['computo_ms_' + k]} \\\\"
+                for n, a, k in (("$y = 2x$", "lineal", "lineal"), ("Booleano", "booleano", "booleano"),
+                                ("Vocales", "vocal", "vocales")))
+
 out = "% Generado por tesis/scripts/resultados.py desde resultados/*.csv — no editar a mano.\n"
 out += "\n".join(M) + "\n"
 for n, t in (("TablaEuno", T1), ("TablaEdos", T2), ("TablaEdosLr", T3), ("TablaEtresRuido", T4),
-             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7), ("TablaEscritorioXor", T8), ("TablaHamming", T9)):
+             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7), ("TablaEscritorioXor", T8), ("TablaHamming", T9),
+             ("TablaOfLineal", TO1), ("TablaOfLinPred", TO2), ("TablaOfBool", TO3), ("TablaOfVoc", TO4), ("TablaOfTiempos", TO5)):
     out += f"\\newcommand{{\\{n}}}{{%\n{t}\n}}\n"
 (GEN / "resultados.tex").write_text(out, encoding="utf-8")
 print("resultados.tex y figuras generadas")

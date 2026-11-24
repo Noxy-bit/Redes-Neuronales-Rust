@@ -2,7 +2,7 @@
 Este capítulo describe cómo se construyó el sistema y por qué se tomaron las principales decisiones de diseño. Se presenta primero el enfoque metodológico y las fases de desarrollo; luego, la arquitectura modular de la biblioteca y el flujo de una iteración de entrenamiento; después, la estrategia de verificación y de reproducibilidad; y, por último, el diseño de los tres experimentos.
 
 \section{Enfoque metodológico}
-El proyecto adopta un enfoque cuantitativo de tipo experimental aplicado \citep{hernandez2018}: se construye un artefacto de software, se formulan hipótesis verificables sobre su comportamiento ---por ejemplo, que una red sin capa oculta no puede resolver XOR y que una red 2-4-1 sí puede--- y se contrastan mediante ejecuciones reproducibles cuyos resultados se registran automáticamente. El desarrollo del software sigue un modelo incremental guiado por pruebas: cada módulo se implementa junto con sus pruebas unitarias y no se avanza a la fase siguiente hasta que todas las pruebas de la fase actual se aprueban. Este criterio de avance convierte cada fase en un entregable verificable y evita que los errores de las capas inferiores ---por ejemplo, un índice mal calculado en la multiplicación matricial--- se propaguen y se manifiesten como fallos difíciles de diagnosticar en el entrenamiento.
+El proyecto adopta un enfoque cuantitativo de tipo experimental aplicado \citep{hernandez2018}: se construye un artefacto de software, se formulan hipótesis verificables sobre su comportamiento ---por ejemplo, que una neurona lineal converge a $w=2$ en $y=2x$, que una capa con softmax reconoce las cinco vocales y que una red sin capa oculta no puede resolver XOR--- y se contrastan mediante ejecuciones reproducibles cuyos resultados se registran. El desarrollo siguió un modelo incremental: el repositorio oficial avanzó por módulos (\texttt{math}, \texttt{neural}, \texttt{learning}, \texttt{experiments}) y cada fase se aceptó cuando su ejecución reproducía el resultado esperado; el motor complementario, con pruebas unitarias en cada módulo, sirvió para verificar las ecuaciones de forma independiente. Este criterio de avance convierte cada fase en un entregable verificable y evita que los errores de las capas inferiores ---por ejemplo, un índice mal calculado en la multiplicación matricial--- se propaguen y se manifiesten como fallos difíciles de diagnosticar en el entrenamiento.
 
 \section{Fases de desarrollo}
 La Figura~\ref{fig:fases} presenta las nueve fases del proyecto, agrupadas en cuatro etapas: fundamentos matemáticos (fases 1--4), aprendizaje (fases 5--6), experimentación (fases 7--8) y difusión (fase 9). Cada fase indica su entregable principal y la verificación que habilita el paso a la fase siguiente.
@@ -10,7 +10,7 @@ La Figura~\ref{fig:fases} presenta las nueve fases del proyecto, agrupadas en cu
 \begin{figure}[!htbp]
 \caption{Fases de la metodología incremental del proyecto}\label{fig:fases}
 \centering\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{figuras/diag05_fases_metodologia.png}
-\fuente{Cada fase concluye con la aprobación de sus pruebas unitarias. Diagrama editable: \texttt{diagramas/05\_fases\_metodologia.drawio}.}
+\fuente{Cada fase concluye cuando su ejecución reproduce el resultado esperado. Diagrama editable: \texttt{diagramas/05\_fases\_metodologia.drawio}.}
 \end{figure}
 
 La Tabla~\ref{tab:fases} detalla las fases en forma tabular, junto con los módulos de código que producen y las pruebas que las validan.
@@ -22,89 +22,86 @@ La Tabla~\ref{tab:fases} detalla las fases en forma tabular, junto con los módu
 \toprule
 Fase & Nombre & Entregable & Criterio de aceptación \\
 \midrule
-1 & Matemática & \texttt{Vector}, \texttt{Matrix}, \texttt{MathError}, \texttt{Rng} & 15 pruebas de \texttt{math} \\
-2 & Neurona & \texttt{Neuron}: $z=\mathbf{w}\cdot\mathbf{x}+b$, $a=f(z)$ & Cálculo manual reproducido \\
-3 & Activaciones & Sigmoid, ReLU y lineal con sus derivadas & Derivadas verificadas numéricamente \\
-4 & Error & \texttt{Mse} y su gradiente $\partial L/\partial\hat{y}$ & Valores conocidos y \emph{gradient checking} \\
-5 & Primer aprendizaje & Descenso de gradiente sobre $y=2x$ & El MSE disminuye y $w\to 2$ \\
-6 & Capas y red & \texttt{Layer} y \texttt{Network}: \texttt{forward}, \texttt{backward}, \texttt{predict}, \texttt{train} & \emph{Gradient checking} de la red \\
-7 & XOR & Perceptrón 2-1 frente a red 2-4-1 y tres tasas de aprendizaje & Aprendizaje no lineal demostrado \\
-8 & Vocales & Red 25-10-5 sobre matrices $5\times5$ con ruido & Exactitud y matriz de confusión en CSV \\
-9 & Documentación & Prueba de escritorio, \emph{benchmarks}, tesis, diagramas y material de feria & PDF y DOCX sin referencias rotas \\
+1 & Matemática & \texttt{Vector<T>} y \texttt{Matrix<T>} genéricos & Operaciones con dimensiones comprobadas \\
+2 & Neurona & \texttt{Neuron}, \texttt{Layer} y \texttt{Network}: $z=\mathbf{x}\cdot\mathbf{w}+b$ & Cálculo manual reproducido \\
+3 & Activaciones & \texttt{Activacion::sigmoid}, \texttt{relu} y softmax & Salidas en el rango esperado \\
+4 & Error y gradiente & \texttt{MSE}, \texttt{Gradient}, \texttt{GradientDescent} & Regla $\theta\leftarrow\theta-\alpha\nabla$ \\
+5 & Primer aprendizaje & Neurona lineal sobre $y=2x$ & MSE $\le 10^{-12}$ y $w\to 2$ \\
+6 & Clasificación binaria & Neurona Sigmoid: 0 falso, 1 verdadero & Ambas entradas bien clasificadas \\
+7 & Vocales & Capa 25 $\to$ 5 con softmax sobre patrones $5\times5$ & Cinco vocales reconocidas \\
+8 & Validación & Motor complementario: XOR 2-4-1, ruido, 52 pruebas & \emph{Gradient checking} aprobado \\
+9 & Documentación & Auditoría, tesis, diagramas y material de feria & PDF y DOCX sin referencias rotas \\
 \bottomrule
 \end{tabularx}
-\fuente{Elaboración propia. El número de pruebas por módulo se detalla en la Tabla~\ref{tab:pruebas}.}
+\fuente{Elaboración propia. Las pruebas del motor complementario se detallan en la Tabla~\ref{tab:pruebas}.}
 \end{table}
 
 \section{Requisitos del sistema}
-Antes de diseñar la arquitectura se establecieron los requisitos funcionales y no funcionales que el motor debía cumplir. Los requisitos funcionales comprenden: representar vectores y matrices con sus operaciones; construir redes de topología arbitraria a partir de una lista de tamaños de capa y de funciones de activación; propagar una entrada hacia adelante; calcular el gradiente de la pérdida mediante retropropagación; actualizar los parámetros por descenso de gradiente; ejecutar los tres experimentos y la prueba de escritorio; medir tiempos; y exportar todos los resultados en formato CSV. Los requisitos no funcionales comprenden: no utilizar dependencias externas; garantizar la reproducibilidad exacta mediante una semilla; detectar los errores de dimensión sin interrumpir abruptamente el programa; documentar cada elemento público con comentarios \texttt{///}; y superar el análisis estático de \texttt{cargo clippy} sin advertencias.
+Los requisitos funcionales del sistema demostrado en la feria comprenden: representar vectores y matrices con sus operaciones; calcular la salida de neuronas, capas y redes; aplicar Sigmoid y softmax; calcular la pérdida MSE y los gradientes; actualizar los parámetros por descenso de gradiente; ejecutar los tres experimentos desde la línea de comandos; y permitir que el público elija una vocal para evaluarla. Los requisitos no funcionales comprenden: no utilizar crates de aprendizaje automático ni de álgebra lineal; mostrar el progreso del entrenamiento de forma legible durante la demostración; y ejecutarse en un computador convencional sin GPU.
 
 \section{Arquitectura modular}
-El código se organiza como una biblioteca (\texttt{src/lib.rs}) y un binario de línea de comandos (\texttt{src/main.rs}). La biblioteca se divide en tres módulos con responsabilidades separadas y dependencias en un solo sentido: \texttt{experiments} depende de \texttt{nn}, y \texttt{nn} depende de \texttt{math}, pero nunca a la inversa. La Figura~\ref{fig:arquitectura} representa esta organización.
+El repositorio oficial es un binario de Rust (\texttt{src/main.rs}) organizado en cuatro módulos con dependencias en un solo sentido: \texttt{experiments} usa \texttt{neural} y \texttt{learning}, y \texttt{neural} usa \texttt{math}. La Figura~\ref{fig:arquitectura} representa esta organización y su relación con el motor complementario.
 
 \begin{figure}[!htbp]
-\caption{Arquitectura modular del motor en Rust}\label{fig:arquitectura}
+\caption{Arquitectura del repositorio oficial \texttt{lanorrron/neural-network}}\label{fig:arquitectura}
 \centering\includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{figuras/diag02_arquitectura_rust.png}
-\fuente{Las flechas indican dependencias de uso entre módulos. Diagrama editable: \texttt{diagramas/02\_arquitectura\_modulos\_rust.drawio}.}
+\fuente{Las flechas discontinuas indican dependencias de uso. Diagrama editable: \texttt{diagramas/02\_arquitectura\_modulos\_rust.drawio}.}
 \end{figure}
 
-La Tabla~\ref{tab:arquitectura} describe la responsabilidad de cada archivo. La separación permite probar cada componente de forma aislada y sustituirlo sin afectar a los demás; por ejemplo, la estructura \texttt{Network} no conoce la fórmula de ninguna función de activación, sino que delega en el trait \texttt{ActivationFn}.
+La Tabla~\ref{tab:arquitectura} describe la responsabilidad de cada archivo. El entrenamiento no está encapsulado en \texttt{Network}: cada experimento escribe su ciclo de épocas con \texttt{Gradient} y \texttt{GradientDescent}, lo que deja visible cada paso del algoritmo.
 
 \begin{table}[!htbp]
-\caption{Módulos de la arquitectura implementada}\label{tab:arquitectura}
+\caption{Módulos del repositorio oficial}\label{tab:arquitectura}
 \small
 \begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
 Archivo & Responsabilidad \\
 \midrule
-\texttt{math/vector.rs} & Vector $\mathbb{R}^n$: suma, resta, producto punto, Hadamard, escalamiento, norma, \texttt{argmax}. \\
-\texttt{math/matrix.rs} & Matriz $\mathbb{R}^{m\times n}$ \emph{row-major}: producto matricial, matriz-vector, transpuesta, producto exterior. \\
-\texttt{math/error.rs} & Tipo \texttt{MathError} para dimensiones incompatibles, índices fuera de rango y argumentos inválidos. \\
-\texttt{math/rng.rs} & Generador pseudoaleatorio SplitMix64 reproducible y barajado Fisher--Yates. \\
-\texttt{nn/activation.rs} & Trait \texttt{ActivationFn}; Sigmoid, ReLU y lineal con derivadas analíticas. \\
-\texttt{nn/loss.rs} & Trait \texttt{LossFn}; MSE y su gradiente. \\
-\texttt{nn/neuron.rs} & Neurona individual: pesos, sesgo, suma ponderada y activación. \\
-\texttt{nn/layer.rs} & Capa densa: \texttt{forward}, \texttt{backward}, gradientes y actualización. \\
-\texttt{nn/network.rs} & Red multicapa: \texttt{forward}, \texttt{backward}, \texttt{predict}, \texttt{train}, evaluación. \\
-\texttt{experiments/} & Tres experimentos, prueba de escritorio, \emph{benchmarks} y escritura de CSV. \\
-\texttt{main.rs} & CLI reproducible: \texttt{--all}, \texttt{--exp1..3}, \texttt{--escritorio}, \texttt{--bench}, \texttt{--export}, \texttt{--seed}. \\
+\texttt{math/vector.rs} & \texttt{Vector<T>}: suma, resta, escalamiento, producto punto, \texttt{map}, \texttt{zeros}, \texttt{random}. \\
+\texttt{math/matrix.rs} & \texttt{Matrix<T>} por filas: producto matricial, transpuesta, suma de bias, producto elemento a elemento. Definida, pero no usada por los experimentos actuales. \\
+\texttt{neural/neuron.rs} & Neurona: pesos \texttt{Vector<f32>}, bias y \texttt{forward}. \\
+\texttt{neural/layer.rs} & Capa: vector de neuronas, \texttt{forward} y acceso mutable para entrenar. \\
+\texttt{neural/network.rs} & Red: encadena el \texttt{forward} de sus capas. \\
+\texttt{neural/activation.rs} & \texttt{Activacion::sigmoid} y \texttt{Activacion::relu}. \\
+\texttt{learning/loss.rs} & \texttt{MSE::calculate} y \texttt{MSE::derivate}. \\
+\texttt{learning/gradient.rs} & Gradientes de pesos ($\delta x_i$) y bias ($\delta$). \\
+\texttt{learning/optimizer.rs} & \texttt{GradientDescent}: $\theta\leftarrow\theta-\alpha\nabla$. \\
+\texttt{experiments/} & \texttt{linear.rs}, \texttt{true\_false.rs} y \texttt{vowels.rs} (softmax, \texttt{argmax}, \texttt{encode}). \\
+\texttt{main.rs} & CLI: \texttt{lineal}, \texttt{booleano}, \texttt{vocal <letra>}; sin argumento, vocales. \\
 \bottomrule
 \end{tabularx}
-\fuente{El archivo \texttt{Cargo.toml} no declara ninguna dependencia: todo el sistema utiliza exclusivamente la biblioteca estándar de Rust.}
+\fuente{\texttt{Cargo.toml} declara una única dependencia, \texttt{rand 0.9}, que solo usan las funciones \texttt{random}; ningún experimento las invoca.}
 \end{table}
 
 \section{Decisiones de diseño}
-Varias decisiones de diseño condicionan el comportamiento del sistema y merecen justificarse explícitamente.
+Varias decisiones del repositorio oficial condicionan su comportamiento y su valor didáctico.
 
-\subsection{Almacenamiento contiguo por filas}
-Se eligió almacenar cada matriz en un único \texttt{Vec<f64>} en lugar de un vector de vectores. Esta representación reduce el número de reservas de memoria, mejora la localidad de referencia en el producto matriz-vector ---que recorre cada fila de forma secuencial--- y simplifica la validación de dimensiones, pues basta comprobar que la longitud del arreglo sea $m\cdot n$.
+\subsection{Precisión simple y genéricos}
+La red opera con \texttt{f32}, suficiente para los tres experimentos y con la mitad de memoria que \texttt{f64}. \texttt{Vector<T>} y \texttt{Matrix<T>} son genéricos: sus operaciones exigen solo los traits necesarios (\texttt{Copy}, \texttt{Add}, \texttt{Mul}, \texttt{Default}), de modo que el mismo código sirve para enteros o flotantes.
 
-\subsection{Errores como valores}
-Todas las operaciones susceptibles de fallar devuelven \texttt{Result}. La alternativa ---provocar un pánico ante dimensiones incompatibles--- habría sido más breve, pero habría impedido probar los casos de error y habría convertido un descuido de configuración en una terminación abrupta del programa. Las pruebas \texttt{errores\_de\_dimension}, \texttt{mse\_errores\_de\_dimension} y \texttt{backward\_sin\_forward\_es\_error} verifican precisamente estos caminos.
+\subsection{Validación con aserciones}
+Las operaciones verifican las dimensiones con \texttt{assert\_eq!}. Un error de dimensión detiene el programa con un mensaje que indica la causa, en lugar de producir un resultado incorrecto silencioso. El motor complementario, en cambio, devuelve \texttt{Result}, lo que permite probar esos casos de error.
 
-\subsection{Caché de valores intermedios en la capa}
-Cada capa guarda la última entrada recibida, el vector $\mathbf{z}$, la salida, el vector $\boldsymbol{\delta}$ y los gradientes. Esta decisión, que cuesta memoria proporcional al tamaño de la capa, evita recalcular la propagación hacia adelante durante la retropropagación y permite que la prueba de escritorio lea directamente los valores intermedios de cada neurona. Para la inferencia se ofrece además el método \texttt{predict}, que recibe la red por referencia inmutable y no modifica la caché.
+\subsection{Entrenamiento explícito por lote completo}
+Cada experimento acumula los gradientes de todas sus muestras y actualiza una sola vez por época. Con conjuntos de 2 a 6 muestras, esta variante produce trayectorias suaves y deterministas, sin depender de un generador aleatorio: todos los pesos empiezan en cero.
 
-\subsection{Generador pseudoaleatorio propio}
-La biblioteca estándar de Rust no incluye un generador de números aleatorios con semilla. En lugar de añadir una dependencia, se implementó SplitMix64, un generador de 64 bits con buena calidad estadística para inicialización y muestreo, cuya secuencia de referencia se verifica en la prueba \texttt{vector\_de\_referencia\_splitmix64}. La semilla por defecto es 42 y puede modificarse con el argumento \texttt{--seed}.
-
-\subsection{Activaciones mediante trait y enumeración}
-Las funciones de activación implementan el trait \texttt{ActivationFn}, y la enumeración \texttt{Activation} despacha a cada implementación mediante \texttt{match}. Esta combinación permite guardar la activación de cada capa como un valor pequeño y copiable, compararla y exportarla por nombre, mientras que el trait conserva la posibilidad de extender el sistema con nuevas funciones.
+\subsection{Salida pensada para la demostración}
+Los experimentos imprimen parámetros, gradientes o probabilidades en cada informe e incluyen pausas breves para que el público pueda seguir el aprendizaje en la terminal. La Sección~\ref{sec:of-tiempos} separa ese tiempo de demostración del tiempo real de cómputo.
 
 \section{Flujo de entrenamiento}
-La Figura~\ref{fig:flujo} representa el algoritmo de entrenamiento implementado. Una iteración consta de cuatro pasos: (1) la entrada $\mathbf{x}$ atraviesa cada capa calculando $\mathbf{z}^{(l)}$ y $\mathbf{a}^{(l)}$, que se almacenan en caché; (2) se calcula la pérdida MSE y su gradiente respecto a la salida; (3) cada capa, de la última a la primera, calcula $\boldsymbol{\delta}^{(l)}$, sus gradientes y el gradiente que transmite a la capa anterior; y (4) todos los parámetros se actualizan con la Ecuación~\eqref{eq:gd}. Al terminar cada época se evalúa el MSE sobre el conjunto completo y se registra en el archivo CSV del experimento.
+La Figura~\ref{fig:flujo} representa el algoritmo común a los tres experimentos oficiales. En cada época se recorren las muestras: (1) la neurona o la capa calcula $z$; (2) se obtiene la salida (identidad, Sigmoid o softmax); (3) se calcula el error por muestra, $2(\hat{y}-y)/N$ con MSE o $(p-y)/N$ con la Ecuación~\eqref{eq:ce}; y (4) se acumulan los gradientes. Al terminar el recorrido, (5) \texttt{GradientDescent} actualiza los parámetros y el programa informa el estado.
 
 \begin{figure}[!htbp]
-\caption{Diagrama de flujo del entrenamiento con propagación hacia adelante y retropropagación}\label{fig:flujo}
+\caption{Diagrama de flujo del entrenamiento en el repositorio oficial}\label{fig:flujo}
 \centering\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figuras/diag03_flujo_entrenamiento.png}
-\fuente{El ciclo interno recorre las muestras y el externo las épocas. Diagrama editable: \texttt{diagramas/03\_flujo\_forward\_backprop.drawio}.}
+\fuente{El ciclo interno recorre las muestras y el externo las épocas; la actualización ocurre una vez por época. Diagrama editable: \texttt{diagramas/03\_flujo\_forward\_backprop.drawio}.}
 \end{figure}
 
 \section{Estrategia de verificación}
-La verificación combina cuatro tipos de pruebas automatizadas. Las pruebas de valores conocidos comparan la salida de una función con un resultado calculado a mano, por ejemplo $\sigma(0) = 0.5$ o la salida de una capa con pesos fijos. Las pruebas de errores comprueban que las operaciones con dimensiones incompatibles devuelvan el error esperado. Las pruebas de propiedades verifican identidades matemáticas y de determinismo, como que la misma semilla produzca la misma secuencia o que el barajado sea una permutación. Finalmente, las pruebas de integración entrenan redes reales y verifican su convergencia y la corrección numérica de sus gradientes. La Tabla~\ref{tab:pruebas} presenta la distribución de las 52 pruebas por módulo.
+El repositorio oficial no define pruebas automatizadas (\texttt{cargo test} ejecuta \OfPruebas{} pruebas); su verificación se apoya en las trazas de ejecución analizadas en el Capítulo~\ref{cap:implementacion}. Las ecuaciones que utiliza se verificaron con el motor complementario, que combina cuatro tipos de pruebas automatizadas. Las pruebas de valores conocidos comparan la salida de una función con un resultado calculado a mano, por ejemplo $\sigma(0) = 0.5$ o la salida de una capa con pesos fijos. Las pruebas de errores comprueban que las operaciones con dimensiones incompatibles devuelvan el error esperado. Las pruebas de propiedades verifican identidades matemáticas y de determinismo, como que la misma semilla produzca la misma secuencia o que el barajado sea una permutación. Finalmente, las pruebas de integración entrenan redes reales y verifican su convergencia y la corrección numérica de sus gradientes. La Tabla~\ref{tab:pruebas} presenta la distribución de las 52 pruebas por módulo.
 
 \begin{table}[!htbp]
-\caption{Distribución de las pruebas automatizadas por módulo}\label{tab:pruebas}
+\caption{Distribución de las pruebas del motor complementario por módulo}\label{tab:pruebas}
 \small
 \begin{tabularx}{\textwidth}{@{}l r >{\raggedright\arraybackslash}X@{}}
 \toprule
@@ -129,29 +126,27 @@ Total & 52 & 51 pruebas de biblioteca y 1 de binario \\
 \end{table}
 
 \section{Reproducibilidad}
-Para que cualquier evaluador obtenga exactamente los mismos resultados, se tomaron tres medidas. Primero, todos los pesos iniciales, el orden aleatorio y el ruido de los datos se generan con el PRNG propio a partir de una semilla fija, de modo que la misma semilla produce los mismos números en cualquier equipo. Segundo, los conjuntos de datos se definen explícitamente en el código fuente y no dependen de archivos externos. Tercero, el binario escribe todos los resultados en archivos CSV, y las tablas, cifras y gráficas de este documento se generan exclusivamente a partir de esos archivos mediante los scripts \path{tesis/scripts/resultados.py} y \path{scripts/generar_graficas.py}. La presentación de tablas, figuras, citas y referencias sigue el manual de publicaciones de la American Psychological Association en su séptima edición \citep{apa2020}. Los tiempos de ejecución son la única magnitud que depende del equipo; por ello se informan junto con el sistema operativo, la arquitectura y el perfil de compilación.
+Los experimentos oficiales son deterministas: los pesos iniciales valen cero, los datos están escritos en el código y no interviene ningún número aleatorio, por lo que cada ejecución imprime exactamente las mismas cifras. El script \path{scripts/auditar_repo_oficial.py} compila la instantánea del commit \texttt{\OfCommit}, ejecuta los experimentos, guarda su salida completa y la convierte en los CSV de \path{resultados/oficial/}, de los que se generan las tablas y figuras de este documento. El motor complementario usa un generador pseudoaleatorio propio con semilla 42 y escribe sus resultados en \path{resultados/}. La presentación de tablas, figuras, citas y referencias sigue el manual de la American Psychological Association en su séptima edición \citep{apa2020}. Los tiempos de ejecución son la única magnitud que depende del equipo.
 
 \section{Diseño de los experimentos}
-Los tres experimentos se diseñaron con complejidad creciente, de modo que cada uno valide una capacidad adicional del motor. La Tabla~\ref{tab:diseno-exp} resume su configuración.
+Los experimentos se diseñaron con complejidad creciente. La Tabla~\ref{tab:diseno-exp} resume los tres experimentos oficiales y los dos experimentos de validación del motor complementario.
 
 \begin{table}[!htbp]
 \caption{Configuración de los experimentos}\label{tab:diseno-exp}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}l >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright}X >{\raggedright}X >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
 \toprule
-Aspecto & Experimento 1 & Experimento 2 & Experimento 3 \\
+Aspecto & Oficial: $y=2x$ & Oficial: booleano & Oficial: vocales & Validación: XOR & Validación: vocales \\
 \midrule
-Problema & Regresión $y=2x$ & Compuerta XOR & Vocales A, E, I, O, U \\
-Capacidad validada & Ajuste lineal & Separación no lineal & Clasificación multiclase con ruido \\
-Arquitectura & 1-1 (lineal) & 2-1 y 2-4-1 (Sigmoid) & 25-10-5 (Sigmoid) \\
-Parámetros & 2 & 3 y 17 & 315 \\
-Épocas & \EunoEpocas & \EdosEpocas & \EtresEpocas \\
-Tasa $\alpha$ & \EunoAlpha & \EdosAlpha{} (y 0.01, 50) & \EtresAlpha \\
-Datos & 5 pares $(x, 2x)$ & 4 combinaciones binarias & \EtresNEnt{} de entrenamiento, \EtresNPru{} de prueba \\
-Métricas & MSE, $w$, $b$, predicción & MSE, exactitud, frontera & MSE, exactitud, confusión \\
+Modelo & 1 neurona lineal & 1 neurona Sigmoid & Capa 25 $\to$ 5, softmax & 2-1 y 2-4-1 & 25-10-5 Sigmoid \\
+Datos & \OfLinN{} pares $(x,2x)$ & 0 y 1 & 5 patrones $5\times5$ & 4 combinaciones & \EtresNEnt{} entren., \EtresNPru{} prueba \\
+Épocas & hasta 10\,000 & \OfBoolEpocas & \OfVocEpocas & \EdosEpocas & \EtresEpocas \\
+Tasa $\alpha$ & \OfLinAlpha & \OfBoolAlpha & \OfVocAlpha & \EdosAlpha{} (y 0.01, 50) & \EtresAlpha \\
+Pérdida / gradiente & MSE & $(p-y)$ & $(p-y)$ softmax & MSE & MSE \\
+Métricas & MSE, $w$, $b$ & $p$, exactitud & $p$, confianza & MSE, exactitud & exactitud, confusión \\
 \bottomrule
 \end{tabularx}
-\fuente{Valores leídos de \path{resultados/resumen.csv}. Todas las ejecuciones usan semilla 42.}
+\fuente{Configuración oficial leída del código de \url{\Repositorio}; validación leída de \path{resultados/resumen.csv}.}
 \end{table}
 
-El Experimento~1 tiene solución analítica conocida ($w=2$, $b=0$), por lo que permite verificar cuantitativamente la convergencia. El Experimento~2 reproduce el argumento histórico de \citet{minsky1969} y su superación mediante una capa oculta, y añade un estudio del efecto de la tasa de aprendizaje. El Experimento~3 introduce un problema multiclase con 25 entradas, separa estrictamente los conjuntos de entrenamiento y de prueba y evalúa la robustez frente a niveles de ruido mayores que los vistos durante el entrenamiento.
+El experimento $y=2x$ tiene solución analítica conocida ($w=2$, $b=0$) y permite verificar la convergencia. El experimento booleano introduce la salida probabilística y el umbral de decisión. El de vocales introduce varias salidas, softmax y codificación \emph{one-hot}. Los experimentos de validación añaden lo que el sistema oficial no cubre: un problema no separable linealmente, que exige capa oculta \citep{minsky1969}, y un conjunto de prueba con ruido que mide generalización.

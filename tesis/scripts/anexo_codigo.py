@@ -6,13 +6,20 @@ RAIZ = Path(__file__).resolve().parents[2]
 SALIDA = RAIZ / "tesis/generado/anexo_codigo.tex"
 
 SALIDA_FUENTE = RAIZ / "tesis/generado/fuente"
+OF = "repo_oficial/neural-network/"
 GRUPOS = [
-    ("Configuración del paquete y biblioteca", ["Cargo.toml", "src/lib.rs"]),
-    ("Módulo \\texttt{math}: álgebra lineal y utilidades",
-     ["src/math/mod.rs", "src/math/error.rs", "src/math/vector.rs", "src/math/matrix.rs", "src/math/rng.rs"]),
-    ("Módulo \\texttt{nn}: red neuronal",
-     ["src/nn/mod.rs", "src/nn/activation.rs", "src/nn/loss.rs", "src/nn/neuron.rs", "src/nn/layer.rs",
-      "src/nn/network.rs"]),
+    ("Configuración del paquete y punto de entrada", [OF + "Cargo.toml", OF + "src/main.rs"]),
+    ("Módulo \\texttt{math}: vectores y matrices",
+     [OF + "src/math/mod.rs", OF + "src/math/vector.rs", OF + "src/math/matrix.rs"]),
+    ("Módulo \\texttt{neural}: neurona, capa, red y activaciones",
+     [OF + "src/neural/mod.rs", OF + "src/neural/activation.rs", OF + "src/neural/neuron.rs",
+      OF + "src/neural/layer.rs", OF + "src/neural/network.rs"]),
+    ("Módulo \\texttt{learning}: pérdida, gradiente y optimizador",
+     [OF + "src/learning/mod.rs", OF + "src/learning/loss.rs", OF + "src/learning/gradient.rs",
+      OF + "src/learning/optimizer.rs"]),
+    ("Módulo \\texttt{experiments}: experimentos demostrativos",
+     [OF + "src/experiments/mod.rs", OF + "src/experiments/linear.rs", OF + "src/experiments/true_false.rs",
+      OF + "src/experiments/vowels.rs"]),
 ]
 
 
@@ -41,12 +48,12 @@ for titulo, archivos in GRUPOS:
         destino.write_text(produccion(a), encoding="utf-8")
         lineas[a] = len(destino.read_text(encoding="utf-8").splitlines())
     out.append("Esta sección contiene " + ", ".join(
-        f"\\texttt{{{tex(a)}}} ({n} líneas)" for a, n in lineas.items()) + ".")
+        f"\\texttt{{{tex(a.replace(OF, ''))}}} ({n} líneas)" for a, n in lineas.items()) + ".")
     for a in archivos:
         total += lineas[a]
         lang = "TOML" if a.endswith(".toml") else "Rust"
-        out.append(f"\\lstinputlisting[language={lang},style=anexo,caption={{Archivo \\texttt{{{tex(a)}}}}},"
-                   f"label=cod:src:{a.replace('/', ':')}]{{generado/fuente/{a}}}")
+        out.append(f"\\needspace{{4\\baselineskip}}\\lstinputlisting[language={lang},style=anexo,caption={{Archivo \\texttt{{{tex(a.replace(OF, ''))}}}}},"
+                   f"label=cod:src:{a.replace(OF, '').replace('/', ':')}]{{generado/fuente/{a}}}")
 (SALIDA.parent / "anexo_codigo_macros.tex").write_text(f"\\newcommand{{\\LineasFuente}}{{{total}}}\n", encoding="utf-8")
 SALIDA.write_text("\n".join(out) + "\n", encoding="utf-8")
 print(f"anexo_codigo.tex: {total} líneas de código de producción")

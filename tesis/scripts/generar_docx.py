@@ -11,6 +11,19 @@ import sys
 from pathlib import Path
 
 from docx import Document
+from docx.styles.style import StyleFactory
+from docx.styles.styles import Styles
+
+_buscar_estilo = Styles.__getitem__
+
+
+def _estilo_tolerante(self, clave):
+    """Pandoc 3 nombra los estilos "Heading 1"; python-docx los busca como "heading 1"."""
+    elemento = self._element.get_by_name(clave)
+    return StyleFactory(elemento) if elemento is not None else _buscar_estilo(self, clave)
+
+
+Styles.__getitem__ = _estilo_tolerante
 from docx.enum.section import WD_ORIENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement

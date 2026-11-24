@@ -10,6 +10,8 @@ if [[ "${1:-}" == "--experimentos" ]]; then
 fi
 ( cd "$RAIZ" && cargo test 2>&1 | grep -E "^(running|test |test result)" ) > generado/cargo_test.txt
 ( cd "$RAIZ" && touch src/lib.rs && cargo clippy --all-targets 2>&1 | sed -E "s#$HOME#~#g; s/in [0-9.]+s$/in <t>/" ) > generado/cargo_clippy.txt
+( cd "$RAIZ/resultados/oficial" && grep -E "^(running|test result)" cargo_test.txt && grep -E "^warning: .*generated" cargo_test.txt ) > generado/of_cargo_test.txt
+( cd "$RAIZ/resultados/oficial" && awk '/^(warning|error)/{h=$0; next} /^ *--> /&&h{sub(/^ *--> /,""); printf "%-58s %s\n", substr(h,1,58), $0; h=""} /^(warning|error): .*(generated|could not)/{print}' cargo_clippy.txt; grep -E "generated|could not" cargo_clippy.txt ) > generado/of_cargo_clippy.txt
 python3 scripts/bibliografia.py
 python3 scripts/resultados.py
 python3 scripts/extraer_codigo.py

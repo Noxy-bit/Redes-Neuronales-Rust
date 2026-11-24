@@ -46,7 +46,7 @@ La derivada se obtiene aplicando la regla del cociente:
 \begin{equation*}
 \sigma'(z) = \frac{e^{-z}}{(1+e^{-z})^2} = \frac{1}{1+e^{-z}}\cdot\frac{e^{-z}}{1+e^{-z}} = \frac{1}{1+e^{-z}}\cdot\Bigl(1-\frac{1}{1+e^{-z}}\Bigr) = \sigma(z)\bigl(1-\sigma(z)\bigr).
 \end{equation*}
-Su valor máximo es $0.25$ en $z=0$, y tiende a cero cuando $|z|$ crece. Esta saturación explica la lentitud del aprendizaje cuando las neuronas reciben entradas de gran magnitud y, en redes profundas, el desvanecimiento del gradiente, pues el producto de muchas derivadas menores o iguales a $0.25$ decrece exponencialmente con la profundidad \citep{lecun1998}. Para evitar desbordamientos numéricos al evaluar $e^{-z}$ con $z$ muy negativo, la implementación usa la forma equivalente $\sigma(z) = e^{z}/(1+e^{z})$ cuando $z<0$.
+Su valor máximo es $0.25$ en $z=0$, y tiende a cero cuando $|z|$ crece. Esta saturación explica la lentitud del aprendizaje cuando las neuronas reciben entradas de gran magnitud y, en redes profundas, el desvanecimiento del gradiente, pues el producto de muchas derivadas menores o iguales a $0.25$ decrece exponencialmente con la profundidad \citep{lecun1998}. Para evitar desbordamientos numéricos al evaluar $e^{-z}$ con $z$ muy negativo, el motor complementario usa la forma equivalente $\sigma(z) = e^{z}/(1+e^{z})$ cuando $z<0$.
 
 \subsection{Función ReLU}
 La unidad lineal rectificada (ReLU) anula los valores negativos y conserva los positivos:
@@ -64,6 +64,17 @@ La función de pérdida cuantifica la discrepancia entre la predicción de la re
 \mathcal{L}(\hat{\mathbf{y}},\mathbf{y}) = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2, \qquad \frac{\partial\mathcal{L}}{\partial \hat{y}_i} = \frac{2}{n}(\hat{y}_i - y_i).\label{eq:mse}
 \end{equation}
 El MSE es siempre no negativo, vale cero únicamente cuando la predicción coincide exactamente con el objetivo y penaliza con mayor peso los errores grandes debido al término cuadrático \citep{bishop2006}. Desde la perspectiva estadística, minimizar el MSE equivale a maximizar la verosimilitud bajo la hipótesis de ruido gaussiano. En el Experimento~2, un MSE de $0.25$ corresponde a predecir $0.5$ para todas las entradas de XOR, valor de referencia útil para interpretar el estancamiento del perceptrón.
+
+\section{Softmax y entropía cruzada}
+Para clasificar entre $K$ clases, la función softmax convierte un vector de puntuaciones $\mathbf{z}\in\mathbb{R}^{K}$ en una distribución de probabilidad:
+\begin{equation}
+p_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}, \qquad k = 1,\dots,K.\label{eq:softmax}
+\end{equation}
+Restar $\max_j z_j$ a todas las puntuaciones no cambia el resultado y evita desbordamientos al exponenciar. Con objetivo \emph{one-hot} $\mathbf{y}$, la pérdida de entropía cruzada $\mathcal{L} = -\sum_k y_k \ln p_k$ tiene un gradiente particularmente simple respecto a las puntuaciones, que también vale para una neurona Sigmoid con entropía cruzada binaria \citep{bishop2006,goodfellow2016}:
+\begin{equation}
+\frac{\partial\mathcal{L}}{\partial z_k} = p_k - y_k.\label{eq:ce}
+\end{equation}
+El repositorio oficial utiliza directamente este gradiente en sus experimentos booleano y de vocales.
 
 \section{Red neuronal multicapa}
 Una red multicapa (\emph{multilayer perceptron}) organiza las neuronas en $L$ capas densas, en las que cada neurona de una capa recibe todas las salidas de la capa anterior. Para la capa $l$ con $n_{l-1}$ entradas y $n_l$ neuronas, los parámetros son la matriz $\mathbf{W}^{(l)}\in\mathbb{R}^{n_l\times n_{l-1}}$ y el vector $\mathbf{b}^{(l)}\in\mathbb{R}^{n_l}$, de modo que la capa tiene $n_l(n_{l-1}+1)$ parámetros. La propagación hacia adelante es:
@@ -102,7 +113,7 @@ El descenso de gradiente actualiza cada parámetro en dirección opuesta al grad
 \begin{equation}
 \mathbf{W}^{(l)} \leftarrow \mathbf{W}^{(l)} - \alpha\,\frac{\partial\mathcal{L}}{\partial\mathbf{W}^{(l)}}, \qquad \mathbf{b}^{(l)} \leftarrow \mathbf{b}^{(l)} - \alpha\,\frac{\partial\mathcal{L}}{\partial\mathbf{b}^{(l)}}.\label{eq:gd}
 \end{equation}
-La justificación proviene de la aproximación de Taylor de primer orden: para un desplazamiento pequeño $\Delta\boldsymbol{\theta} = -\alpha\nabla\mathcal{L}$, se tiene $\mathcal{L}(\boldsymbol{\theta}+\Delta\boldsymbol{\theta}) \approx \mathcal{L}(\boldsymbol{\theta}) - \alpha\lVert\nabla\mathcal{L}\rVert^2 \le \mathcal{L}(\boldsymbol{\theta})$. En la variante estocástica (SGD) utilizada en este proyecto, la actualización se realiza después de cada muestra, lo que introduce ruido en la trayectoria pero permite avanzar sin recorrer todo el conjunto de datos \citep{bottou2010}. Una tasa $\alpha$ muy pequeña produce un aprendizaje extremadamente lento; una tasa excesiva provoca oscilaciones, divergencia o saturación de las neuronas \citep{ruder2016}. Este comportamiento se verifica experimentalmente en la Sección~\ref{sec:exp2}.
+La justificación proviene de la aproximación de Taylor de primer orden: para un desplazamiento pequeño $\Delta\boldsymbol{\theta} = -\alpha\nabla\mathcal{L}$, se tiene $\mathcal{L}(\boldsymbol{\theta}+\Delta\boldsymbol{\theta}) \approx \mathcal{L}(\boldsymbol{\theta}) - \alpha\lVert\nabla\mathcal{L}\rVert^2 \le \mathcal{L}(\boldsymbol{\theta})$. En la variante por lote completo, utilizada por el repositorio oficial, los gradientes de todas las muestras se acumulan y los parámetros se actualizan una vez por época; en la variante estocástica (SGD), utilizada por el motor complementario, la actualización se realiza después de cada muestra, lo que introduce ruido en la trayectoria pero permite avanzar sin recorrer todo el conjunto de datos \citep{bottou2010}. Una tasa $\alpha$ muy pequeña produce un aprendizaje extremadamente lento; una tasa excesiva provoca oscilaciones, divergencia o saturación de las neuronas \citep{ruder2016}. Este comportamiento se verifica experimentalmente en la Sección~\ref{sec:exp2}.
 
 \section{Inicialización de pesos}
 Si todos los pesos se inicializan con el mismo valor, las neuronas de una capa reciben gradientes idénticos y nunca se diferencian, problema conocido como simetría. Si se inicializan con valores demasiado grandes, las neuronas Sigmoid se saturan desde el inicio; si son demasiado pequeños, la señal se atenúa al atravesar las capas. Por ello se emplea inicialización aleatoria uniforme en $[-\ell,\ell]$ con la regla de \citet{glorot2010} para Sigmoid y lineal, y la de \citet{he2015} para ReLU:
@@ -116,7 +127,7 @@ Una implementación incorrecta de la retropropagación puede producir una red qu
 \begin{equation}
 \frac{\partial\mathcal{L}}{\partial\theta} \approx \frac{\mathcal{L}(\theta+\varepsilon)-\mathcal{L}(\theta-\varepsilon)}{2\varepsilon}, \qquad \text{error relativo} = \frac{|g_{\text{num}}-g_{\text{ana}}|}{\max(|g_{\text{num}}|+|g_{\text{ana}}|,\,10^{-12})}.\label{eq:gradcheck}
 \end{equation}
-Desarrollando $\mathcal{L}(\theta\pm\varepsilon)$ en serie de Taylor, los términos de orden par se cancelan y el error de truncamiento resulta $O(\varepsilon^{2})$, frente a $O(\varepsilon)$ de la diferencia hacia adelante. Por ello, un error relativo muy pequeño indica que la retropropagación es correcta. El proyecto aplica esta verificación a todos los parámetros de redes 2-4-1, 3-5-4-2 y 25-10-5.
+Desarrollando $\mathcal{L}(\theta\pm\varepsilon)$ en serie de Taylor, los términos de orden par se cancelan y el error de truncamiento resulta $O(\varepsilon^{2})$, frente a $O(\varepsilon)$ de la diferencia hacia adelante. Por ello, un error relativo muy pequeño indica que la retropropagación es correcta. El motor complementario aplica esta verificación a todos los parámetros de redes 2-4-1, 3-5-4-2 y 25-10-5.
 
 \section{Métricas de evaluación}
 Para regresión se utiliza el propio MSE. Para clasificación se utiliza la exactitud (\emph{accuracy}), definida como la proporción de muestras correctamente clasificadas, y la matriz de confusión $\mathbf{C}\in\mathbb{N}^{K\times K}$, cuyo elemento $c_{ij}$ cuenta las muestras de clase real $i$ predichas como clase $j$:
@@ -138,34 +149,34 @@ El modelo de propiedad (\emph{ownership}) establece que cada valor tiene un úni
 \end{figure}
 
 \subsection{Manejo explícito de errores}
-Rust no utiliza excepciones. Las operaciones que pueden fallar devuelven \texttt{Result<T, E>}, que obliga al programador a tratar el error explícitamente. El operador \texttt{?} propaga el error al llamador de forma concisa. En este proyecto, toda operación de álgebra lineal devuelve \texttt{Result} con un tipo \texttt{MathError} que describe la operación y las dimensiones incompatibles, y los experimentos convierten esos errores, junto con los de entrada/salida, en un tipo \texttt{ExperimentError} mediante el trait \texttt{From}.
+Rust no utiliza excepciones. Las operaciones que pueden fallar devuelven \texttt{Result<T, E>}, que obliga al programador a tratar el error explícitamente. El operador \texttt{?} propaga el error al llamador de forma concisa. El repositorio oficial valida las dimensiones con \texttt{assert\_eq!}, que detiene el programa con un mensaje descriptivo, y usa \texttt{Result} para validar la vocal ingresada por el usuario; el motor complementario devuelve \texttt{Result} con un tipo \texttt{MathError} en toda operación de álgebra lineal.
 
 \subsection{Traits y abstracciones de costo cero}
-Los \emph{traits} definen comportamiento compartido, de forma similar a las interfaces de otros lenguajes. El proyecto define los traits \texttt{ActivationFn} y \texttt{LossFn}, lo que permite añadir nuevas funciones sin modificar la red. Gracias a la monomorfización, el compilador genera código especializado para cada tipo concreto, de modo que estas abstracciones no tienen costo en tiempo de ejecución.
+Los \emph{traits} definen comportamiento compartido, de forma similar a las interfaces de otros lenguajes. El repositorio oficial usa genéricos con restricciones de traits (\texttt{Vector<T>} y \texttt{Matrix<T>} con \texttt{T: Copy + Add + Mul}), y el motor complementario define los traits \texttt{ActivationFn} y \texttt{LossFn}. Gracias a la monomorfización, el compilador genera código especializado para cada tipo concreto, de modo que estas abstracciones no tienen costo en tiempo de ejecución.
 
 \subsection{Cargo, pruebas integradas y perfiles de compilación}
 Cargo es el gestor de paquetes y sistema de compilación de Rust. Permite compilar en modo depuración o en modo optimizado (\texttt{--release}), ejecutar pruebas unitarias con \texttt{cargo test}, analizar el código con \texttt{cargo clippy} y generar documentación a partir de los comentarios \texttt{///} \citep{klabnik2023}. El perfil \emph{release} aplica optimizaciones del compilador LLVM, como la vectorización y la eliminación de comprobaciones redundantes, que reducen sustancialmente el tiempo de entrenamiento respecto al perfil de depuración.\looseness=-1
 
 \subsection{Comparación con otras opciones de implementación}
-La elección de Rust se contrastó con las dos alternativas más frecuentes para implementar redes neuronales con fines educativos: Python con NumPy y C++. La Tabla~\ref{tab:comparacion} resume la comparación en los criterios que más pesan en un proyecto de Programación 1. Se trata de una comparación cualitativa basada en las características documentadas de cada lenguaje \citep{klabnik2023,blandy2021,matsakis2014}; la única cifra medida corresponde al binario de este proyecto.\looseness=-1
+La elección de Rust se contrastó con las dos alternativas más frecuentes para implementar redes neuronales con fines educativos: Python con NumPy y C++. La Tabla~\ref{tab:comparacion} resume la comparación en los criterios que más pesan en un proyecto de Programación 1. Se trata de una comparación cualitativa basada en las características documentadas de cada lenguaje \citep{klabnik2023,blandy2021,matsakis2014}; la única cifra medida corresponde al binario del repositorio oficial.\looseness=-1
 
 \begin{table}[!htbp]
 \caption{Comparación cualitativa de Rust puro frente a Python/NumPy y C++ con fines educativos}\label{tab:comparacion}
 \footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\textwidth}{@{}>{\raggedright}p{2.5cm} >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
 \toprule
-Criterio & Rust puro (\texttt{std}) & Python con NumPy & C++ estándar \\
+Criterio & Rust (sin crates de ML) & Python con NumPy & C++ estándar \\
 \midrule
 Seguridad de memoria & Garantizada en compilación por propiedad y préstamos & Gestionada por el intérprete y el recolector de basura & Responsabilidad del programador; errores posibles en ejecución \\
-Errores de dimensión & Explícitos con \texttt{Result}; obligan a tratarlos & Excepciones en ejecución o difusión (\emph{broadcasting}) silenciosa & Comprobación manual; acceso fuera de rango no detectado por defecto \\
+Errores de dimensión & Comprobados con \texttt{assert!} o \texttt{Result} & Excepciones en ejecución o difusión (\emph{broadcasting}) silenciosa & Comprobación manual; acceso fuera de rango no detectado por defecto \\
 Rendimiento & Compilado y optimizado (LLVM), sin recolector & Alto en operaciones vectorizadas de NumPy; bajo en ciclos de Python & Compilado y optimizado, comparable a Rust \\
-Distribución & Binario único de \BinKiB~KiB sin dependencias & Requiere intérprete y paquetes instalados & Binario único; dependencias según bibliotecas \\
-Visibilidad del algoritmo & Cada operación implementada y probada a mano & Las operaciones matriciales quedan ocultas en NumPy & Cada operación implementada a mano \\
+Distribución & Binario único de \OfBinKiB~KiB & Requiere intérprete y paquetes instalados & Binario único; dependencias según bibliotecas \\
+Visibilidad del algoritmo & Cada operación implementada a mano & Las operaciones matriciales quedan ocultas en NumPy & Cada operación implementada a mano \\
 Curva de depuración & Exigente al compilar; menos errores en ejecución & Baja al inicio; errores aparecen al ejecutar & Exigente; errores de memoria difíciles de rastrear \\
 Pruebas integradas & \texttt{cargo test} incluido en la herramienta & Requiere \texttt{unittest} o \texttt{pytest} & Requiere un marco externo de pruebas \\
 \bottomrule
 \end{tabularx}
-\fuente{Elaboración propia. El tamaño del binario proviene de \path{resultados/benchmarks.csv}; el resto de los criterios son cualitativos.}
+\fuente{Elaboración propia. El tamaño del binario proviene de \path{resultados/oficial/resumen.csv}; el resto de los criterios son cualitativos.}
 \end{table}
 
 La comparación muestra que Python con NumPy es la opción más rápida para obtener resultados, pero oculta precisamente las operaciones que el proyecto busca enseñar, mientras que C++ ofrece control y rendimiento equivalentes a costa de exponer al estudiante a errores de memoria que no aportan al aprendizaje del algoritmo. Rust combina la visibilidad completa del algoritmo con la detección temprana de errores, a cambio de una curva inicial más exigente frente al compilador.

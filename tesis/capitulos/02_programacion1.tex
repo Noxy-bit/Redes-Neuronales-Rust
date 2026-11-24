@@ -1,5 +1,5 @@
 \chapter{Relación con la Asignatura Programación 1 (INF120)}\label{cap:inf120}
-Este capítulo muestra que el proyecto no es un tema ajeno a la asignatura, sino una aplicación integradora de sus contenidos. Cada concepto de Programación 1 ---tipos de datos, estructuras de control, ciclos, funciones, arreglos, matrices, registros, modularidad, manejo de errores y archivos--- aparece en el código fuente cumpliendo una función concreta dentro del sistema que aprende. La exposición sigue el orden habitual del programa de la asignatura y cada sección se ilustra con un fragmento extraído automáticamente del repositorio, de modo que el texto y el código no puedan divergir.
+Este capítulo muestra que el proyecto no es un tema ajeno a la asignatura, sino una aplicación integradora de sus contenidos. Cada concepto de Programación 1 ---tipos de datos, estructuras de control, ciclos, funciones, arreglos, matrices, registros, modularidad, manejo de errores y entrada de argumentos--- aparece en el código fuente cumpliendo una función concreta dentro del sistema que aprende. La exposición sigue el orden habitual del programa de la asignatura y cada sección se ilustra con un fragmento extraído automáticamente del repositorio, de modo que el texto y el código no puedan divergir.
 
 \section{Correspondencia entre contenidos y código}
 La Tabla~\ref{tab:inf120} resume la correspondencia entre los contenidos de \Sigla{} y los elementos del proyecto. La columna central indica la construcción de Rust utilizada y la columna derecha, el lugar del código donde puede observarse.
@@ -11,83 +11,66 @@ La Tabla~\ref{tab:inf120} resume la correspondencia entre los contenidos de \Sig
 \toprule
 Contenido de \Sigla & Construcción en Rust & Ubicación en el proyecto \\
 \midrule
-Variables y tipos de datos & \texttt{f64}, \texttt{usize}, \texttt{u64}, \texttt{bool}; inmutabilidad por defecto y \texttt{let mut} & Todos los módulos \\
-Operadores y expresiones & Aritmética de punto flotante, \texttt{exp}, \texttt{max}, \texttt{sqrt} & \texttt{nn/activation.rs}, \texttt{nn/layer.rs} \\
-Estructuras de decisión & \texttt{if}/\texttt{else}, \texttt{match} con guardas & \texttt{Vector::argmax}, \texttt{main.rs} \\
-Estructuras repetitivas & \texttt{for}, \texttt{while let}, iteradores \texttt{zip}, \texttt{rev}, \texttt{enumerate} & \texttt{Network::}\allowbreak\texttt{train\_with\_callback} \\
-Funciones y parámetros & \texttt{fn}, paso por referencia \texttt{\&T} y \texttt{\&mut T}, retorno de valores & \texttt{math/vector.rs}, \texttt{math/matrix.rs} \\
-Arreglos y vectores & \texttt{Vec<f64>}, rebanadas \texttt{\&[f64]}, arreglos fijos \texttt{[[usize; 5]; 5]} & \texttt{Vector}, matriz de confusión \\
-Matrices & Almacenamiento lineal por filas, índice $i\cdot n + j$ & \texttt{Matrix} \\
-Registros (estructuras) & \texttt{struct}, \texttt{impl}, métodos asociados & \texttt{Neuron}, \texttt{Layer}, \texttt{Network} \\
-Enumeraciones & \texttt{enum} con variantes y \texttt{match} exhaustivo & \texttt{Activation}, \texttt{MathError} \\
-Modularidad & \texttt{mod}, \texttt{pub}, separación biblioteca/binario & \texttt{lib.rs}, \texttt{math/}, \texttt{nn/}, \texttt{experiments/} \\
-Validación y errores & \texttt{Result<T, E>}, operador \texttt{?} & Toda operación algebraica \\
-Archivos & Escritura con \texttt{BufWriter} y formato CSV & \texttt{experiments/csv.rs} \\
-Algoritmos clásicos & Búsqueda del máximo, barajado Fisher--Yates, conteo & \texttt{argmax}, \texttt{shuffle}, confusión \\
-Pruebas y depuración & \texttt{\#[test]}, \texttt{assert!}, prueba de escritorio & 52 pruebas, Sección~\ref{sec:escritorio} \\
+Variables y tipos de datos & \texttt{f32}, \texttt{usize}, \texttt{char}, \texttt{\&str}; inmutabilidad por defecto y \texttt{let mut} & Todos los módulos \\
+Operadores y expresiones & Aritméticos, relacionales, lógicos; \texttt{exp()}, \texttt{max} & \texttt{Activacion}, softmax \\
+Estructuras condicionales & \texttt{if}/\texttt{else}, \texttt{match} con patrones & \texttt{main.rs}, \texttt{parse\_vowel} \\
+Ciclos & \texttt{for} sobre rangos, \texttt{for} con \texttt{enumerate}, iteradores & Épocas y muestras de cada experimento \\
+Funciones y parámetros & Paso por valor y por referencia (\texttt{\&}, \texttt{\&mut}) & \texttt{forward}, \texttt{update\_weights} \\
+Arreglos y vectores & \texttt{Vec<T>}, rebanadas \texttt{\&[f32]}, arreglos fijos \texttt{[[\&str; 5]; 5]} & \texttt{Vector<T>}, patrones de vocales \\
+Matrices & Almacenamiento por filas; patrones $5\times5$ aplanados & \texttt{Matrix<T>}, \texttt{encode} \\
+Registros & \texttt{struct} con métodos en bloques \texttt{impl} & \texttt{Neuron}, \texttt{Layer}, \texttt{Network} \\
+Genéricos & \texttt{Vector<T>} con restricciones de traits & \texttt{math/} \\
+Modularidad & \texttt{mod}, \texttt{pub}, \texttt{use} & \texttt{math/}, \texttt{neural/}, \texttt{learning/}, \texttt{experiments/} \\
+Validación y errores & \texttt{assert\_eq!}, \texttt{Result<T, E>}, \texttt{Option} & Dimensiones, vocal ingresada \\
+Pruebas y depuración & Trazas por época, prueba de escritorio, \texttt{\#[test]} & Capítulo~\ref{cap:implementacion}, motor complementario \\
 \bottomrule
 \end{tabularx}
-\fuente{Elaboración propia a partir del código fuente del repositorio.}
+\fuente{Elaboración propia a partir del código fuente de \url{\Repositorio}.}
 \end{table}
 
 \section{Tipos de datos, variables y expresiones}
-Toda la aritmética de la red se realiza con números de punto flotante de doble precisión (\texttt{f64}), conforme al estándar IEEE~754. La elección de doble precisión no es arbitraria: en el Experimento~1 el error cuadrático medio desciende hasta valores del orden de $10^{-18}$, cerca del límite de representación del tipo, lo que permite discutir en clase los conceptos de precisión, redondeo y épsilon de máquina. Los índices y tamaños utilizan \texttt{usize}, un entero sin signo cuyo ancho coincide con el de la arquitectura, y el generador pseudoaleatorio opera con enteros de 64 bits (\texttt{u64}) y aritmética modular explícita.
+Toda la aritmética de la red del repositorio oficial se realiza con números de punto flotante de precisión simple (\texttt{f32}, IEEE~754), que representan unas siete cifras decimales significativas. Es una elección adecuada para una demostración: los tres experimentos alcanzan su objetivo, y el error final de la regresión $y=2x$ (\OfLinMseFin) se acerca al límite de esa precisión. Los índices y tamaños usan \texttt{usize}, el entero sin signo del tamaño de una dirección de memoria, y la vocal ingresada se maneja como \texttt{char}. En Rust las variables son inmutables por defecto; los pesos que cambian durante el entrenamiento se declaran con \texttt{let mut}, lo que hace visible en el código qué datos evolucionan.
 
-En Rust, las variables son inmutables por defecto y deben declararse con \texttt{let mut} cuando su valor cambia. Esta regla, que inicialmente sorprende a los estudiantes, convierte en información visible qué datos se modifican durante el entrenamiento ---pesos, sesgos y gradientes--- y cuáles permanecen constantes, como los conjuntos de datos o la configuración del experimento.
+\section{Funciones, parámetros y referencias}
+Las operaciones matemáticas se implementan como funciones con parámetros tipados y valor de retorno explícito. El Código~\ref{cod:dot} muestra el producto punto genérico de \texttt{Vector<T>}: recibe el otro vector por referencia inmutable (\texttt{\&Vector<T>}), comprueba que las longitudes coincidan y acumula los productos con iteradores. Pasar por referencia evita copiar los datos, y el compilador garantiza que la función no los modifique.
 
-\section{Funciones, parámetros y paso por referencia}
-Las operaciones matemáticas se implementan como funciones con parámetros tipados y valor de retorno explícito. El Código~\ref{cod:dot} muestra el producto punto: recibe el vector propio por referencia inmutable (\texttt{\&self}) y otro vector también por referencia, verifica que las longitudes coincidan y devuelve la suma de productos. El paso por referencia evita copiar los datos, un concepto que en Programación 1 suele explicarse con el paso de parámetros por valor y por referencia.
+\lstinputlisting[caption={Producto punto genérico con validación de longitudes (\texttt{src/math/vector.rs})},label=cod:dot]{generado/codigo/of_dot.rs}
 
-\lstinputlisting[caption={Producto punto con validación de longitudes (\texttt{src/math/vector.rs})},label=cod:dot]{generado/codigo/dot.rs}
+\section{Estructuras de control}
+El punto de entrada (Código~\ref{cod:main}) decide qué experimento ejecutar con un \texttt{match} sobre el primer argumento de la línea de comandos. A diferencia de un \texttt{switch} tradicional, el compilador exige que \texttt{match} cubra todos los casos posibles; el comodín \texttt{Some(value)} trata cualquier otro texto como una vocal y \texttt{None}, la ausencia de argumentos.
 
-La expresión \texttt{iter().zip(...).map(...).sum()} recorre simultáneamente ambos arreglos, multiplica sus elementos y acumula el resultado. Es equivalente al ciclo clásico con un acumulador inicializado en cero, pero expresa la intención de forma declarativa y sin riesgo de acceder a una posición fuera de rango.
+\lstinputlisting[caption={Selección del experimento con \texttt{match} (\texttt{src/main.rs})},label=cod:main]{generado/codigo/of_main.rs}
 
-\section{Estructuras de decisión}
-El Código~\ref{cod:argmax} implementa la búsqueda del índice del valor máximo de un vector, operación utilizada para convertir las cinco salidas de la red de vocales en una clase predicha. El algoritmo es el clásico recorrido lineal con una variable que guarda el mejor candidato; la estructura \texttt{match} con guarda (\texttt{if x <= b}) decide en cada iteración si se conserva el candidato actual o se reemplaza. El retorno de tipo \texttt{Option<usize>} representa explícitamente el caso de un vector vacío, que no tiene máximo.
+El Código~\ref{cod:argmax} busca el índice del valor máximo, operación que convierte las cinco probabilidades de la red de vocales en una clase. El algoritmo es el clásico de Programación 1, expresado con iteradores: recorre los pares (índice, valor) y conserva el mayor.
 
-\lstinputlisting[caption={Búsqueda del máximo con \texttt{match} (\texttt{src/math/vector.rs})},label=cod:argmax]{generado/codigo/argmax.rs}
+\lstinputlisting[caption={Búsqueda del índice máximo (\texttt{src/experiments/vowels.rs})},label=cod:argmax]{generado/codigo/of_argmax.rs}
 
-\section{Estructuras repetitivas}
-El entrenamiento de una red es, en esencia, un conjunto de ciclos anidados: un ciclo externo sobre las épocas y un ciclo interno sobre las muestras del conjunto de datos. El Código~\ref{cod:traincb} muestra esta estructura sin intermediarios. En cada época se ejecuta un paso de entrenamiento por muestra, se evalúa el error cuadrático medio sobre todo el conjunto, se almacena en un historial y se invoca una función de retrollamada que los experimentos utilizan para escribir el registro CSV.
-
-\lstinputlisting[caption={Ciclos anidados de entrenamiento (\texttt{src/nn/network.rs})},label=cod:traincb]{generado/codigo/train_callback.rs}
-
-El ciclo \texttt{for epoch in 1..=epochs} recorre un rango cerrado, mientras que \texttt{for (x, y) in inputs.iter().zip(targets)} recorre en paralelo las entradas y sus objetivos. El análisis de complejidad es directo: si $E$ es el número de épocas, $N$ el número de muestras y $P$ el número de parámetros, el costo total es $O(E\cdot N\cdot P)$, resultado que se verifica experimentalmente en la Sección~\ref{sec:bench}.
+\section{Ciclos}
+El entrenamiento es un conjunto de ciclos anidados: un ciclo externo sobre las épocas y un ciclo interno sobre las muestras. En el experimento $y=2x$ (Código~\ref{cod:of-lin}, Capítulo~\ref{cap:implementacion}) el ciclo externo \texttt{for epoch in 1..=max\_epochs} se interrumpe con \texttt{break} cuando el error alcanza la meta, y el interno acumula los gradientes. El mismo patrón, con \texttt{enumerate} para conocer el índice de cada muestra, aparece en los experimentos booleano y de vocales.
 
 \section{Arreglos, vectores y matrices}
-La estructura \texttt{Vector} encapsula un arreglo dinámico \texttt{Vec<f64>}, y la estructura \texttt{Matrix} almacena sus $m\times n$ elementos en un único arreglo contiguo en orden por filas. El elemento de la fila $i$ y la columna $j$ ocupa la posición $i\cdot n + j$, fórmula que corresponde exactamente al ejercicio de linealización de matrices que se estudia en la asignatura. Esta representación aprovecha la memoria caché del procesador y evita el costo de un vector de vectores. El Código~\ref{cod:mulvec} muestra el producto matriz-vector, que es la operación central de la propagación hacia adelante.
+La estructura \texttt{Vector<T>} encapsula un arreglo dinámico \texttt{Vec<T>}, y \texttt{Matrix<T>} almacena sus $m\times n$ elementos en un único arreglo contiguo en orden por filas: el elemento de la fila $i$ y columna $j$ ocupa la posición $i\cdot n+j$. El Código~\ref{cod:mulvec} muestra la multiplicación de matrices con tres ciclos anidados, la implementación directa de $c_{ij}=\sum_k a_{ik}b_{kj}$.
 
-\lstinputlisting[caption={Producto matriz-vector sobre almacenamiento por filas (\texttt{src/math/matrix.rs})},label=cod:mulvec]{generado/codigo/mul_vector.rs}
+\lstinputlisting[caption={Multiplicación de matrices sobre almacenamiento por filas (\texttt{src/math/matrix.rs})},label=cod:mulvec]{generado/codigo/of_multiply.rs}
 
-Los arreglos de tamaño fijo también aparecen en el proyecto. La matriz de confusión del Experimento~3 se declara como \texttt{[[usize; 5]; 5]}, un arreglo bidimensional de enteros cuyo tamaño se conoce en tiempo de compilación. El Código~\ref{cod:confusion} muestra el algoritmo de conteo: para cada muestra se obtiene la clase predicha con \texttt{argmax} y se incrementa la celda correspondiente a la pareja (clase real, clase predicha).
+Los arreglos de tamaño fijo también aparecen en el proyecto. Las cinco vocales se dibujan en un arreglo \texttt{[[\&str; 5]; 5]}, donde \texttt{\#} representa un píxel encendido (Código~\ref{cod:patrones}). La función \texttt{encode} (Código~\ref{cod:encode}) recorre la matriz fila por fila y la aplana en un vector de 25 valores 0 o 1: el mismo recorrido por filas que se enseña para matrices en la asignatura.
 
-\lstinputlisting[caption={Matriz de confusión como arreglo bidimensional fijo (\texttt{src/experiments/exp3\_vocales.rs})},label=cod:confusion]{generado/codigo/confusion.rs}
+\lstinputlisting[caption={Patrones binarios $5\times5$ de las vocales (\texttt{src/experiments/vowels.rs})},label=cod:patrones]{generado/codigo/of_patrones.rs}
+\lstinputlisting[caption={Aplanado de un patrón en 25 entradas (\texttt{src/experiments/vowels.rs})},label=cod:encode]{generado/codigo/of_encode.rs}
 
-\section{Registros, enumeraciones y modularidad}
-Los registros de Programación 1 se corresponden con las estructuras (\texttt{struct}) de Rust, y los procedimientos que operan sobre ellos, con los métodos definidos en bloques \texttt{impl}. La neurona, la capa y la red son estructuras que agrupan datos relacionados: pesos, sesgos, función de activación y, en el caso de la capa, los valores intermedios guardados para la retropropagación. Las enumeraciones permiten representar un conjunto cerrado de alternativas; el Código~\ref{cod:actenum} muestra la enumeración \texttt{Activation}, cuyas variantes se seleccionan con \texttt{match} exhaustivo, de modo que el compilador rechaza cualquier caso no contemplado.
+\section{Registros y procedimientos}
+Los registros de Programación 1 se corresponden con las estructuras (\texttt{struct}) de Rust, y los procedimientos que operan sobre ellos, con los métodos de los bloques \texttt{impl}. La neurona (Código~\ref{cod:neuron-struct}) es un registro con dos campos privados, sus pesos y su bias; el exterior solo puede usarla mediante sus métodos públicos \texttt{new} y \texttt{forward}, lo que aplica el principio de encapsulamiento.
 
-\lstinputlisting[caption={Enumeración de funciones de activación (\texttt{src/nn/activation.rs})},label=cod:actenum]{generado/codigo/activation_enum.rs}
-
-La modularidad se expresa en tres niveles. La biblioteca se divide en los módulos \texttt{math}, \texttt{nn} y \texttt{experiments}; cada módulo agrupa archivos con una sola responsabilidad; y la visibilidad se controla con \texttt{pub}, de modo que los detalles internos permanecen ocultos. El binario \texttt{main.rs} solo interpreta los argumentos de la línea de comandos y delega en la biblioteca, separación que facilita las pruebas y la reutilización.
+\lstinputlisting[caption={Registro de una neurona (\texttt{src/neural/neuron.rs})},label=cod:neuron-struct]{generado/codigo/of_neuron_struct.rs}
 
 \section{Validación de datos y manejo de errores}
-Un error frecuente en los primeros cursos es acceder a una posición inexistente de un arreglo o combinar arreglos de tamaños distintos. En este proyecto, toda operación que puede fallar devuelve \texttt{Result<T, MathError>}: el valor \texttt{Ok} contiene el resultado y el valor \texttt{Err} describe la operación y las dimensiones incompatibles. El operador \texttt{?} propaga el error al llamador sin necesidad de condicionales repetitivos. El Código~\ref{cod:parsear} muestra el mismo principio aplicado a la validación de los argumentos de la línea de comandos, donde cada opción desconocida o valor inválido produce un mensaje descriptivo en lugar de un comportamiento indefinido.
+Un error frecuente en los primeros cursos es combinar arreglos de tamaños distintos. El repositorio oficial lo previene con \texttt{assert\_eq!}: si las dimensiones no coinciden, el programa se detiene con un mensaje que describe la causa, en lugar de producir un resultado incorrecto. Para los datos ingresados por el usuario utiliza \texttt{Result} (Código~\ref{cod:parsear}): la vocal se normaliza a mayúscula y, si no es A, E, I, O o U, se devuelve un error que el programa informa sin interrumpirse de forma abrupta.
 
-\lstinputlisting[caption={Interpretación validada de argumentos (\texttt{src/main.rs})},label=cod:parsear]{generado/codigo/parsear.rs}
-
-\section{Archivos y persistencia de resultados}
-Los resultados de los experimentos se escriben en archivos de texto con formato CSV, uno por experimento. El Código~\ref{cod:csvrow} muestra la escritura de una fila: antes de escribir, se valida que el número de campos coincida con el de la cabecera, y cualquier error de entrada/salida se devuelve al llamador. Estos archivos constituyen la única fuente de las tablas y gráficas de este documento, lo que ilustra la importancia de separar el cálculo de la presentación.
-
-\lstinputlisting[caption={Escritura validada de una fila CSV (\texttt{src/experiments/csv.rs})},label=cod:csvrow]{generado/codigo/csv_row.rs}
-
-\section{Algoritmos clásicos dentro de la red}
-Varios algoritmos estudiados en la asignatura aparecen en el proyecto como piezas necesarias. El barajado de Fisher--Yates (Código~\ref{cod:shuffle}) recorre el arreglo desde el final y, en cada posición $i$, intercambia el elemento con otro elegido al azar entre las posiciones $0$ e $i$; produce permutaciones uniformes en tiempo $O(n)$ y se utiliza para elegir qué píxeles invertir al generar ruido en las vocales. El generador SplitMix64, que alimenta este barajado, se basa en sumas, desplazamientos de bits y multiplicaciones con aritmética modular de 64 bits, operaciones que permiten discutir la representación binaria de los enteros.
-
-\lstinputlisting[caption={Barajado de Fisher--Yates (\texttt{src/math/rng.rs})},label=cod:shuffle]{generado/codigo/shuffle.rs}
+\lstinputlisting[caption={Validación de la vocal ingresada (\texttt{src/experiments/vowels.rs})},label=cod:parsear]{generado/codigo/of_parse.rs}
 
 \section{Pruebas, depuración y prueba de escritorio}
-La prueba de escritorio, técnica tradicional de Programación 1 para seguir manualmente la ejecución de un algoritmo, se incorporó al proyecto como un experimento automatizado que registra cada operación de las primeras iteraciones del entrenamiento (Sección~\ref{sec:escritorio}). A ella se suman 52 pruebas automatizadas escritas con el atributo \texttt{\#[test]} y las macros \texttt{assert!}, que comprueban valores calculados a mano, errores esperados y propiedades matemáticas. De este modo, el proyecto muestra a los estudiantes que verificar un programa es parte de su construcción y no una tarea posterior.
+La prueba de escritorio, técnica clásica de Programación 1 para seguir manualmente un algoritmo, se aplica en dos niveles. El repositorio oficial imprime en cada época los gradientes y los parámetros, de modo que cada actualización puede comprobarse con calculadora (Tabla~\ref{tab:of-bool}); el motor complementario registra además las primeras iteraciones del entrenamiento (Sección~\ref{sec:escritorio}) e incluye 52 pruebas automatizadas con \texttt{\#[test]} y \texttt{assert!}. Así, verificar un programa se muestra como parte de su construcción.
 
 \begin{nota}[Propuesta de uso en aula]
-El repositorio puede utilizarse como guía de laboratorio en \Sigla: los estudiantes pueden reproducir la prueba de escritorio con calculadora, cambiar la semilla aleatoria con el argumento \texttt{--seed}, modificar la tasa de aprendizaje o el número de neuronas ocultas en las estructuras de configuración de cada experimento, añadir una nueva función de activación implementando el trait \texttt{ActivationFn} y comprobar con \texttt{cargo test} que su implementación es correcta.
+En \Sigla, los estudiantes pueden reproducir la prueba de escritorio, modificar la tasa de aprendizaje o las épocas, dibujar una nueva letra en los patrones o añadir una función a \texttt{Activacion} con su prueba \texttt{\#[test]}.
 \end{nota}

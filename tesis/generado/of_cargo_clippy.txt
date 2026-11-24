@@ -1,0 +1,30 @@
+warning: use of deprecated function `rand::thread_rng`: Re src/math/vector.rs:132:29
+warning: use of deprecated method `rand::Rng::gen_range`:  src/math/vector.rs:136:27
+warning: struct `Matrix` is never constructed              src/math/matrix.rs:3:12
+warning: associated items `new`, `get`, and `set` are neve src/math/matrix.rs:10:12
+warning: method `transpose` is never used                  src/math/matrix.rs:42:12
+warning: method `print` is never used                      src/math/matrix.rs:57:12
+warning: method `add` is never used                        src/math/matrix.rs:76:12
+warning: method `sub` is never used                        src/math/matrix.rs:95:12
+warning: method `multiply_scalar` is never used            src/math/matrix.rs:121:12
+warning: method `multiply` is never used                   src/math/matrix.rs:135:12
+warning: method `add_bias` is never used                   src/math/matrix.rs:166:12
+warning: method `map` is never used                        src/math/matrix.rs:189:12
+warning: associated function `zeros` is never used         src/math/matrix.rs:213:12
+warning: method `multiply_elementwise` is never used       src/math/matrix.rs:228:12
+warning: associated function `random` is never used        src/math/matrix.rs:245:12
+warning: methods `is_empty` and `set` are never used       src/math/vector.rs:20:12
+warning: method `add` is never used                        src/math/vector.rs:54:12
+warning: method `sub` is never used                        src/math/vector.rs:69:12
+warning: method `multiply_scalar` is never used            src/math/vector.rs:84:12
+warning: method `map` is never used                        src/math/vector.rs:114:12
+warning: associated function `random` is never used        src/math/vector.rs:129:12
+warning: associated function `relu` is never used          src/neural/activation.rs:4:12
+warning: struct `Network` is never constructed             src/neural/network.rs:5:12
+warning: associated items `new` and `forward` are never us src/neural/network.rs:10:12
+warning: name `MSE` contains a capitalized acronym         src/learning/loss.rs:1:12
+error: any number modulo 1 will be 0                       src/experiments/vowels.rs:76:12
+warning: the loop variable `output` is used to index `VOCA src/experiments/vowels.rs:100:31
+warning: the loop variable `output` is used to index `VOCA src/experiments/vowels.rs:180:23
+warning: `neural-network` (bin "neural-network") generated 27 warnings
+error: could not compile `neural-network` (bin "neural-network") due to 1 previous error; 27 warnings emitted

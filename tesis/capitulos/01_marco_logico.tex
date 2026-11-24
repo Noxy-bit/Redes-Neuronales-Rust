@@ -30,10 +30,10 @@ En el contexto local, los estudiantes de los primeros semestres de la FICCT no d
 El análisis causal muestra cuatro factores que se refuerzan entre sí. En primer lugar, la enseñanza de la IA se apoya en bibliotecas que encapsulan el álgebra y el cálculo, de modo que el estudiante no necesita ---ni tiene oportunidad de--- implementar una multiplicación matricial o una derivada. En segundo lugar, la matemática de los primeros semestres se presenta de forma desconectada de sus aplicaciones computacionales, por lo que la regla de la cadena o el producto matriz-vector parecen contenidos abstractos sin relación con el software. En tercer lugar, los recursos disponibles suelen exigir equipos con alto poder de cómputo o servicios de pago. En cuarto lugar, las prácticas de programación de los primeros cursos rara vez incorporan pruebas automatizadas y experimentos reproducibles, lo que dificulta distinguir un programa que funciona de uno que parece funcionar. Como efecto, se forman usuarios de herramientas con escasa capacidad para explicar, depurar o adaptar los modelos que utilizan.
 
 \subsection{Pregunta de investigación}
-La formulación anterior se concreta en la siguiente pregunta, que guía el diseño de la solución y el análisis de resultados: ¿es posible construir, con fines educativos y utilizando únicamente la biblioteca estándar del lenguaje Rust, una red neuronal artificial multicapa capaz de aprender una relación lineal, resolver un problema no lineal como XOR y clasificar patrones visuales simples como las vocales A, E, I, O, U, verificando su correcto funcionamiento mediante pruebas automatizadas y experimentos reproducibles?
+La formulación anterior se concreta en la siguiente pregunta, que guía el diseño de la solución y el análisis de resultados: ¿es posible construir, con fines educativos y sin \emph{frameworks} de aprendizaje automático, una red neuronal artificial en Rust capaz de aprender una relación lineal, clasificar valores booleanos y reconocer patrones visuales simples como las vocales A, E, I, O, U, verificando sus ecuaciones mediante pruebas automatizadas y experimentos reproducibles?
 
 \subsection{Delimitación}
-La delimitación establece las fronteras del trabajo para que los resultados se interpreten dentro de su alcance real. En el plano temático, el proyecto aborda redes neuronales densas de propagación hacia adelante (\emph{feedforward}) con funciones de activación Sigmoid, ReLU y lineal, pérdida de error cuadrático medio y descenso de gradiente estocástico. En el plano técnico, la implementación se realiza en Rust (edición 2024) sin crates externos y se ejecuta en un computador personal convencional. En el plano experimental, se desarrollan tres experimentos de complejidad progresiva ---$y=2x$, XOR y vocales--- con datos sintéticos definidos explícitamente en el código fuente. Quedan fuera del alcance las redes convolucionales y recurrentes, la aceleración por GPU, el procesamiento de conjuntos de datos masivos y el despliegue en producción.
+La delimitación establece las fronteras del trabajo para que los resultados se interpreten dentro de su alcance real. En el plano temático, el proyecto aborda redes neuronales densas de propagación hacia adelante (\emph{feedforward}) con funciones de activación Sigmoid, ReLU, lineal y softmax, pérdida de error cuadrático medio y descenso de gradiente. En el plano técnico, la implementación principal es el repositorio oficial del equipo (\url{\Repositorio}), escrito en Rust (edición 2024) sin crates de aprendizaje automático, y se ejecuta en un computador personal convencional. En el plano experimental, se desarrollan tres experimentos de complejidad progresiva ---$y=2x$, clasificación booleana y vocales--- con datos sintéticos definidos en el código fuente, complementados con XOR y vocales con ruido en el motor de validación. Quedan fuera del alcance las redes convolucionales y recurrentes, la aceleración por GPU, el procesamiento de conjuntos de datos masivos y el despliegue en producción.
 
 \section{Justificación}\label{sec:justificacion}
 La pertinencia del proyecto se sustenta en cuatro dimensiones complementarias: el valor técnico de la solución, su utilidad académica para la asignatura, su impacto social y educativo, y la viabilidad de su ejecución con los recursos disponibles.
@@ -54,19 +54,19 @@ El proyecto es viable porque utiliza exclusivamente herramientas gratuitas (Rust
 El objetivo general orienta la totalidad del proyecto y define el resultado verificable que se espera alcanzar.
 
 \begin{nota}[Objetivo general]
-Desarrollar una red neuronal artificial multicapa desde cero utilizando el lenguaje Rust y únicamente su biblioteca estándar, implementando sus fundamentos matemáticos (álgebra lineal, funciones de activación, función de pérdida, retropropagación y descenso de gradiente) y validando su funcionamiento mediante pruebas unitarias y tres experimentos reproducibles de complejidad progresiva.
+Desarrollar una red neuronal artificial desde cero utilizando el lenguaje Rust, sin \emph{frameworks} de aprendizaje automático ni bibliotecas de álgebra lineal, implementando sus fundamentos matemáticos (álgebra lineal, funciones de activación, función de pérdida, gradientes y descenso de gradiente) y validando su funcionamiento mediante tres experimentos reproducibles y una verificación complementaria con pruebas automatizadas.
 \end{nota}
 
 \section{Objetivos específicos}\label{sec:objespecificos}
 Los objetivos específicos descomponen el objetivo general en metas concretas y medibles, alineadas con las fases de desarrollo descritas en el Capítulo~\ref{cap:metodologia}. La Tabla~\ref{tab:objetivos} relaciona cada objetivo con su indicador de verificación.
 
 \begin{enumerate}[label=\textbf{OE\arabic*.},leftmargin=3.2em,itemsep=4pt]
-\item Implementar estructuras de vectores y matrices con operaciones de suma, resta, producto punto, multiplicación matricial, producto de Hadamard, escalamiento y transpuesta, con validación de dimensiones mediante el tipo \texttt{Result}.
-\item Implementar las funciones de activación Sigmoid, ReLU y lineal con sus derivadas analíticas, y la función de pérdida de error cuadrático medio (MSE) con su gradiente.
-\item Construir neuronas, capas densas y una red multicapa con inicialización reproducible mediante un generador pseudoaleatorio propio, propagación hacia adelante, retropropagación del error y entrenamiento por descenso de gradiente.
-\item Verificar la corrección de la implementación mediante pruebas unitarias en cada módulo, incluida la comparación entre gradientes analíticos y numéricos (\emph{gradient checking}).
-\item Ejecutar y analizar tres experimentos progresivos ---regresión $y=2x$, compuerta XOR y clasificación de vocales A, E, I, O, U--- exportando métricas reales (pérdida, exactitud y matriz de confusión) a archivos CSV.
-\item Medir el rendimiento real del motor (tiempos de entrenamiento e inferencia y tamaño del binario) compilado en modo \emph{release}.
+\item Implementar estructuras genéricas de vectores y matrices con operaciones de suma, resta, producto punto, multiplicación matricial, producto elemento a elemento, escalamiento y transpuesta, con validación de dimensiones.
+\item Implementar las funciones de activación Sigmoid y ReLU, la función softmax, y la función de pérdida de error cuadrático medio (MSE) con su derivada.
+\item Construir neuronas, capas densas y una red con propagación hacia adelante, y entrenarlas mediante gradientes y descenso de gradiente; extender la retropropagación a redes con capas ocultas en el motor complementario.
+\item Verificar la corrección de las ecuaciones mediante pruebas unitarias, incluida la comparación entre gradientes analíticos y numéricos (\emph{gradient checking}).
+\item Ejecutar y analizar tres experimentos progresivos ---regresión $y=2x$, clasificación booleana y reconocimiento de vocales A, E, I, O, U--- y complementarlos con XOR y vocales con ruido, registrando métricas reales en archivos CSV.
+\item Medir el rendimiento real (tiempos de ejecución y tamaño del binario) compilado en modo \emph{release}.
 \end{enumerate}
 
 \begin{table}[!htbp]
@@ -76,12 +76,12 @@ Los objetivos específicos descomponen el objetivo general en metas concretas y 
 \toprule
 Objetivo & Indicador verificable & Medio de verificación \\
 \midrule
-OE1 & Operaciones algebraicas con errores de dimensión explícitos & Pruebas de \texttt{math::vector} y \texttt{math::matrix} \\
-OE2 & Derivadas analíticas coinciden con diferencias centrales & Pruebas de \texttt{nn::activation} y \texttt{nn::loss} \\
-OE3 & Red de topología arbitraria entrenable y reproducible & Pruebas de \texttt{nn::layer} y \texttt{nn::network} \\
-OE4 & 52 pruebas aprobadas y \texttt{clippy} sin advertencias & Anexo~\ref{anx:tests} \\
-OE5 & Métricas reales exportadas para los tres experimentos & \path{resultados/*.csv}, Capítulo~\ref{cap:implementacion} \\
-OE6 & Tiempos de entrenamiento, inferencia y tamaño del binario & \path{resultados/benchmarks.csv} \\
+OE1 & Operaciones algebraicas con comprobación de dimensiones & \texttt{src/math/} (oficial) y pruebas de \texttt{math} (complementario) \\
+OE2 & Activaciones, softmax y MSE operativas; derivadas verificadas & \texttt{src/neural/}, \texttt{src/learning/} y \emph{gradient checking} \\
+OE3 & Neurona, capa y red entrenables; retropropagación multicapa & Experimentos oficiales y motor complementario \\
+OE4 & 52 pruebas aprobadas en el motor complementario & Anexo~\ref{anx:tests} \\
+OE5 & Métricas reales de los experimentos & \path{resultados/oficial/*.csv}, Capítulo~\ref{cap:implementacion} \\
+OE6 & Tiempos de ejecución y tamaño del binario & \path{resultados/oficial/resumen.csv}, \path{benchmarks.csv} \\
 \bottomrule
 \end{tabularx}
 \fuente{Elaboración propia. Los resultados de cada indicador se contrastan en el Capítulo~\ref{cap:conclusiones}.}

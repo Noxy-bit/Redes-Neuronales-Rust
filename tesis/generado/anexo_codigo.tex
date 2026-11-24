@@ -1,20 +1,29 @@
 % Generado por tesis/scripts/anexo_codigo.py — no editar a mano.
-\section{Configuración del paquete y biblioteca}
-Esta sección contiene \texttt{Cargo.toml} (6 líneas), \texttt{src/lib.rs} (19 líneas).
-\lstinputlisting[language=TOML,style=anexo,caption={Archivo \texttt{Cargo.toml}},label=cod:src:Cargo.toml]{generado/fuente/Cargo.toml}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/lib.rs}},label=cod:src:src:lib.rs]{generado/fuente/src/lib.rs}
-\section{Módulo \texttt{math}: álgebra lineal y utilidades}
-Esta sección contiene \texttt{src/math/mod.rs} (15 líneas), \texttt{src/math/error.rs} (68 líneas), \texttt{src/math/vector.rs} (176 líneas), \texttt{src/math/matrix.rs} (291 líneas), \texttt{src/math/rng.rs} (58 líneas).
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/mod.rs}},label=cod:src:src:math:mod.rs]{generado/fuente/src/math/mod.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/error.rs}},label=cod:src:src:math:error.rs]{generado/fuente/src/math/error.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/vector.rs}},label=cod:src:src:math:vector.rs]{generado/fuente/src/math/vector.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/matrix.rs}},label=cod:src:src:math:matrix.rs]{generado/fuente/src/math/matrix.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/rng.rs}},label=cod:src:src:math:rng.rs]{generado/fuente/src/math/rng.rs}
-\section{Módulo \texttt{nn}: red neuronal}
-Esta sección contiene \texttt{src/nn/mod.rs} (19 líneas), \texttt{src/nn/activation.rs} (136 líneas), \texttt{src/nn/loss.rs} (45 líneas), \texttt{src/nn/neuron.rs} (55 líneas), \texttt{src/nn/layer.rs} (205 líneas), \texttt{src/nn/network.rs} (234 líneas).
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/mod.rs}},label=cod:src:src:nn:mod.rs]{generado/fuente/src/nn/mod.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/activation.rs}},label=cod:src:src:nn:activation.rs]{generado/fuente/src/nn/activation.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/loss.rs}},label=cod:src:src:nn:loss.rs]{generado/fuente/src/nn/loss.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/neuron.rs}},label=cod:src:src:nn:neuron.rs]{generado/fuente/src/nn/neuron.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/layer.rs}},label=cod:src:src:nn:layer.rs]{generado/fuente/src/nn/layer.rs}
-\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/nn/network.rs}},label=cod:src:src:nn:network.rs]{generado/fuente/src/nn/network.rs}
+\section{Configuración del paquete y punto de entrada}
+Esta sección contiene \texttt{Cargo.toml} (7 líneas), \texttt{src/main.rs} (16 líneas).
+\needspace{4\baselineskip}\lstinputlisting[language=TOML,style=anexo,caption={Archivo \texttt{Cargo.toml}},label=cod:src:Cargo.toml]{generado/fuente/repo_oficial/neural-network/Cargo.toml}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/main.rs}},label=cod:src:src:main.rs]{generado/fuente/repo_oficial/neural-network/src/main.rs}
+\section{Módulo \texttt{math}: vectores y matrices}
+Esta sección contiene \texttt{src/math/mod.rs} (2 líneas), \texttt{src/math/vector.rs} (141 líneas), \texttt{src/math/matrix.rs} (256 líneas).
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/mod.rs}},label=cod:src:src:math:mod.rs]{generado/fuente/repo_oficial/neural-network/src/math/mod.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/vector.rs}},label=cod:src:src:math:vector.rs]{generado/fuente/repo_oficial/neural-network/src/math/vector.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/math/matrix.rs}},label=cod:src:src:math:matrix.rs]{generado/fuente/repo_oficial/neural-network/src/math/matrix.rs}
+\section{Módulo \texttt{neural}: neurona, capa, red y activaciones}
+Esta sección contiene \texttt{src/neural/mod.rs} (4 líneas), \texttt{src/neural/activation.rs} (11 líneas), \texttt{src/neural/neuron.rs} (42 líneas), \texttt{src/neural/layer.rs} (26 líneas), \texttt{src/neural/network.rs} (30 líneas).
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/neural/mod.rs}},label=cod:src:src:neural:mod.rs]{generado/fuente/repo_oficial/neural-network/src/neural/mod.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/neural/activation.rs}},label=cod:src:src:neural:activation.rs]{generado/fuente/repo_oficial/neural-network/src/neural/activation.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/neural/neuron.rs}},label=cod:src:src:neural:neuron.rs]{generado/fuente/repo_oficial/neural-network/src/neural/neuron.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/neural/layer.rs}},label=cod:src:src:neural:layer.rs]{generado/fuente/repo_oficial/neural-network/src/neural/layer.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/neural/network.rs}},label=cod:src:src:neural:network.rs]{generado/fuente/repo_oficial/neural-network/src/neural/network.rs}
+\section{Módulo \texttt{learning}: pérdida, gradiente y optimizador}
+Esta sección contiene \texttt{src/learning/mod.rs} (3 líneas), \texttt{src/learning/loss.rs} (41 líneas), \texttt{src/learning/gradient.rs} (17 líneas), \texttt{src/learning/optimizer.rs} (37 líneas).
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/learning/mod.rs}},label=cod:src:src:learning:mod.rs]{generado/fuente/repo_oficial/neural-network/src/learning/mod.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/learning/loss.rs}},label=cod:src:src:learning:loss.rs]{generado/fuente/repo_oficial/neural-network/src/learning/loss.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/learning/gradient.rs}},label=cod:src:src:learning:gradient.rs]{generado/fuente/repo_oficial/neural-network/src/learning/gradient.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/learning/optimizer.rs}},label=cod:src:src:learning:optimizer.rs]{generado/fuente/repo_oficial/neural-network/src/learning/optimizer.rs}
+\section{Módulo \texttt{experiments}: experimentos demostrativos}
+Esta sección contiene \texttt{src/experiments/mod.rs} (3 líneas), \texttt{src/experiments/linear.rs} (86 líneas), \texttt{src/experiments/true\_false.rs} (67 líneas), \texttt{src/experiments/vowels.rs} (188 líneas).
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/experiments/mod.rs}},label=cod:src:src:experiments:mod.rs]{generado/fuente/repo_oficial/neural-network/src/experiments/mod.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/experiments/linear.rs}},label=cod:src:src:experiments:linear.rs]{generado/fuente/repo_oficial/neural-network/src/experiments/linear.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/experiments/true\_false.rs}},label=cod:src:src:experiments:true_false.rs]{generado/fuente/repo_oficial/neural-network/src/experiments/true_false.rs}
+\needspace{4\baselineskip}\lstinputlisting[language=Rust,style=anexo,caption={Archivo \texttt{src/experiments/vowels.rs}},label=cod:src:src:experiments:vowels.rs]{generado/fuente/repo_oficial/neural-network/src/experiments/vowels.rs}

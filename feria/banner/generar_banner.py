@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generador del banner oficial del stand (RN · Redes Neuronales desde Cero en Rust).
 
-Rellena banner_template.html con métricas leídas de resultados/*.csv, Cargo.toml y la
-salida real de `cargo test`, exporta cada formato a PDF vectorial con Chrome headless,
+Rellena banner_template.html con métricas del repositorio oficial (resultados/oficial/resumen.csv),
+exporta cada formato a PDF vectorial con Chrome headless,
 renderiza una vista previa PNG y verifica página única, medida exacta y QR legible.
 
 Uso:  python3 feria/banner/generar_banner.py [--proy N] [--repo URL]
@@ -12,7 +12,7 @@ from pathlib import Path
 
 # ======================= PARÁMETROS EDITABLES (una línea cada uno) =======================
 PROY_NUM = "38"
-REPO_URL = "https://github.com/Noxy-bit/Redes-Neuronales-Rust"
+REPO_URL = "https://github.com/lanorrron/neural-network"
 FORMATOS = {  # nombre: (ancho_cm, alto_cm, ajustes de maquetación en rem = 1 % del ancho)
     "60x160": (60, 160, dict(lateral=5, franja=13, hueco=2.6, emblema=26, titulo=84, red=70, flujo=86,
                              qr=32, cta=4.6, cifra=8, cifra_exp=5.6, kpi_pad=2.2, seguro_inf=9)),
@@ -37,30 +37,6 @@ def leer_csv(nombre):
         return list(csv.DictReader(f))
 
 
-def contar_tests():
-    for ruta in (BUILD / "cargo_test.txt", RAIZ / "tesis/generado/cargo_test.txt"):
-        if ruta.exists():
-            txt = ruta.read_text(encoding="utf-8")
-            ok = sum(int(n) for n in re.findall(r"(\d+) passed", txt))
-            fallos = sum(int(n) for n in re.findall(r"(\d+) failed", txt))
-            if fallos:
-                sys.exit(f"cargo test reporta {fallos} fallos: no se genera el banner")
-            if ok:
-                return ok, ruta
-    sys.exit("No hay salida de cargo test: ejecute compilar_banner.sh")
-
-
-def contar_dependencias():
-    total, seccion = 0, None
-    for linea in (RAIZ / "Cargo.toml").read_text(encoding="utf-8").splitlines():
-        linea = linea.split("#")[0].strip()
-        if linea.startswith("["):
-            seccion = linea.strip("[]")
-        elif linea and "=" in linea and seccion and seccion.endswith("dependencies"):
-            total += 1
-    return total
-
-
 def sci(x, dec=1):
     e = math.floor(math.log10(abs(x)))
     return f"{x / 10 ** e:.{dec}f}×10<sup>−{-e}</sup>" if e < 0 else f"{x:.{dec}f}"
@@ -75,32 +51,48 @@ def miles(n):
     return f"{int(n):,}".replace(",", "&#8239;")
 
 
+CRATES_ML = {"ndarray", "nalgebra", "candle-core", "candle-nn", "burn", "tch", "tensorflow", "linfa",
+             "smartcore", "dfdx", "tract-onnx", "ort", "autograd", "rusty-machine", "juice"}
+
+
+def oficial():
+    """Métricas del repositorio oficial (scripts/auditar_repo_oficial.py -> resultados/oficial/resumen.csv)."""
+    ruta = RAIZ / "resultados/oficial/resumen.csv"
+    if not ruta.exists():
+        sys.exit("Falta resultados/oficial/resumen.csv: ejecute scripts/auditar_repo_oficial.py")
+    with open(ruta, newline="", encoding="utf-8") as f:
+        r = {fila["metrica"]: fila["valor"] for fila in csv.DictReader(f)}
+    deps, seccion = [], None
+    for linea in (RAIZ / "repo_oficial/neural-network/Cargo.toml").read_text(encoding="utf-8").splitlines():
+        linea = linea.split("#")[0].strip()
+        if linea.startswith("["):
+            seccion = linea.strip("[]")
+        elif linea and "=" in linea and seccion and seccion.endswith("dependencies"):
+            deps.append(linea.split("=")[0].strip())
+    r["crates_ml"] = str(sum(d in CRATES_ML for d in deps))
+    return r, ruta
+
 def metricas():
-    r = {(f["experimento"], f["metrica"]): f["valor"] for f in leer_csv("resumen.csv")}
-    g = lambda e, m: float(r[(e, m)])
-    tests, fuente_tests = contar_tests()
-    prueba_voc = sum(1 for f in leer_csv("dataset_vocales.csv") if f["conjunto"] == "prueba")
-    ruido = sorted({int(f["ruido_pixeles"]) for f in leer_csv("dataset_vocales.csv") if f["conjunto"] == "prueba"})
-    bench = [f for f in leer_csv("benchmarks.csv") if f["experimento"] == "XOR"]
-    b = max(bench, key=lambda f: int(f["epocas"]) if int(f["epocas"]) <= 10000 else -1)
+    r, fuente = oficial()
+    g = lambda k: float(r[k])
     m = {
-        "CRATES_ML": str(contar_dependencias()),
-        "TESTS": str(tests),
-        "Y2X_VAL": f"MSE {sci(g('exp1_y2x', 'mse_final'))}",
-        "Y2X_DET": f"peso aprendido w = {g('exp1_y2x', 'peso_final'):.4f}<br>"
-                   f"ŷ(6) = {g('exp1_y2x', 'prediccion_x6'):.4f} · {int(g('exp1_y2x', 'epocas'))} épocas",
-        "XOR_VAL": pct(g("exp2_xor", "exactitud_multicapa")),
-        "XOR_DET": f"MSE {sci(g('exp2_xor', 'mse_final_multicapa'), 2)}<br>"
-                   f"perceptrón 1 capa: {pct(g('exp2_xor', 'exactitud_perceptron'))}",
-        "VOC_VAL": pct(g("exp3_vocales", "exactitud_prueba")),
-        "VOC_DET": f"{prueba_voc} muestras con ruido de <span style=\"white-space:nowrap\">{ruido[0]}–{ruido[-1]} px</span><br>"
-                   f"MSE prueba {g('exp3_vocales', 'mse_final_prueba'):.4f}",
-        "BENCH_VAL": f"{float(b['entrenamiento_ms_media']):.1f}&#8239;ms",
-        "BENCH_QUE": f"entrenan la red XOR {b['arquitectura']} durante {miles(b['epocas'])} épocas",
-        "BENCH_DET": f"<code>--release</code> · inferencia {float(b['inferencia_ns_promedio']):.0f}&#8239;ns"
-                     f" · binario de {float(b['tamano_binario_kib']):.0f}&#8239;KiB",
+        "CRATES_ML": r["crates_ml"],
+        "EXPERIMENTOS": "3",
+        "Y2X_VAL": f"MSE {sci(g('lineal_mse_final'))}",
+        "Y2X_DET": f"peso aprendido w = {r['lineal_peso']}<br>"
+                   f"{miles(r['lineal_epocas'])} épocas · α = {r['lineal_alpha']}",
+        "BOOL_VAL": pct(g("booleano_exactitud")),
+        "BOOL_DET": f"P(verdadero | 1) = {g('booleano_p1'):.2f}<br>"
+                   f"P(verdadero | 0) = {g('booleano_p0'):.2f}",
+        "VOC_VAL": pct(g("vocales_exactitud")),
+        "VOC_DET": f"patrones 5×5 · softmax<br>"
+                   f"confianza <span style=\"white-space:nowrap\">{g('vocales_confianza_min'):.1f}–{g('vocales_confianza_max'):.1f}&#8239;%</span>",
+        "BENCH_VAL": f"{g('computo_ms_vocales'):.1f}&#8239;ms",
+        "BENCH_QUE": f"entrena la red de vocales 25&#8239;→&#8239;5 durante {miles(r['vocales_epocas'])} épocas",
+        "BENCH_DET": f"<code>--release</code> · sin pausas de demostración"
+                     f" · binario de {g('binario_kib'):.0f}&#8239;KiB",
     }
-    return m, fuente_tests
+    return m, fuente
 
 
 # ------------------------------------- Recursos -----------------------------------------
@@ -330,7 +322,7 @@ def main():
     }
     (DIR / "recursos/isotipo_rn.svg").write_text(svg_isotipo().replace(' class="emblema"', ""), encoding="utf-8")
     plantilla = (DIR / "banner_template.html").read_text(encoding="utf-8")
-    print(f"Métricas reales (resultados/*.csv, Cargo.toml, {fuente_tests.relative_to(RAIZ)}):")
+    print(f"Métricas reales del repositorio oficial ({fuente_tests.relative_to(RAIZ)}):")
     for k, v in m.items():
         print(f"  {k:10s} {re.sub(r'<[^>]+>', ' ', v).replace('&#8239;', ' ')}")
     for nombre, (ancho, alto, aj) in FORMATOS.items():

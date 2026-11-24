@@ -127,123 +127,111 @@ def d01_arbol():
 
 # --------------------------------------------------------------------------
 def d02_arquitectura():
-    d = Diagrama("Arquitectura de módulos Rust")
+    d = Diagrama("Arquitectura del repositorio oficial lanorrron/neural-network")
     paquete = "align=left;verticalAlign=top;spacingLeft=12;spacingTop=4;fontStyle=1;fontSize=14;dashed=0;"
     clase = "align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;arcSize=3;"
     W = 1420
-    pk_exp = d.caja("experiments  (src/experiments/)", 0, 170, W, 210, paquete, borde=NARANJA, relleno="#F8FAFC")
-    pk_nn = d.caja("nn  (src/nn/)", 0, 440, W, 350, paquete, borde=PURPURA, relleno="#F8FAFC")
-    pk_math = d.caja("math  (src/math/)", 0, 850, W, 250, paquete, borde=CIAN, relleno="#F8FAFC")
-    main = d.caja(uml("main.rs — CLI", ["flags: --all · --exp1 · --exp2 · --exp3 · --escritorio · --bench",
-                                        "--export &lt;DIR&gt; · --seed &lt;N&gt; (por defecto 42)"],
-                      ["+ parsear(args) → Opciones", "+ ejecutar(&amp;Opciones) → resultados/*.csv"]),
-                  470, 0, 480, 120, clase, borde=MARINO, relleno="#F1F5F9")
+    main = d.caja(uml("main.rs — CLI", ["cargo run [-- lineal | booleano | vocal &lt;letra&gt;]",
+                                        "sin argumento: experimento de vocales"],
+                      ["+ main(): match args.first() → experiments::*::run()"]),
+                  420, 0, 500, 110, clase, borde=MARINO, relleno="#F1F5F9")
+    comp = d.caja(uml("Motor de validación complementario", ["Noxy-bit/Redes-Neuronales-Rust (f64, std)"],
+                      ["XOR 2-4-1 con retropropagación multicapa", "52 pruebas · gradient checking · benchmarks"]),
+                  1000, 0, 420, 110, clase + "dashed=1;", borde=GRIS, relleno="#FFFFFF")
+    pk_exp = d.caja("experiments  (src/experiments/)", 0, 160, W, 200, paquete, borde=NARANJA, relleno="#F8FAFC")
+    pk_neu = d.caja("neural  (src/neural/)", 0, 420, 900, 290, paquete, borde=PURPURA, relleno="#F8FAFC")
+    pk_lea = d.caja("learning  (src/learning/)", 940, 420, 480, 290, paquete, borde=PURPURA, relleno="#F8FAFC")
+    pk_math = d.caja("math  (src/math/)", 0, 770, W, 200, paquete, borde=CIAN, relleno="#F8FAFC")
     exps = [
-        ("exp1_y2x", ["Regresión y = 2x", "red 1-1 · Linear · α = 0.01"], ["→ exp1_y2x.csv"]),
-        ("exp2_xor", ["Perceptrón 2-1 vs. 2-4-1", "α ∈ {0.01, 0.5, 50}"], ["→ exp2_xor.csv", "→ exp2_xor_lr.csv", "→ exp2_xor_frontera.csv"]),
-        ("exp3_vocales", ["Vocales A-E-I-O-U 5×5", "red 25-10-5 · Sigmoid"], ["→ exp3_vocales.csv", "→ exp3_confusion.csv", "→ dataset_vocales.csv"]),
-        ("prueba_escritorio", ["Traza paso a paso", "y = 2x y XOR 2-2-1"], ["→ prueba_escritorio.csv"]),
-        ("benchmarks", ["std::time::Instant", "perfil --release"], ["→ benchmarks.csv"]),
-        ("csv::CsvWriter", ["- writer: BufWriter&lt;File&gt;"], ["+ create(ruta, encabezados)", "+ write_row(campos)", "+ finish()"]),
+        ("linear.rs · run()", ["Aprender y = 2x · 1 neurona lineal", "6 muestras · α = 0.02 · meta MSE ≤ 10⁻¹²"],
+         ["gradiente de lote completo (MSE)", "informe cada 20 épocas"]),
+        ("true_false.rs · run()", ["0 → falso · 1 → verdadero", "Sigmoid · umbral 0.5 · α = 0.5 · 250 épocas"],
+         ["gradiente (p − y) / N", "traza ∇w, ∇b, Δw, Δb por época"]),
+        ("vowels.rs · run(Option&lt;&amp;str&gt;)", ["Vocales A·E·I·O·U en 5×5 → 25 entradas",
+                                                   "Layer 25 → 5 · softmax · α = 0.3 · 500 épocas"],
+         ["encode · softmax · argmax · parse_vowel", "gradiente (p − y) / N por salida"]),
     ]
     for k, (n, c, m) in enumerate(exps):
-        d.caja(uml(n, c, m), 20 + k * 233, 205, 215, 160, clase, borde=NARANJA)
-    network = d.caja(uml("Network", ["- layers: Vec&lt;Layer&gt;", "- loss: Mse"],
-                         ["+ new(topología, activaciones, semilla)", "+ forward(&amp;mut self, x) → ŷ",
-                          "+ backward(&amp;mut self, y) → pérdida", "+ update(&amp;mut self, α)",
-                          "+ train_step(&amp;mut self, x, y, α)", "+ train(&amp;mut self, X, Y, E, α)",
-                          "+ predict(&amp;self, x) → ŷ", "+ evaluate_mse(&amp;self, X, Y)"]),
-                     20, 480, 290, 260, clase, borde=PURPURA)
-    layer = d.caja(uml("Layer", ["- weights: Matrix  (n_out × n_in)", "- biases: Vector  (n_out)",
-                                 "- activation: Activation", "- input, z, output, delta: Vector",
-                                 "- grad_weights: Matrix", "- grad_biases: Vector"],
-                       ["+ new(n_in, n_out, act, &amp;mut Rng)", "+ forward(&amp;mut self, x) → a",
-                        "+ backward(&amp;mut self, ∂L/∂a) → ∂L/∂x", "+ apply_gradients(&amp;mut self, α)",
-                        "+ neuron(i) → Neuron"]),
-                   370, 480, 300, 280, clase, borde=PURPURA)
-    neuron = d.caja(uml("Neuron", ["+ weights: Vector", "+ bias: f64", "+ activation: Activation"],
-                        ["+ weighted_sum(x) → z", "+ forward(x) → a"]),
-                    730, 480, 220, 150, clase, borde=PURPURA)
-    activation = d.caja(uml("Activation", ["Sigmoid · ReLU · Linear"], ["(Copy, sin asignación dinámica)"], "enum"),
-                        730, 660, 220, 100, clase, borde=PURPURA)
-    act_fn = d.caja(uml("ActivationFn", [], ["+ activate(z) → f(z)", "+ derivative(z) → f'(z)", "+ name()"], "trait"),
-                    1000, 480, 190, 120, clase, borde=PURPURA, relleno="#E8EDF5")
-    structs = d.caja(uml("Sigmoid · ReLU · Linear", ["σ(z) · max(0, z) · z"], [], "struct"),
-                     1000, 660, 190, 100, clase, borde=PURPURA)
-    loss_fn = d.caja(uml("LossFn", [], ["+ loss(ŷ, y)", "+ derivative(ŷ, y)"], "trait"),
-                     1230, 480, 170, 120, clase, borde=PURPURA, relleno="#E8EDF5")
-    mse = d.caja(uml("Mse", ["(1/n)·Σ(ŷᵢ − yᵢ)²", "∂/∂ŷ = (2/n)(ŷ − y)"], [], "struct"),
-                 1230, 660, 170, 100, clase, borde=PURPURA)
-    vector = d.caja(uml("Vector", ["- data: Vec&lt;f64&gt;"],
-                        ["+ dot, add, sub, hadamard, scale", "+ get(i) → Result&lt;f64&gt;", "+ argmax()"]),
-                    20, 890, 290, 190, clase, borde=CIAN)
-    matrix = d.caja(uml("Matrix", ["- rows, cols: usize", "- data: Vec&lt;f64&gt;  (orden por filas)"],
-                        ["+ new(rows, cols, data) → Result", "+ get(i, j) / set(i, j, v) → Result",
-                         "+ matmul, mul_vector, transpose", "+ add, sub, hadamard, scale, outer"]),
-                    370, 890, 300, 190, clase, borde=CIAN)
-    rng = d.caja(uml("Rng", ["- state: u64  (SplitMix64)"], ["+ new(semilla)", "+ next_f64() · uniform(a, b)", "+ shuffle(&amp;mut [T])"]),
-                 730, 890, 220, 190, clase, borde=CIAN)
-    error = d.caja(uml("MathError", ["DimensionMismatch", "IndexOutOfBounds", "InvalidShape", "InvalidArgument"],
-                       ["MathResult&lt;T&gt; = Result&lt;T, MathError&gt;"], "enum"),
-                   1000, 890, 400, 190, clase, borde=CIAN)
+        d.caja(uml(n, c, m), 20 + k * 467, 195, 445, 145, clase, borde=NARANJA)
+    network = d.caja(uml("Network", ["- layers: Vec&lt;Layer&gt;"], ["+ new(layers)", "+ forward(&amp;self, x) → Vector"]),
+                     20, 460, 260, 120, clase, borde=PURPURA)
+    layer = d.caja(uml("Layer", ["- neurons: Vec&lt;Neuron&gt;"],
+                       ["+ new(neurons)", "+ forward(&amp;self, x) → Vector", "+ neurons_mut() → &amp;mut [Neuron]"]),
+                   320, 460, 270, 130, clase, borde=PURPURA)
+    neuron = d.caja(uml("Neuron", ["- weights: Vector&lt;f32&gt;", "- bias: f32"],
+                        ["+ forward(x) = x · w + b", "+ weights(_mut), bias(_mut)"]),
+                    630, 460, 250, 130, clase, borde=PURPURA)
+    act = d.caja(uml("Activacion", ["relu(v) = max(0, v)", "sigmoid(v) = 1 / (1 + e⁻ᵛ)"], []),
+                 630, 600, 250, 76, clase, borde=PURPURA, relleno="#E8EDF5")
+    mse = d.caja(uml("MSE", ["calculate(ŷ, y) = (1/n)·Σ(ŷ − y)²"], ["derivate(ŷ, y) = 2(ŷ − y)/n"]),
+                 960, 460, 440, 76, clase, borde=PURPURA)
+    grad = d.caja(uml("Gradient", ["weights(δ, x) = δ·xᵢ  ·  bias(δ) = δ"], []),
+                  960, 548, 440, 56, clase, borde=PURPURA)
+    gd = d.caja(uml("GradientDescent", ["- learning_rate: f32"], ["update_weights(w, ∇) · update_bias(b, ∇)  →  θ ← θ − α∇"]),
+                960, 614, 440, 84, clase, borde=PURPURA)
+    vector = d.caja(uml("Vector&lt;T&gt;", ["- data: Vec&lt;T&gt;"],
+                        ["+ new, zeros, len, get, set, as_slice(_mut)", "+ add, sub, multiply_scalar, dot, map",
+                         "+ random(n)  (rand 0.9)"]),
+                    20, 810, 560, 140, clase, borde=CIAN)
+    matrix = d.caja(uml("Matrix&lt;T&gt;", ["- rows, columns: usize · data: Vec&lt;T&gt;"],
+                        ["+ new, get, set, transpose, print, zeros, random", "+ add, sub, multiply_scalar, multiply",
+                         "+ add_bias, map, multiply_elementwise",
+                         "<i>definida; los experimentos actuales no la utilizan</i>"]),
+                    620, 810, 780, 140, clase, borde=CIAN)
     dep = "dashed=1;endArrow=open;endFill=0;strokeColor=#334155;"
-    d.flecha(main, pk_exp, "«usa»", dep + "exitX=0.5;exitY=1;entryX=0.5;entryY=0;")
-    d.flecha(pk_exp, pk_nn, "«usa»", dep + "exitX=0.97;exitY=1;entryX=0.97;entryY=0;")
-    d.flecha(pk_nn, pk_math, "«usa»", dep + "exitX=0.97;exitY=1;entryX=0.97;entryY=0;")
-    comp = "endArrow=none;startArrow=diamondThin;startFill=1;startSize=14;strokeColor=#334155;"
-    d.flecha(network, layer, "1..*", comp + "exitX=1;exitY=0.25;entryX=0;entryY=0.23;")
-    d.flecha(layer, matrix, "pesos y gradientes", comp + "exitX=0.5;exitY=1;entryX=0.5;entryY=0;")
-    d.flecha(layer, neuron, "fila i ≡ Neuron", dep + "exitX=1;exitY=0.2;entryX=0;entryY=0.37;")
-    d.flecha(layer, activation, "", "endArrow=open;strokeColor=#334155;exitX=1;exitY=0.85;entryX=0;entryY=0.5;")
-    real = "dashed=1;endArrow=block;endFill=0;endSize=12;strokeColor=#334155;"
-    d.flecha(activation, act_fn, "", real + "exitX=1;exitY=0.3;entryX=0;entryY=0.75;")
-    d.flecha(structs, act_fn, "", real + "exitX=0.5;exitY=0;entryX=0.5;entryY=1;")
-    d.flecha(mse, loss_fn, "", real + "exitX=0.5;exitY=0;entryX=0.5;entryY=1;")
-    d.texto("◆ composición   - - -▷ implementa trait   - - -&gt; dependencia «usa»", 470, 1110, 480, 26,
-            "fontSize=11;fontColor=#475569;")
+    d.flecha(main, pk_exp, "«usa»", dep + "exitX=0.5;exitY=1;entryX=0.475;entryY=0;")
+    d.flecha(pk_exp, pk_neu, "«usa»", dep + "exitX=0.3;exitY=1;entryX=0.47;entryY=0;")
+    d.flecha(pk_exp, pk_lea, "«usa»", dep + "exitX=0.83;exitY=1;entryX=0.5;entryY=0;")
+    d.flecha(pk_neu, pk_math, "«usa»", dep + "exitX=0.5;exitY=1;entryX=0.317;entryY=0;")
+    d.flecha(comp, main, "valida", "dashed=1;endArrow=open;strokeColor=#64748B;exitX=0;exitY=0.5;entryX=1;entryY=0.5;")
+    rombo = "endArrow=none;startArrow=diamondThin;startFill=1;startSize=14;strokeColor=#334155;"
+    d.flecha(network, layer, "1..*", rombo + "exitX=1;exitY=0.4;entryX=0;entryY=0.4;")
+    d.flecha(layer, neuron, "1..*", rombo + "exitX=1;exitY=0.4;entryX=0;entryY=0.4;")
+    d.texto("◆ composición   - - -&gt; dependencia «usa»   ·   aritmética f32   ·   única dependencia: rand 0.9",
+            300, 980, 820, 26, "fontSize=11;fontColor=#475569;")
     return d
 
 
 # --------------------------------------------------------------------------
 def d03_flujo():
-    d = Diagrama("Flujo de entrenamiento")
-    cx, w = 430, 460
+    d = Diagrama("Flujo de entrenamiento del repositorio oficial")
+    cx, w = 430, 500
     x = cx - w / 2
     inicio_fin = "ellipse;fontStyle=1;"
-    paso = "align=center;"
     y = 0
     nodos = {}
 
     def nodo(clave, texto, h, estilo="", borde=MARINO, relleno="#FFFFFF", ancho=w):
         nonlocal y
         nodos[clave] = (d.caja(texto, cx - ancho / 2, y, ancho, h, estilo, borde, relleno), y, h)
-        y += h + 38
+        y += h + 36
 
-    nodo("ini", "Inicio", 46, inicio_fin, relleno="#E2E8F0", ancho=180)
-    nodo("init", "<b>Inicializar la red</b><br>Network::new(topología, activaciones, semilla = 42)<br>"
-         "pesos Xavier/He con SplitMix64 · sesgos b = 0", 78)
-    nodo("epoca", "<b>Para cada época</b> e = 1, …, E", 44, relleno="#F1F5F9")
-    nodo("muestra", "<b>Para cada muestra</b> (x, y) del conjunto de entrenamiento", 44, relleno="#F1F5F9")
+    nodo("ini", "Inicio  ·  cargo run -- &lt;experimento&gt;", 46, inicio_fin, relleno="#E2E8F0", ancho=300)
+    nodo("init", "<b>Inicializar</b><br>Neuron::new(Vector::zeros(n), 0.0)  ·  pesos y bias en cero<br>"
+         "GradientDescent::new(α)", 70)
+    nodo("epoca", "<b>Para cada época</b> e = 1, …, E  ·  acumuladores ∇w = 0, ∇b = 0", 44, relleno="#F1F5F9")
+    nodo("muestra", "<b>Para cada muestra</b> (x, y) del conjunto fijo", 44, relleno="#F1F5F9")
     y_grupo = y - 16
-    nodo("fwd", "<b>1. forward</b>  (propagación hacia adelante)<br>a⁽⁰⁾ = x<br>"
-         "z⁽ˡ⁾ = W⁽ˡ⁾·a⁽ˡ⁻¹⁾ + b⁽ˡ⁾,   a⁽ˡ⁾ = f(z⁽ˡ⁾),   l = 1, …, L<br>ŷ = a⁽ᴸ⁾", 98, borde=AZUL, relleno="#E8EDF5")
-    nodo("loss", "<b>2. Pérdida</b><br>L = MSE(ŷ, y) = (1/n)·Σᵢ (ŷᵢ − yᵢ)²", 58, borde=NARANJA, relleno="#F1F5F9")
-    nodo("bwd", "<b>3. backward</b>  (retropropagación)<br>δ⁽ᴸ⁾ = (2/n)(ŷ − y) ⊙ f′(z⁽ᴸ⁾)<br>"
-         "δ⁽ˡ⁾ = (W⁽ˡ⁺¹⁾)ᵀ·δ⁽ˡ⁺¹⁾ ⊙ f′(z⁽ˡ⁾)<br>∇W⁽ˡ⁾ = δ⁽ˡ⁾·(a⁽ˡ⁻¹⁾)ᵀ,   ∇b⁽ˡ⁾ = δ⁽ˡ⁾", 112,
+    nodo("fwd", "<b>1. forward</b>  Neuron::forward / Layer::forward<br>z = x · w + b", 58, borde=AZUL, relleno="#E8EDF5")
+    nodo("sal", "<b>2. Salida</b><br>lineal: ŷ = z   ·   booleano: p = σ(z)   ·   vocales: p = softmax(z)",
+         58, borde=NARANJA, relleno="#F1F5F9")
+    nodo("err", "<b>3. Error por muestra</b><br>lineal: δ = MSE′(ŷ, y) / N = 2(ŷ − y) / N<br>"
+         "booleano y vocales: δ = (p − y) / N", 78, borde=PURPURA, relleno="#E8EDF5")
+    nodo("acu", "<b>4. Acumular</b>  Gradient::weights / Gradient::bias<br>∇w += δ · x,   ∇b += δ", 58,
          borde=PURPURA, relleno="#E8EDF5")
-    nodo("upd", "<b>4. update</b>  (descenso de gradiente)<br>W⁽ˡ⁾ ← W⁽ˡ⁾ − α·∇W⁽ˡ⁾,   b⁽ˡ⁾ ← b⁽ˡ⁾ − α·∇b⁽ˡ⁾",
-         64, borde=VERDE, relleno="#ECF5EF")
-    y_fin_grupo = y - 38 + 16
-    nodo("q1", "¿Quedan<br>muestras?", 92, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=200)
-    nodo("log", "<b>Registrar la época</b>: MSE, exactitud, pesos → resultados/*.csv", 50, relleno="#F1F5F9")
-    nodo("q2", "¿e &lt; E?", 92, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=200)
-    nodo("eval", "<b>Evaluación final</b> con predict(&amp;self, x): exactitud, matriz de confusión", 50)
+    y_fin_grupo = y - 36 + 16
+    nodo("q1", "¿Quedan<br>muestras?", 88, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=200)
+    nodo("upd", "<b>5. Actualizar una vez por época</b>  GradientDescent<br>w ← w − α·∇w,   b ← b − α·∇b", 60,
+         borde=VERDE, relleno="#ECF5EF")
+    nodo("log", "<b>Informar</b>: parámetros, MSE o probabilidades por época (stdout)", 46, relleno="#F1F5F9")
+    nodo("q2", "¿e &lt; E y no<br>se alcanzó la meta?", 100, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=230)
+    nodo("eval", "<b>Resultado final</b>: predicciones, clase reconocida y confianza", 46)
     nodo("fin", "Fin", 46, inicio_fin, relleno="#E2E8F0", ancho=180)
     grupo = d.caja("", x - 30, y_grupo, w + 60, y_fin_grupo - y_grupo, "dashed=1;dashPattern=6 4;", borde=GRIS, relleno="none")
-    d.celdas.insert(0, d.celdas.pop())  # el recuadro va al fondo
-    d.texto("<b>train_step(&amp;mut self, x, y, α)</b><br>costo O(P) por muestra", x + w + 40, y_grupo, 240, 50,
+    d.celdas.insert(0, d.celdas.pop())
+    d.texto("<b>Cuerpo del ciclo interno</b><br>escrito en cada experimento", x + w + 40, y_grupo, 240, 50,
             "align=left;fontSize=12;fontColor=#475569;")
-    orden = ["ini", "init", "epoca", "muestra", "fwd", "loss", "bwd", "upd", "q1", "log", "q2", "eval", "fin"]
+    orden = ["ini", "init", "epoca", "muestra", "fwd", "sal", "err", "acu", "q1", "upd", "log", "q2", "eval", "fin"]
     for a, b in zip(orden, orden[1:]):
         etiqueta = "no" if a in ("q1", "q2") else ""
         d.flecha(nodos[a][0], nodos[b][0], etiqueta, "exitX=0.5;exitY=1;entryX=0.5;entryY=0;")
@@ -255,10 +243,10 @@ def d03_flujo():
              puntos=[(x - 70, yc("q1")), (x - 70, yc("muestra"))])
     d.flecha(nodos["q2"][0], nodos["epoca"][0], "sí", "exitX=0;exitY=0.5;entryX=0;entryY=0.5;",
              puntos=[(x - 120, yc("q2")), (x - 120, yc("epoca"))])
-    d.caja("<b>Notación</b><br>L: número de capas · l: índice de capa<br>α: tasa de aprendizaje<br>"
-           "⊙: producto de Hadamard (elemento a elemento)<br>f′: derivada analítica de Sigmoid, ReLU o Linear<br><br>"
-           "<b>Costo</b> (P = número de pesos)<br>forward, backward, predict: O(P)<br>entrenamiento: O(E·N·P)",
-           x + w + 40, nodos["bwd"][1] - 10, 300, 190, "align=left;verticalAlign=top;fontSize=12;", borde=GRIS, relleno="#F8FAFC")
+    d.caja("<b>Notación</b><br>N: número de muestras · α: tasa de aprendizaje<br>σ: Sigmoid · softmax: e^zₖ / Σⱼ e^zⱼ<br>"
+           "δ: gradiente de la pérdida respecto a z<br><br><b>Configuración real</b><br>lineal: N = 6, α = 0.02, E ≤ 10 000<br>"
+           "booleano: N = 2, α = 0.5, E = 250<br>vocales: N = 5, α = 0.3, E = 500",
+           x + w + 40, nodos["err"][1] - 10, 300, 210, "align=left;verticalAlign=top;fontSize=12;", borde=GRIS, relleno="#F8FAFC")
     return d
 
 
@@ -321,15 +309,15 @@ def d04_memoria():
 def d05_fases():
     d = Diagrama("Fases de la metodología")
     fases = [
-        ("Matemática", "Vector y Matrix: acceso seguro, suma, resta, producto punto, Hadamard, matmul y transpuesta",
-         "Base de álgebra lineal probada", CIAN),
-        ("Neurona", "Neuron con pesos, sesgo y forward: z = w·x + b, a = f(z)", "Una neurona calcula su salida", CIAN),
-        ("Activaciones", "Sigmoid, ReLU y Linear con derivadas analíticas", "Activaciones verificadas", CIAN),
-        ("Error", "MSE y su gradiente ∂L/∂ŷ", "Medida de la diferencia salida–objetivo", CIAN),
-        ("Primer aprendizaje", "Gradientes y descenso de gradiente sobre y = 2x", "El error disminuye: w → 2", AZUL),
-        ("Capas y red", "Layer y Network: forward, backward, predict y train; gradient checking", "Red multicapa operativa", AZUL),
-        ("XOR", "Perceptrón 2-1 vs. red 2-4-1 y tres tasas de aprendizaje", "Aprendizaje no lineal demostrado", PURPURA),
-        ("Vocales", "Matrices 5×5 de A, E, I, O, U con ruido; red 25-10-5", "Clasificación, exactitud y matriz de confusión", PURPURA),
+        ("Matemática", "Vector&lt;T&gt; y Matrix&lt;T&gt; genéricos: suma, resta, escalar, producto punto, producto matricial y transpuesta",
+         "Base de álgebra lineal", CIAN),
+        ("Neurona", "Neuron con pesos, bias y forward: z = x·w + b; Layer y Network", "Una neurona calcula su salida", CIAN),
+        ("Activaciones", "Activacion::sigmoid y relu; softmax para salidas multiclase", "Salidas como probabilidad", CIAN),
+        ("Error y gradiente", "MSE y su derivada; Gradient y GradientDescent", "Regla θ ← θ − α∇ disponible", CIAN),
+        ("Primer aprendizaje", "Neurona lineal que aprende y = 2x con MSE", "MSE ≤ 10⁻¹²: w → 2", AZUL),
+        ("Clasificación binaria", "Neurona Sigmoid: 0 → falso, 1 → verdadero, umbral 0.5", "Decisión probabilística", AZUL),
+        ("Vocales", "Capa 25 → 5 con softmax sobre patrones 5×5 de A, E, I, O, U", "5 de 5 vocales reconocidas", PURPURA),
+        ("Validación", "Motor complementario: XOR 2-4-1, ruido, 52 pruebas y gradient checking", "Fundamentos verificados", PURPURA),
         ("Documentación", "Documentación ///, prueba de escritorio, benchmarks, tesis APA 7 y kit de feria",
          "Proyecto educativo abierto", NARANJA),
     ]
@@ -354,11 +342,11 @@ def d05_fases():
         d.flecha(ids[k], ids[k + 1], "", "exitX=1;exitY=0.5;entryX=0;entryY=0.5;")
     d.flecha(ids[3], ids[4], "", "exitX=0.5;exitY=1;entryX=0.5;entryY=0;",
              puntos=[(pos[3][0] + W / 2, 266), (pos[4][0] + W / 2, 266)])
-    d.texto("Cada flecha es una compuerta de calidad: la fase siguiente solo inicia con <b>cargo test</b> al 100 % en verde.",
+    d.texto("Cada flecha es una compuerta de calidad: la fase siguiente inicia cuando la ejecución reproduce el resultado esperado.",
             0, 560, 1200, 26, "align=left;fontSize=12;fontColor=#475569;")
-    ciclo = ["Diseñar<br>(ecuaciones y dimensiones)", "Implementar<br>(Rust std, sin crates de ML)",
-             "Probar<br>(cargo test + gradient checking)", "Documentar<br>(/// con fórmulas y Big-O)",
-             "Exportar evidencia<br>(resultados/*.csv)"]
+    ciclo = ["Diseñar<br>(ecuaciones y dimensiones)", "Implementar<br>(Rust, sin crates de ML)",
+             "Ejecutar y observar<br>(trazas por época)", "Validar<br>(cargo test + gradient checking)",
+             "Documentar evidencia<br>(resultados/*.csv)"]
     d.texto("<b>Ciclo aplicado dentro de cada fase</b>", 0, 600, 400, 26, "align=left;")
     prev = None
     for k, t in enumerate(ciclo):

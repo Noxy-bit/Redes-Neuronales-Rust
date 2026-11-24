@@ -1,23 +1,23 @@
 \chapter{Recomendaciones}\label{cap:recomendaciones}
-Con base en la experiencia obtenida y en las limitaciones identificadas, se formulan recomendaciones para la extensión técnica del motor y para su aprovechamiento educativo en la FICCT.
+A partir de las limitaciones identificadas se formulan recomendaciones técnicas y académicas.
 
 \section{Recomendaciones técnicas}
-Las siguientes extensiones mejorarían la capacidad del motor sin alterar su principio de implementación desde cero.
+Estas extensiones conservan el principio de implementación desde cero.
 
 \begin{enumerate}[leftmargin=2em,itemsep=1pt]
-\item Incorporar entrenamiento por mini-lotes (\emph{mini-batch}) y optimizadores adaptativos como Momentum o Adam para acelerar la convergencia y reducir la sensibilidad a la tasa de aprendizaje.
-\item Añadir la función de pérdida de entropía cruzada con activación Softmax, más adecuada que el MSE para clasificación multiclase.
-\item Ampliar el Experimento~3 a matrices de mayor resolución, a todo el alfabeto o a dígitos manuscritos, y separar un conjunto de validación para seleccionar hiperparámetros.
-\item Estudiar el efecto del número de neuronas ocultas y de la semilla aleatoria sobre la convergencia mediante experimentos repetidos con análisis estadístico.
-\item Explorar la paralelización con los hilos de la biblioteca estándar de Rust para acelerar el entrenamiento de redes mayores.
-\item Incorporar regularización (por ejemplo, penalización $L_2$) y técnicas de detención temprana para controlar el sobreajuste en conjuntos de datos más grandes.
+\item Añadir pruebas automatizadas al repositorio oficial, empezando por las operaciones de \texttt{Vector}, \texttt{MSE} y \texttt{Gradient}, y adaptar del motor complementario las pruebas de \emph{gradient checking}.
+\item Corregir el error \texttt{clippy::modulo\_one} y eliminar o utilizar el código que hoy genera advertencias, como \texttt{Matrix}, \texttt{Network} y las funciones \texttt{random}.
+\item Incorporar al repositorio oficial la retropropagación multicapa del motor complementario y un experimento XOR que justifique las capas ocultas.
+\item Ampliar el experimento de vocales con variantes ruidosas y un conjunto de prueba separado, a matrices de mayor resolución o a todo el alfabeto.
+\item Exportar los resultados de cada experimento a CSV directamente desde el programa y ofrecer una opción para desactivar las pausas de la demostración.
+\item Explorar mini-lotes, optimizadores adaptativos como Momentum o Adam y regularización $L_2$ para conjuntos de datos más grandes.
 \end{enumerate}
 
 \section{Recomendaciones académicas}
-El repositorio puede aprovecharse como recurso didáctico más allá de la Feria Facultativa.
+El repositorio puede aprovecharse como recurso didáctico después de la feria.
 
 \begin{enumerate}[leftmargin=2em,itemsep=1pt]
-\item Utilizar el repositorio como material de laboratorio en Programación 1, proponiendo a los estudiantes reproducir la prueba de escritorio con calculadora y modificar los parámetros de los experimentos.
+\item Usar el repositorio como laboratorio de Programación 1: reproducir con calculadora las actualizaciones impresas y modificar los parámetros.
 \item Diseñar ejercicios graduados en los que los estudiantes implementen una nueva función de activación o de pérdida y la validen con \emph{gradient checking}.
 \item Articular el proyecto con las asignaturas de Álgebra Lineal y Cálculo, presentando la retropropagación como aplicación directa de la regla de la cadena y del producto matricial.
 \item Mantener el repositorio como proyecto abierto del Semillero de Investigación del IICCT, de modo que futuras cohortes puedan ampliarlo y documentar sus aportes.

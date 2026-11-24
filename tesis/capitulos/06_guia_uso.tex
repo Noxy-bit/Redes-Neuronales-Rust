@@ -1,8 +1,8 @@
 \chapter{Guía de Instalación, Uso y Demostración}\label{cap:guia}
-Este capítulo constituye el manual de usuario del proyecto. Describe los requisitos del entorno, la instalación de las herramientas, la compilación y ejecución del motor, la regeneración de los resultados y de este documento, y el guion recomendado para la demostración en la Feria Facultativa. Los comandos se presentan para un sistema GNU/Linux; en Windows y macOS son idénticos una vez instalado Rust.
+Este capítulo constituye el manual de usuario del proyecto. Describe los requisitos del entorno, la instalación de las herramientas, la compilación y ejecución del repositorio oficial, el uso del motor complementario, la regeneración de los resultados y de este documento, y el guion recomendado para la demostración en la Feria Facultativa. Los comandos se presentan para un sistema GNU/Linux; en Windows y macOS son idénticos una vez instalado Rust.
 
 \section{Requisitos del entorno}
-El motor solo requiere el compilador de Rust y su gestor Cargo. Las herramientas de documentación son opcionales y solo se necesitan para regenerar las gráficas y este documento. La Tabla~\ref{tab:requisitos} resume el software utilizado.
+El repositorio oficial solo requiere el compilador de Rust y su gestor Cargo. Las herramientas de documentación son opcionales y solo se necesitan para regenerar las gráficas y este documento. La Tabla~\ref{tab:requisitos} resume el software utilizado.
 
 \begin{table}[!htbp]
 \caption{Software requerido y opcional}\label{tab:requisitos}
@@ -11,7 +11,7 @@ El motor solo requiere el compilador de Rust y su gestor Cargo. Las herramientas
 \toprule
 Herramienta & Uso & Necesidad \\
 \midrule
-Rust y Cargo (edición 2024) & Compilar, probar y ejecutar el motor & Obligatoria \\
+Rust y Cargo (edición 2024) & Compilar y ejecutar el repositorio & Obligatoria \\
 Git & Clonar el repositorio & Recomendada \\
 Python 3 con \texttt{matplotlib} & Generar gráficas desde los CSV & Opcional (documentación) \\
 TeX Live con XeLaTeX y \texttt{latexmk} & Compilar el PDF del documento & Opcional (documentación) \\
@@ -19,110 +19,105 @@ Pandoc y \texttt{python-docx} & Generar la versión DOCX editable & Opcional (do
 draw.io (diagrams.net) & Editar y exportar los diagramas & Opcional (documentación) \\
 \bottomrule
 \end{tabularx}
-\fuente{Todas las herramientas son gratuitas y de código abierto. No se requiere GPU ni conexión a Internet después de la instalación.}
+\fuente{Todas las herramientas son gratuitas y de código abierto. No se requiere GPU; la primera compilación descarga el crate \texttt{rand} desde crates.io.}
 \end{table}
 
 \section{Instalación}
-Rust se instala con el instalador oficial \texttt{rustup}, que descarga el compilador, Cargo y la biblioteca estándar. A continuación se clona el repositorio y se compila el motor en modo optimizado.
+Rust se instala con el instalador oficial \texttt{rustup}, que descarga el compilador, Cargo y la biblioteca estándar. A continuación se clona el repositorio oficial y se compila en modo optimizado.
 
-\begin{lstlisting}[language={},numbers=none,caption={Instalación de Rust y obtención del proyecto},label=cod:instalacion]
+\begin{lstlisting}[language={},numbers=none,caption={Instalación de Rust y obtención del repositorio oficial},label=cod:instalacion]
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
 rustc --version && cargo --version
-git clone https://github.com/Noxy-bit/Redes-Neuronales-Rust.git
-cd Redes-Neuronales-Rust
+git clone https://github.com/lanorrron/neural-network.git
+cd neural-network
 cargo build --release
 \end{lstlisting}
 
-Como el archivo \texttt{Cargo.toml} no declara dependencias, la compilación no descarga ningún paquete adicional y puede realizarse sin conexión una vez clonado el repositorio.
-
-\section{Verificación del motor}
-Antes de ejecutar los experimentos se recomienda comprobar que todas las pruebas se aprueban en el equipo de destino y que el análisis estático no reporta advertencias.
-
-\begin{lstlisting}[language={},numbers=none,caption={Ejecución de pruebas y análisis estático},label=cod:pruebas]
-cargo test                     # 52 pruebas: 51 de biblioteca y 1 de la CLI
-cargo clippy --all-targets     # análisis estático, sin advertencias
-cargo doc --no-deps --open     # documentación generada desde los comentarios ///
-\end{lstlisting}
+El archivo \texttt{Cargo.toml} declara una sola dependencia, \texttt{rand 0.9}, que Cargo descarga junto con sus dependencias transitivas en la primera compilación; después puede trabajarse sin conexión. Ningún crate de aprendizaje automático ni de álgebra lineal interviene en el proyecto.
 
 \section{Ejecución de los experimentos}
-El binario ofrece una interfaz de línea de comandos que permite ejecutar todos los experimentos o cada uno por separado, elegir el directorio de salida y cambiar la semilla. La Tabla~\ref{tab:cli} describe las opciones disponibles.
+El binario recibe como argumento el experimento que se desea ejecutar. La Tabla~\ref{tab:cli} describe las órdenes disponibles, definidas en \texttt{src/main.rs} (Código~\ref{cod:main}).
 
 \begin{table}[!htbp]
-\caption{Opciones de la interfaz de línea de comandos}\label{tab:cli}
+\caption{Órdenes de la interfaz de línea de comandos del repositorio oficial}\label{tab:cli}
 \small
 \begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
-Opción & Efecto \\
+Orden & Efecto \\
 \midrule
-\texttt{--all} & Ejecuta los tres experimentos, la prueba de escritorio y los \emph{benchmarks} \\
-\texttt{--exp1}, \texttt{--exp2}, \texttt{--exp3} & Ejecuta un experimento individual \\
-\texttt{--escritorio} & Ejecuta la prueba de escritorio paso a paso \\
-\texttt{--bench} & Mide tiempos de entrenamiento e inferencia \\
-\texttt{--experiment <X>} & Alternativa equivalente: \texttt{all}, \texttt{1}, \texttt{2}, \texttt{3}, \texttt{escritorio} o \texttt{bench} \\
-\texttt{--export <DIR>} & Directorio de salida de los CSV (por defecto, \texttt{resultados}) \\
-\texttt{--seed <N>} & Semilla del generador pseudoaleatorio (por defecto, 42) \\
-\texttt{-h}, \texttt{--help} & Muestra la ayuda \\
+\texttt{cargo run} & Entrena la red de vocales e informa las cinco predicciones \\
+\texttt{cargo run -- lineal} & Regresión $y=2x$ con una neurona lineal \\
+\texttt{cargo run -- booleano} & Clasificación de 0 como falso y 1 como verdadero \\
+\texttt{cargo run -- vocal <letra>} & Entrena la red de vocales y evalúa la vocal indicada (A, E, I, O o U) \\
+\texttt{cargo run -- <letra>} & Forma abreviada de la orden anterior \\
 \bottomrule
 \end{tabularx}
-\fuente{Opciones definidas en \texttt{src/main.rs}.}
+\fuente{Una letra no válida produce un mensaje de error. Con \texttt{--release} se usa el binario optimizado.}
 \end{table}
 
-\begin{lstlisting}[language={},numbers=none,caption={Ejemplos de ejecución},label=cod:ejecucion]
-cargo run --release -- --all                     # todo, CSV en resultados/
-cargo run --release -- --exp2                    # solo XOR
-cargo run --release -- --exp3 --seed 7           # vocales con otra semilla
-cargo run --release -- --all --export otra_carpeta
+\begin{lstlisting}[language={},numbers=none,caption={Ejemplos de ejecución del repositorio oficial},label=cod:ejecucion]
+cargo run --release -- lineal       # y = 2x, se detiene al alcanzar MSE <= 1e-12
+cargo run --release -- booleano     # 250 epocas con gradientes por epoca
+cargo run --release -- vocal a      # entrena y reconoce la vocal A
 \end{lstlisting}
 
-Cada ejecución imprime un resumen en la terminal y escribe los archivos CSV correspondientes. La Tabla~\ref{tab:csv} describe el contenido de cada archivo.
+Los resultados se imprimen en la terminal; el programa no escribe archivos. Para documentar este trabajo, el script \path{scripts/auditar_repo_oficial.py} del repositorio de documentación compila la instantánea del commit \texttt{\OfCommit} guardada en \path{repo_oficial/neural-network/}, ejecuta las cuatro órdenes, guarda su salida en \path{resultados/oficial/*.txt} y la convierte en los CSV descritos en la Tabla~\ref{tab:csv}.
 
 \begin{table}[!htbp]
-\caption{Archivos de resultados generados por el binario}\label{tab:csv}
+\caption{Archivos de resultados de la auditoría del repositorio oficial}\label{tab:csv}
 \small
 \begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X@{}}
 \toprule
 Archivo & Contenido \\
 \midrule
-\texttt{exp1\_y2x.csv} & Época, peso, sesgo, MSE y predicciones de la regresión $y=2x$ \\
-\texttt{exp2\_xor.csv} & Curvas de pérdida y predicciones del perceptrón y de la red 2-4-1 \\
-\texttt{exp2\_xor\_lr.csv} & Curvas de pérdida para las tres tasas de aprendizaje \\
-\texttt{exp2\_xor\_frontera.csv} & Salidas de ambos modelos sobre una malla del plano \\
-\texttt{exp3\_vocales.csv} & MSE de entrenamiento y de prueba por época \\
-\texttt{exp3\_confusion.csv} & Matriz de confusión del conjunto de prueba \\
-\texttt{dataset\_vocales.csv} & Prototipos y muestras del conjunto de vocales \\
-\texttt{prueba\_escritorio.csv} & Traza detallada de las primeras iteraciones \\
-\texttt{benchmarks.csv} & Tiempos de entrenamiento e inferencia y tamaño del binario \\
-\texttt{resumen.csv} & Métricas finales de todos los experimentos \\
+\texttt{lineal.csv}, \texttt{lineal\_predicciones.csv} & Época, peso, bias y MSE; predicciones finales de $y=2x$ \\
+\texttt{booleano.csv}, \texttt{booleano\_predicciones.csv} & Gradientes y parámetros por época; probabilidades finales \\
+\texttt{vocales.csv}, \texttt{vocales\_predicciones.csv} & Probabilidad de cada vocal y cambio máximo por informe; predicciones finales \\
+\texttt{vocal\_a.csv} & Probabilidades asignadas al evaluar la vocal A \\
+\texttt{cargo\_test.txt}, \texttt{cargo\_clippy.txt} & Salida completa de las pruebas y del análisis estático \\
+\texttt{resumen.csv} & Métricas finales, tiempos, advertencias y tamaño del binario \\
 \bottomrule
 \end{tabularx}
-\fuente{Todos los archivos se escriben en el directorio indicado con \texttt{--export}.}
+\fuente{Directorio \path{resultados/oficial/}. Auditoría completa en \path{docs/auditoria_repo_oficial.md}.}
 \end{table}
 
+\section{Verificación y motor complementario}
+En el repositorio oficial, \texttt{cargo test} compila el proyecto y ejecuta \OfPruebas{} pruebas, y \texttt{cargo clippy} informa \OfClippyErr{} error (\texttt{modulo\_one}, en \texttt{vowels.rs}, porque \texttt{REPORT\_EVERY} vale 1) y \OfClippyWarn{} advertencias, en su mayoría código definido pero aún no utilizado. La verificación automatizada de las ecuaciones se realiza con el motor complementario, que se obtiene y ejecuta como sigue.
+
+\begin{lstlisting}[language={},numbers=none,caption={Pruebas y experimentos del motor complementario},label=cod:pruebas]
+git clone https://github.com/Noxy-bit/Redes-Neuronales-Rust.git
+cd Redes-Neuronales-Rust
+cargo test                          # 52 pruebas, incluido gradient checking
+cargo run --release -- --all        # XOR, vocales con ruido y benchmarks -> resultados/*.csv
+\end{lstlisting}
+
 \section{Regeneración de gráficas, diagramas y documento}
-Las gráficas, los diagramas y este documento se regeneran a partir de los resultados con los siguientes comandos. El script de compilación ejecuta las pruebas, extrae los fragmentos de código, genera las macros de resultados desde los CSV, compila el PDF con XeLaTeX y produce la versión DOCX.
+Las gráficas, los diagramas y este documento se regeneran a partir de los resultados con los siguientes comandos. El script de compilación extrae los fragmentos de código, genera las macros de resultados desde los CSV, compila el PDF con XeLaTeX y produce la versión DOCX.
 
 \begin{lstlisting}[language={},numbers=none,caption={Regeneración de la documentación},label=cod:regenerar]
-python3 scripts/generar_graficas.py         # 11 gráficas en tesis/figuras/ (300 DPI)
-python3 diagramas/generar_diagramas.py      # 5 diagramas .drawio -> PNG (requiere draw.io)
+python3 scripts/auditar_repo_oficial.py     # ejecuta el repositorio oficial -> resultados/oficial/
+python3 scripts/graficas_repo_oficial.py    # 3 graficas oficiales (300 DPI)
+python3 scripts/generar_graficas.py         # graficas del motor complementario
+python3 diagramas/generar_diagramas.py      # diagramas .drawio -> PNG (requiere draw.io)
 bash tesis/compilar_final.sh                # PDF y DOCX en tesis/build/
 \end{lstlisting}
 
 \section{Guion de demostración en la feria}
-La demostración en el stand está pensada para durar entre cinco y siete minutos y puede adaptarse al tiempo disponible. Se recomienda tener el repositorio compilado previamente y una terminal abierta en la raíz del proyecto.
+La demostración en el stand está pensada para durar entre cinco y siete minutos y puede adaptarse al tiempo disponible. Se recomienda tener el repositorio oficial compilado previamente y una terminal abierta en su raíz; las pausas del programa permiten seguir el entrenamiento en la pantalla.
 
 \begin{enumerate}[leftmargin=2em,itemsep=4pt]
 \item \textbf{Motivación (1 minuto).} Presentar el problema de la caja negra con el árbol de problemas (Figura~\ref{fig:arbol}) y la pregunta de investigación.
-\item \textbf{Arquitectura (1 minuto).} Mostrar la Figura~\ref{fig:arquitectura} y destacar que \texttt{Cargo.toml} no tiene dependencias.
-\item \textbf{Pruebas en vivo (1 minuto).} Ejecutar \texttt{cargo test} y señalar las pruebas de \emph{gradient checking}.
-\item \textbf{Experimento XOR en vivo (2 minutos).} Ejecutar \texttt{cargo run --release -- --exp2}, comparar el perceptrón con la red multicapa y mostrar la Figura~\ref{fig:frontera}.
-\item \textbf{Vocales (1 minuto).} Mostrar el conjunto de datos y la matriz de confusión (Figuras~\ref{fig:dataset} y~\ref{fig:confusion}).
-\item \textbf{Cierre (1 minuto).} Relacionar el proyecto con los contenidos de Programación 1 (Tabla~\ref{tab:inf120}) e invitar a escanear el código QR del repositorio.
+\item \textbf{Arquitectura (1 minuto).} Mostrar la Figura~\ref{fig:arquitectura}: vectores, neurona, error, gradiente y descenso de gradiente escritos a mano.
+\item \textbf{Regresión en vivo (1 minuto).} Ejecutar \texttt{cargo run --release -- lineal} y observar cómo el peso se acerca a 2 y el MSE desciende hasta $10^{-12}$.
+\item \textbf{Vocal elegida por el público (2 minutos).} Pedir a un visitante una vocal, ejecutar \texttt{cargo run --release -- vocal <letra>} y comentar cómo crece la probabilidad de la clase correcta; mostrar los patrones de la Figura~\ref{fig:of-voc}.
+\item \textbf{Más allá de una capa (1 minuto).} Con el motor complementario, mostrar la frontera de XOR (Figura~\ref{fig:frontera}) y las pruebas de \emph{gradient checking}.
+\item \textbf{Cierre (1 minuto).} Relacionar el proyecto con los contenidos de Programación 1 (Tabla~\ref{tab:inf120}) e invitar a escanear el código QR del repositorio oficial.
 \end{enumerate}
 
 \begin{nota}[Preguntas frecuentes del público]
-\textbf{¿Por qué no usar Python y una biblioteca?} Porque el objetivo es comprender y verificar cada operación, no solo obtener un resultado. \textbf{¿La red aprende o memoriza?} El Experimento~3 evalúa con muestras distintas de las de entrenamiento y con más ruido, y alcanza \EtresAccPru{} de exactitud. \textbf{¿Se necesita una computadora potente?} No: el binario ocupa \BinKiB~KiB y entrena los experimentos en fracciones de segundo.
+\textbf{¿Por qué no usar Python y una biblioteca?} Porque el objetivo es comprender y verificar cada operación, no solo obtener un resultado. \textbf{¿La red aprende o memoriza?} La demostración de vocales usa un único patrón por letra; el motor complementario evalúa vocales con ruido no vistas en el entrenamiento y alcanza \EtresAccPru{} de exactitud. \textbf{¿Se necesita una computadora potente?} No: el binario oficial ocupa \OfBinKiB~KiB y su cómputo dura milisegundos; la mayor parte del tiempo en pantalla corresponde a las pausas de la demostración.
 \end{nota}
 
 \section{Solución de problemas frecuentes}
-Si \texttt{cargo} no se reconoce como comando después de la instalación, debe abrirse una nueva terminal o ejecutarse \texttt{source "\$HOME/.cargo/env"}. Si la compilación indica que la edición 2024 no es compatible, debe actualizarse Rust con \texttt{rustup update stable}. Si los tiempos medidos difieren de los de la Tabla~\ref{tab:bench}, el comportamiento es esperado, pues dependen del procesador; las métricas de pérdida y exactitud, en cambio, deben coincidir exactamente con la misma semilla. Si la generación de gráficas falla, debe instalarse \texttt{matplotlib} con \texttt{pip install matplotlib}.
+Si \texttt{cargo} no se reconoce como comando después de la instalación, debe abrirse una nueva terminal o ejecutarse \texttt{source "\$HOME/.cargo/env"}. Si la compilación indica que la edición 2024 no es compatible, debe actualizarse Rust con \texttt{rustup update stable}. Si la primera compilación falla al descargar \texttt{rand}, debe verificarse la conexión a Internet. Las métricas de los experimentos oficiales deben coincidir exactamente en cualquier equipo, porque no intervienen números aleatorios; los tiempos, en cambio, dependen del procesador. Si la generación de gráficas falla, debe instalarse \texttt{matplotlib} con \texttt{pip install matplotlib}.

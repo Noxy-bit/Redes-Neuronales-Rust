@@ -5,5 +5,5 @@ set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 RAIZ="$(cd "$DIR/../.." && pwd)"
 mkdir -p "$DIR/build"
-( cd "$RAIZ" && cargo test 2>&1 ) > "$DIR/build/cargo_test.txt" || { tail -30 "$DIR/build/cargo_test.txt"; exit 1; }
+[[ -f "$RAIZ/resultados/oficial/resumen.csv" ]] || python3 "$RAIZ/scripts/auditar_repo_oficial.py"
 python3 "$DIR/generar_banner.py" --proy "${1:-38}"

@@ -3,8 +3,8 @@
 
 Reutiliza la identidad del banner oficial sin modificarlo: fuentes de feria/banner/fuentes/,
 isotipo feria/banner/recursos/isotipo_rn.svg, sellos limpios de feria/banner/recursos/ y
-QR feria/qr/qr_repositorio.svg. Las cifras del tríptico se leen de resultados/*.csv,
-Cargo.toml y la salida real de `cargo test`.
+QR feria/qr/qr_repositorio.svg. Las cifras del tríptico se leen de resultados/oficial/resumen.csv
+y de Cargo.toml del repositorio oficial.
 
 Genera HTML editable (credenciales/*.html, triptico/*.html), exporta PDF vectorial con
 Chrome headless, renderiza PNG con pdftoppm y verifica medidas, páginas, QR legible y que
@@ -17,7 +17,7 @@ from pathlib import Path
 
 # ======================= PARÁMETROS EDITABLES (una línea cada uno) =======================
 PROY_NUM = "38"
-REPO_URL = "https://github.com/Noxy-bit/Redes-Neuronales-Rust"
+REPO_URL = "https://github.com/lanorrron/neural-network"
 CREDENCIALES = [  # (Nombre, Apellido, rol): en el frente va SOLO nombre y apellido
     ("Ronal", "Miranda", "Expositor"),
     ("Oscar", "Nava", "Expositor"),
@@ -51,29 +51,6 @@ def leer_csv(nombre):
         return list(csv.DictReader(f))
 
 
-def contar_tests():
-    for ruta in (BUILD / "cargo_test.txt", BANNER / "build/cargo_test.txt", RAIZ / "tesis/generado/cargo_test.txt"):
-        if ruta.exists():
-            txt = ruta.read_text(encoding="utf-8")
-            if sum(int(n) for n in re.findall(r"(\d+) failed", txt)):
-                sys.exit(f"{ruta}: cargo test reporta fallos; no se genera el kit")
-            ok = sum(int(n) for n in re.findall(r"(\d+) passed", txt))
-            if ok:
-                return ok
-    sys.exit("No hay salida de cargo test: ejecute feria/kit_devin/compilar_kit.sh")
-
-
-def contar_dependencias():
-    total, seccion = 0, None
-    for linea in (RAIZ / "Cargo.toml").read_text(encoding="utf-8").splitlines():
-        linea = linea.split("#")[0].strip()
-        if linea.startswith("["):
-            seccion = linea.strip("[]")
-        elif linea and "=" in linea and seccion and seccion.endswith("dependencies"):
-            total += 1
-    return total
-
-
 def sci(x):
     e = math.floor(math.log10(abs(x)))
     return f"{x / 10 ** e:.1f}×10<sup>−{-e}</sup>"
@@ -84,20 +61,38 @@ def pct(x):
     return f"{v:.0f}&#8239;%" if abs(v - round(v)) < 1e-9 else f"{v:.1f}&#8239;%"
 
 
+CRATES_ML = {"ndarray", "nalgebra", "candle-core", "candle-nn", "burn", "tch", "tensorflow", "linfa",
+             "smartcore", "dfdx", "tract-onnx", "ort", "autograd", "rusty-machine", "juice"}
+
+
+def oficial():
+    """Métricas del repositorio oficial (scripts/auditar_repo_oficial.py -> resultados/oficial/resumen.csv)."""
+    ruta = RAIZ / "resultados/oficial/resumen.csv"
+    if not ruta.exists():
+        sys.exit("Falta resultados/oficial/resumen.csv: ejecute scripts/auditar_repo_oficial.py")
+    with open(ruta, newline="", encoding="utf-8") as f:
+        r = {fila["metrica"]: fila["valor"] for fila in csv.DictReader(f)}
+    deps, seccion = [], None
+    for linea in (RAIZ / "repo_oficial/neural-network/Cargo.toml").read_text(encoding="utf-8").splitlines():
+        linea = linea.split("#")[0].strip()
+        if linea.startswith("["):
+            seccion = linea.strip("[]")
+        elif linea and "=" in linea and seccion and seccion.endswith("dependencies"):
+            deps.append(linea.split("=")[0].strip())
+    r["crates_ml"] = str(sum(d in CRATES_ML for d in deps))
+    return r, ruta
+
 def metricas():
-    r = {(f["experimento"], f["metrica"]): float(f["valor"]) for f in leer_csv("resumen.csv")
-         if f["valor"] not in ("NA", "")}
-    xor = next(f for f in leer_csv("benchmarks.csv") if f["experimento"] == "XOR" and f["epocas"] == "10000")
+    r, _ = oficial()
+    g = lambda k: float(r[k])
     return {
-        "tests": contar_tests(),
-        "crates": contar_dependencias(),
-        "kib": f"{float(xor['tamano_binario_kib']):.1f}",
-        "y2x": sci(r[("exp1_y2x", "mse_final")]),
-        "xor": pct(r[("exp2_xor", "exactitud_multicapa")]),
-        "voc": pct(r[("exp3_vocales", "exactitud_prueba")]),
-        "ms": f"{float(xor['entrenamiento_ms_media']):.1f}",
-        "ms_epocas": f"{int(xor['epocas']):,}".replace(",", "&#8239;"),
-        "xor_arq": xor["arquitectura"],
+        "crates": r["crates_ml"],
+        "kib": f"{g('binario_kib'):.1f}",
+        "y2x": sci(g("lineal_mse_final")),
+        "bool": pct(g("booleano_exactitud")),
+        "voc": f"{round(g('vocales_exactitud') * 5)}/5",
+        "ms": f"{g('computo_ms_vocales'):.1f}",
+        "ms_epocas": r["vocales_epocas"],
     }
 
 
@@ -405,7 +400,7 @@ def triptico(m):
   <div class="ceja">RUST PURO</div>
   <div class="h2">¿Por qué en<br>Rust puro?</div><div class="barra"></div>
   <div class="punto"><span class="cifra c-cian">{m['crates']}</span><span class="que">librerías de ML</span>
-    <span class="det">Álgebra lineal propia, solo la biblioteca estándar.</span></div>
+    <span class="det">Álgebra lineal propia, escrita desde cero.</span></div>
   <div class="punto"><span class="cifra c-pur">{m['kib']}&nbsp;KiB</span><span class="que">binario completo</span>
     <span class="det">Compilado en modo <i>release</i>.</span></div>
   <div class="punto">{ICONO_ESCUDO}<span class="que">Memoria segura</span>
@@ -435,11 +430,11 @@ def triptico(m):
   <div class="h2">Romper la<br>caja negra</div><div class="barra"></div>
   <div class="texto"><p>Usamos IA a diario sin ver <b>cómo&nbsp;aprende</b>.</p>
     <p>Programamos una red neuronal <b>desde&nbsp;cero</b>, sin frameworks.</p>
-    <p>Cada ecuación es código Rust legible y probado.</p></div>
+    <p>Cada ecuación es código Rust legible y trazable.</p></div>
   <div class="rotulo">ARQUITECTURA</div>
-  <div class="bloque" style="--c:var(--cian)"><code>math</code><span>Matrix · Vector</span></div>{flecha}
-  <div class="bloque" style="--c:var(--purpura)"><code>nn</code><span>Neuron · Layer · Network</span></div>{flecha}
-  <div class="bloque" style="--c:var(--rust)"><code>experiments</code><span>y = 2x · XOR · Vocales</span></div>
+  <div class="bloque" style="--c:var(--cian)"><code>math</code><span>Vector · Matrix</span></div>{flecha}
+  <div class="bloque" style="--c:var(--purpura)"><code>neural</code><span>Neuron · Layer · MSE</span></div>{flecha}
+  <div class="bloque" style="--c:var(--rust)"><code>experiments</code><span>y = 2x · Booleano · Vocales</span></div>
 </div></div>
 <div class="panel cen"><div class="caja" data-nombre="interior central" data-panel="Interior central">
   <div class="ceja">02</div>
@@ -448,8 +443,8 @@ def triptico(m):
   <ol class="pasos">
     <li style="--c:#00D4FF"><span class="n">1</span><div><b>Datos</b><span>Entradas x y objetivo y</span></div></li>
     <li style="--c:#3B82F6"><span class="n">2</span><div><b>Forward</b><span>ŷ = σ(W·x + b)</span></div></li>
-    <li style="--c:#A855F7"><span class="n">3</span><div><b>Backprop</b><span>Gradiente del error MSE</span></div></li>
-    <li style="--c:#F97316"><span class="n">4</span><div><b>Predicción</b><span>La red generaliza</span></div></li>
+    <li style="--c:#A855F7"><span class="n">3</span><div><b>Gradiente</b><span>Error MSE y ∇ de pesos</span></div></li>
+    <li style="--c:#F97316"><span class="n">4</span><div><b>Predicción</b><span>La red reconoce</span></div></li>
   </ol>
   <div class="repite">↻ Repite: W <span class="dv">←</span> W − α·∇</div>
 </div></div>
@@ -457,12 +452,12 @@ def triptico(m):
   <div class="ceja">03</div>
   <div class="h2">Resultados<br>reales</div><div class="barra"></div>
   <div class="kpis">
-  <div class="kpi" style="--c:var(--verde)"><span class="v">{m['tests']}</span><span class="l"><b>pruebas en verde</b>cargo test</span></div>
+  <div class="kpi" style="--c:var(--verde)"><span class="v">3</span><span class="l"><b>experimentos</b>en vivo</span></div>
   <div class="kpi" style="--c:#00A9CC"><span class="v">{m['y2x']}</span><span class="l"><b>y = 2x</b>error MSE</span></div>
-  <div class="kpi" style="--c:var(--purpura)"><span class="v">{m['xor']}</span><span class="l"><b>XOR</b>red {m['xor_arq']}</span></div>
-  <div class="kpi" style="--c:var(--rust)"><span class="v">{m['voc']}</span><span class="l"><b>Vocales</b>con ruido</span></div>
+  <div class="kpi" style="--c:var(--purpura)"><span class="v">{m['bool']}</span><span class="l"><b>Booleano</b>0 falso · 1 verdadero</span></div>
+  <div class="kpi" style="--c:var(--rust)"><span class="v">{m['voc']}</span><span class="l"><b>Vocales</b>patrones 5×5</span></div>
   </div>
-  <div class="tiempo"><span class="v">{m['ms']}&#8239;ms</span><span>entrena XOR durante {m['ms_epocas']} épocas</span></div>
+  <div class="tiempo"><span class="v">{m['ms']}&#8239;ms</span><span>entrena las vocales durante {m['ms_epocas']} épocas</span></div>
 </div></div>
 </section>"""
     css = css_base(D_TRIP) + css_triptico()
