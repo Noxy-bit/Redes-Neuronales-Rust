@@ -178,7 +178,12 @@ def apa(r):
 
 def bib_nombre(a):
     ap, no = a
-    return f"{{{ap}}}" if no is None else f"{ap}, {no}"
+    if no is None:
+        return f"{{{ap}}}"
+    if no.endswith((", II", ", III", ", Jr.")):
+        nombre, sufijo = no.rsplit(", ", 1)
+        return f"{ap}, {sufijo}, {nombre}"
+    return f"{ap}, {no}"
 
 
 def bib(r):
@@ -186,7 +191,10 @@ def bib(r):
     campos = [("author", " and ".join(bib_nombre(a) for a in r["authors"])), ("year", str(r["year"])), ("title", "{" + r["title"] + "}")]
     for k in ("journal", "booktitle", "volume", "number", "pages", "publisher", "school", "institution", "doi", "url", "language"):
         if r.get(k):
-            campos.append((k, r[k]))
+            v = r[k]
+            if k in ("publisher", "institution", "school") and " and " in v:
+                v = "{" + v + "}"
+            campos.append((k, v))
     if r.get("edition"):
         campos.append(("edition", r["edition"]))
     if r.get("editors"):

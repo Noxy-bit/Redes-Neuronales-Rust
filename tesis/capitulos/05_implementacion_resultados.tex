@@ -226,9 +226,7 @@ Píxeles invertidos & Muestras & Exactitud \\
 \small
 \begin{tabular*}{0.7\textwidth}{@{\extracolsep{\fill}}l ccccc@{}}
 \toprule
-& \multicolumn{5}{c}{Predicha} \\
-\cmidrule(l){2-6}
-Real & A & E & I & O & U \\
+Real / Predicha & A & E & I & O & U \\
 \midrule
 \TablaConfusion
 \bottomrule
@@ -243,7 +241,25 @@ Real & A & E & I & O & U \\
 \end{figure}
 
 \subsection{Análisis}
-La red clasifica sin errores todas las muestras con hasta 3 píxeles invertidos (12\,\% de la imagen), aunque durante el entrenamiento solo vio variantes con un píxel alterado. Con 4 y 5 píxeles invertidos (16\,\% y 20\,\%) la exactitud desciende al 94\,\%. Los errores se concentran entre pares de vocales visualmente parecidas: O y U comparten los laterales y la base, y E comparte la columna izquierda con otras letras. La diferencia entre el MSE de entrenamiento y el de prueba es la esperada al evaluar con niveles de ruido mayores que los de entrenamiento, y no impide una exactitud global de \EtresAccPru. El comportamiento es coherente con la representación aprendida y muestra la capacidad de generalización del modelo frente a perturbaciones no observadas.
+La red clasifica sin errores todas las muestras con hasta 3 píxeles invertidos (12\,\% de la imagen), aunque durante el entrenamiento solo vio variantes con un píxel alterado. Con 4 y 5 píxeles invertidos (16\,\% y 20\,\%) la exactitud desciende al 94\,\%. Los errores se concentran entre pares de vocales visualmente parecidas: O y U comparten los laterales y la base, y E comparte la columna izquierda con otras letras. La subsección siguiente examina cada uno de esos errores. La diferencia entre el MSE de entrenamiento y el de prueba es la esperada al evaluar con niveles de ruido mayores que los de entrenamiento, y no impide una exactitud global de \EtresAccPru. El comportamiento es coherente con la representación aprendida y muestra la capacidad de generalización del modelo frente a perturbaciones no observadas.
+
+\subsection{Análisis de los errores de clasificación}
+La matriz de confusión registra 6 errores sobre 250 muestras, todos con 4 o 5 píxeles invertidos: 1 A clasificada como E, 1 E como I, 1 E como O, 1 O como U y 2 U como O. Para explicarlos se calculó la distancia de Hamming entre los prototipos, es decir, el número de píxeles en que difieren dos vocales (Tabla~\ref{tab:hamming}). Cuando una muestra tiene $k$ píxeles invertidos, su distancia al prototipo correcto es $k$, y puede quedar tan cerca de otra vocal como de la propia si los píxeles invertidos coinciden con las posiciones en que ambas difieren.
+
+\begin{table}[!htbp]
+\caption{Distancia de Hamming entre los prototipos $5\times5$ de las vocales}\label{tab:hamming}
+\small
+\begin{tabular*}{0.6\textwidth}{@{\extracolsep{\fill}}l ccccc@{}}
+\toprule
+Vocal & A & E & I & O & U \\
+\midrule
+\TablaHamming
+\bottomrule
+\end{tabular*}
+\fuente{Número de píxeles distintos entre prototipos. Calculado desde \path{resultados/dataset_vocales.csv}.}
+\end{table}
+
+El par O--U es el más cercano, con solo 5 píxeles de diferencia: ambas vocales comparten las columnas laterales y la base redondeada, y se distinguen únicamente por la fila superior. Con 5 píxeles invertidos en esas posiciones, una O puede convertirse exactamente en una U, lo que explica que este par concentre la mitad de los errores (3 de 6). El par E--I, a 7 píxeles, comparte las filas superior e inferior completas, de modo que perder píxeles de la columna izquierda de la E la aproxima a la I. La confusión A--E (8 píxeles) se explica porque ambas comparten la columna izquierda y la barra horizontal central, y la confusión E--O, aunque sus prototipos difieren en 10 píxeles, ocurre porque comparten la columna izquierda y el ruido elimina los extremos horizontales que caracterizan a la E. La I, la vocal más distante de las demás, no registra ningún error. El análisis confirma que los errores no son aleatorios, sino que siguen la geometría del conjunto de datos: a menor distancia de Hamming entre prototipos, mayor probabilidad de confusión con ruido elevado.
 
 \section{Rendimiento y benchmarks}\label{sec:bench}
 Los tiempos se midieron con \texttt{std::time::Instant} sobre el binario compilado en modo \emph{release} (sistema \BenchSO, arquitectura \BenchArch), como promedio de 3 repeticiones; la inferencia se promedió sobre 100\,000 predicciones. El binario resultante ocupa \BinKiB~KiB. La Tabla~\ref{tab:bench} presenta los valores medidos y la Figura~\ref{fig:bench} su representación gráfica.

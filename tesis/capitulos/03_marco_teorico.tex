@@ -145,3 +145,27 @@ Los \emph{traits} definen comportamiento compartido, de forma similar a las inte
 
 \subsection{Cargo, pruebas integradas y perfiles de compilación}
 Cargo es el gestor de paquetes y sistema de compilación de Rust. Permite compilar en modo depuración o en modo optimizado (\texttt{--release}), ejecutar pruebas unitarias con \texttt{cargo test}, analizar el código con \texttt{cargo clippy} y generar documentación a partir de los comentarios \texttt{///} \citep{klabnik2023}. El perfil \emph{release} aplica optimizaciones del compilador LLVM, como la vectorización y la eliminación de comprobaciones redundantes, que reducen sustancialmente el tiempo de entrenamiento respecto al perfil de depuración.
+
+\subsection{Comparación con otras opciones de implementación}
+La elección de Rust se contrastó con las dos alternativas más frecuentes para implementar redes neuronales con fines educativos: Python con NumPy y C++. La Tabla~\ref{tab:comparacion} resume la comparación en los criterios que más pesan en un proyecto de Programación 1. Se trata de una comparación cualitativa basada en las características documentadas de cada lenguaje \citep{klabnik2023,blandy2021,matsakis2014}; la única cifra medida corresponde al binario de este proyecto.
+
+\begin{table}[!htbp]
+\caption{Comparación cualitativa de Rust puro frente a Python/NumPy y C++ con fines educativos}\label{tab:comparacion}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{3.1cm} >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+Criterio & Rust puro (\texttt{std}) & Python con NumPy & C++ estándar \\
+\midrule
+Seguridad de memoria & Garantizada en compilación por propiedad y préstamos & Gestionada por el intérprete y el recolector de basura & Responsabilidad del programador; errores posibles en ejecución \\
+Errores de dimensión & Explícitos con \texttt{Result}; obligan a tratarlos & Excepciones en ejecución o difusión (\emph{broadcasting}) silenciosa & Comprobación manual; acceso fuera de rango no detectado por defecto \\
+Rendimiento & Compilado y optimizado (LLVM), sin recolector & Alto en operaciones vectorizadas de NumPy; bajo en ciclos de Python & Compilado y optimizado, comparable a Rust \\
+Distribución & Binario único de \BinKiB~KiB sin dependencias & Requiere intérprete y paquetes instalados & Binario único; dependencias según bibliotecas \\
+Visibilidad del algoritmo & Cada operación implementada y probada a mano & Las operaciones matriciales quedan ocultas en NumPy & Cada operación implementada a mano \\
+Curva de depuración & Exigente al compilar; menos errores en ejecución & Baja al inicio; errores aparecen al ejecutar & Exigente; errores de memoria difíciles de rastrear \\
+Pruebas integradas & \texttt{cargo test} incluido en la herramienta & Requiere \texttt{unittest} o \texttt{pytest} & Requiere un marco externo de pruebas \\
+\bottomrule
+\end{tabularx}
+\fuente{Elaboración propia. El tamaño del binario proviene de \path{resultados/benchmarks.csv}; el resto de los criterios son cualitativos.}
+\end{table}
+
+La comparación muestra que Python con NumPy es la opción más rápida para obtener resultados, pero oculta precisamente las operaciones que el proyecto busca enseñar, mientras que C++ ofrece control y rendimiento equivalentes a costa de exponer al estudiante a errores de memoria que no aportan al aprendizaje del algoritmo. Rust combina la visibilidad completa del algoritmo con la detección temprana de errores, a cambio de una curva inicial más exigente frente al compilador.

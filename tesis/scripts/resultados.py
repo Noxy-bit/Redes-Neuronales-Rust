@@ -155,6 +155,13 @@ T8 = "\n".join(
     for r in px)
 macro("PeXorEsc", px[0]["escenario"])
 
+# ---------- Distancias de Hamming entre prototipos de vocales ----------
+dv = leer("dataset_vocales.csv")
+proto = {r["vocal"]: [int(r[k]) for k in r if k.startswith("p") and k[1:].isdigit()]
+         for r in dv if r["ruido_pixeles"] == "0" and r["conjunto"] == "entrenamiento"}
+T9 = "\n".join(f"{a} & " + " & ".join(str(sum(x != y for x, y in zip(proto[a], proto[b]))) for b in "AEIOU") + " \\\\"
+               for a in "AEIOU")
+
 # ---------- Benchmarks ----------
 bm = leer("benchmarks.csv")
 T7 = "\n".join(
@@ -167,7 +174,7 @@ macro("BenchArch", bm[0]["cpu_arch"].replace("_", "\\_"))
 out = "% Generado por tesis/scripts/resultados.py desde resultados/*.csv — no editar a mano.\n"
 out += "\n".join(M) + "\n"
 for n, t in (("TablaEuno", T1), ("TablaEdos", T2), ("TablaEdosLr", T3), ("TablaEtresRuido", T4),
-             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7), ("TablaEscritorioXor", T8)):
+             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7), ("TablaEscritorioXor", T8), ("TablaHamming", T9)):
     out += f"\\newcommand{{\\{n}}}{{%\n{t}\n}}\n"
 (GEN / "resultados.tex").write_text(out, encoding="utf-8")
 print("resultados.tex y figuras generadas")

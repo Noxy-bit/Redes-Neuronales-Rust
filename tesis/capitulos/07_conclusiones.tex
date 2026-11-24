@@ -17,6 +17,26 @@ Las conclusiones específicas se presentan en correspondencia con el objetivo ge
 \item \textbf{Rendimiento (OE6).} El binario optimizado ocupa \BinKiB~KiB y entrena cualquiera de los experimentos en fracciones de segundo, con inferencias del orden de cientos de nanosegundos, lo que demuestra que los fundamentos del aprendizaje automático pueden estudiarse con equipos convencionales.
 \end{enumerate}
 
+La Tabla~\ref{tab:verificacion} resume la verificación de cada objetivo específico frente a su meta y al resultado real obtenido.
+
+\begin{table}[!htbp]
+\caption{Verificación de los objetivos específicos}\label{tab:verificacion}
+\small
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright}p{4.2cm} >{\raggedright}X l@{}}
+\toprule
+Objetivo & Meta & Resultado real obtenido & Estado \\
+\midrule
+OE1 & Vectores y matrices con validación de dimensiones & 14 pruebas de \texttt{vector}, \texttt{matrix} y \texttt{rng} aprobadas; errores de dimensión explícitos & Completado \\
+OE2 & Activaciones y MSE con derivadas analíticas & Derivadas coinciden con diferencias centrales (7 pruebas) & Completado \\
+OE3 & Red multicapa reproducible con retropropagación & Topologías arbitrarias; prueba de escritorio de \PeFilas{} filas coherente & Completado \\
+OE4 & Pruebas unitarias con \emph{gradient checking} & 52 de 52 pruebas aprobadas; \texttt{clippy} sin advertencias & Completado \\
+OE5 & Tres experimentos con métricas reales en CSV & MSE \EunoMseFin{} ($y=2x$); XOR \EdosAccMul{}; vocales \EtresAccPru{} & Completado \\
+OE6 & Medición de rendimiento en modo \emph{release} & Binario de \BinKiB~KiB; inferencia en cientos de nanosegundos & Completado \\
+\bottomrule
+\end{tabularx}
+\fuente{Resultados tomados de la salida de \texttt{cargo test} (Anexo~\ref{anx:tests}) y de \path{resultados/*.csv}.}
+\end{table}
+
 \section{Conclusiones sobre el aporte educativo}
 El proyecto muestra que los contenidos de Programación 1 ---tipos de datos, ciclos, funciones, arreglos, matrices, estructuras, modularidad, manejo de errores y archivos--- son suficientes para construir un sistema que aprende a partir de datos, cuando se combinan con álgebra lineal y cálculo elemental. La experiencia de implementar cada ecuación y verificarla con pruebas transformó conceptos abstractos, como la regla de la cadena o el producto matriz-vector, en piezas concretas de un programa cuyo funcionamiento puede observarse. El estudio de la tasa de aprendizaje y la comparación entre el perceptrón y la red multicapa ilustran que comprender los fundamentos permite diagnosticar por qué un modelo falla, capacidad que el uso exclusivo de herramientas de caja negra no desarrolla.
 

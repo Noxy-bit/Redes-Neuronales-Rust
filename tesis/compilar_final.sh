@@ -20,6 +20,8 @@ if grep -E "LaTeX Warning: (Reference|Citation).*undefined|Rerun to get cross" b
   echo "ERROR: referencias sin resolver"; exit 1
 fi
 cp build/aux/documento_final.pdf "build/Proy-${NUM}-Doc-Final.PDF"
-python3 scripts/generar_docx.py "build/Proy-${NUM}-Doc-Final.docx"
+python3 scripts/generar_docx.py build/docx/pandoc.docx
+# LibreOffice actualiza índices y paginación del DOCX y exporta un PDF de verificación
+python3 scripts/actualizar_indices_docx.py build/docx/pandoc.docx "build/Proy-${NUM}-Doc-Final.docx" build/docx/verificacion_docx.pdf
 echo "PDF:  tesis/build/Proy-${NUM}-Doc-Final.PDF"
 echo "DOCX: tesis/build/Proy-${NUM}-Doc-Final.docx"

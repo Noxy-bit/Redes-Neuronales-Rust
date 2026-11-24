@@ -1,7 +1,7 @@
 \appendix
 \renewcommand{\chaptername}{Anexo}
 \titleformat{\chapter}[display]{\normalfont\bfseries\color{marino}\centering}{\large ANEXO \thechapter}{4pt}{\LARGE}
-\lstdefinestyle{anexo}{basicstyle=\ttfamily\footnotesize\linespread{1}\selectfont,numbersep=6pt}
+\lstdefinestyle{anexo}{basicstyle=\ttfamily\fontsize{9.75}{9}\selectfont,numberstyle=\fontsize{6}{6}\selectfont\color{gris},numbersep=5pt,aboveskip=4pt,belowskip=4pt}
 
 \chapter{Salida de \texttt{cargo test} y \texttt{cargo clippy}}\label{anx:tests}
 Este anexo reproduce la salida real de las herramientas de verificación ejecutadas sobre el código del repositorio durante la compilación de este documento. El primer listado corresponde a \texttt{cargo test}, con el nombre de cada una de las 52 pruebas (51 de la biblioteca y 1 del binario), y el segundo a \texttt{cargo clippy --all-targets}, cuya ejecución concluye sin advertencias.
@@ -11,8 +11,8 @@ Este anexo reproduce la salida real de las herramientas de verificación ejecuta
 \lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Salida de \texttt{cargo clippy --all-targets}},label=cod:clippy]{generado/cargo_clippy.txt}
 }
 
-\chapter{Código fuente completo}\label{anx:codigo}
-Este anexo contiene el código fuente completo del motor, documentado con comentarios \texttt{///} en español, junto con el archivo de configuración \texttt{Cargo.toml}. Los listados se generan automáticamente desde el repositorio, por lo que coinciden exactamente con la versión compilada y probada. En total se incluyen \LineasFuente{} líneas. El repositorio está disponible en \url{\Repositorio}.
+\chapter{Código fuente del núcleo}\label{anx:codigo}
+Este anexo contiene el código núcleo de producción del motor ---configuración del paquete, biblioteca, módulo de álgebra lineal y módulo de red neuronal---, documentado con comentarios \texttt{///} en español. Los listados se generan automáticamente desde el repositorio y excluyen los bloques \texttt{\#[cfg(test)]}, cuyas 52 pruebas se reportan en el Anexo~\ref{anx:tests}. En total se incluyen \LineasFuente{} líneas. El código completo, incluidos los experimentos, la interfaz de línea de comandos y las pruebas, está disponible en \url{\Repositorio}.
 
 {\singlespacing\input{generado/anexo_codigo}}
 
@@ -22,15 +22,15 @@ Los diagramas del documento se elaboraron en formato \texttt{.drawio} (diagrams.
 \begin{table}[!htbp]
 \caption{Inventario de archivos \texttt{.drawio} del proyecto}\label{tab:drawio}
 \small
-\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{5.4cm} >{\raggedright}X >{\raggedright\arraybackslash}p{1.6cm}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{5.4cm} >{\raggedright}X >{\raggedright\arraybackslash}p{1.9cm}@{}}
 \toprule
 Archivo fuente y exportación & Contenido & Figura \\
 \midrule
-\path{01_arbol_problemas.drawio} \newline \path{diag01_arbol_problemas.png} & Causas, problema central y efectos & \ref{fig:arbol} \\
-\path{02_arquitectura_modulos_rust.drawio} \newline \path{diag02_arquitectura_rust.png} & Módulos \texttt{math}, \texttt{nn}, \texttt{experiments} y CLI & \ref{fig:arquitectura} \\
-\path{03_flujo_forward_backprop.drawio} \newline \path{diag03_flujo_entrenamiento.png} & Algoritmo de entrenamiento & \ref{fig:flujo} \\
-\path{04_memoria_ownership_rust.drawio} \newline \path{diag04_memoria_rust.png} & Pila, montón, propiedad y préstamos & \ref{fig:memoria} \\
-\path{05_fases_metodologia.drawio} \newline \path{diag05_fases_metodologia.png} & Fases y etapas de la metodología & \ref{fig:fases} \\
+\path{01_arbol_problemas.drawio} \newline \path{diag01_arbol_problemas.png} & Causas, problema central y efectos & Figura~\ref{fig:arbol} \\
+\path{02_arquitectura_modulos_rust.drawio} \newline \path{diag02_arquitectura_rust.png} & Módulos \texttt{math}, \texttt{nn}, \texttt{experiments} y CLI & Figura~\ref{fig:arquitectura} \\
+\path{03_flujo_forward_backprop.drawio} \newline \path{diag03_flujo_entrenamiento.png} & Algoritmo de entrenamiento & Figura~\ref{fig:flujo} \\
+\path{04_memoria_ownership_rust.drawio} \newline \path{diag04_memoria_rust.png} & Pila, montón, propiedad y préstamos & Figura~\ref{fig:memoria} \\
+\path{05_fases_metodologia.drawio} \newline \path{diag05_fases_metodologia.png} & Fases y etapas de la metodología & Figura~\ref{fig:fases} \\
 \bottomrule
 \end{tabularx}
 \fuente{Archivos fuente en \path{diagramas/}; exportaciones en \path{tesis/figuras/}. Pueden abrirse en \url{https://app.diagrams.net} o en la aplicación de escritorio draw.io.}
@@ -39,26 +39,41 @@ Archivo fuente y exportación & Contenido & Figura \\
 Las once gráficas de resultados se generan con \path{scripts/generar_graficas.py} a partir de los CSV, también a 300 DPI, y se conservan en \path{tesis/figuras/} con prefijo \texttt{fig}. Al modificar un diagrama o volver a ejecutar los experimentos, basta repetir los comandos del Código~\ref{cod:regenerar} para actualizar todas las figuras de este documento.
 
 \chapter{Integrantes, ORCID y roles}\label{anx:roles}
-El equipo de investigación está conformado por cinco estudiantes de la FICCT inscritos en la asignatura \Materia{} (\Sigla), grupo \Grupo. La Tabla~\ref{tab:roles} presenta sus datos de identificación y su rol en la Feria Facultativa.
+El equipo de investigación está conformado por cinco estudiantes de la FICCT inscritos en la asignatura \Materia{} (\Sigla), grupo \Grupo. La Tabla~\ref{tab:roles} presenta sus datos de identificación, y la Tabla~\ref{tab:responsabilidades}, la responsabilidad principal que cada integrante asumió dentro del proyecto.
 
 \begin{table}[!htbp]
-\caption{Integrantes del equipo, identificadores ORCID y roles}\label{tab:roles}
+\caption{Integrantes del equipo e identificadores ORCID}\label{tab:roles}
 \small\setlength{\tabcolsep}{4pt}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright}X l >{\raggedright}p{2.4cm} l >{\raggedright\arraybackslash}p{2.6cm}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}X l >{\raggedright}p{2.6cm} l@{}}
 \toprule
-Nombre completo & Registro & Carrera & ORCID & Rol \\
+Nombre completo & Registro & Carrera & ORCID \\
 \midrule
-Ronal Miranda Vasquez & 226159787 & Ing. Informática & 0009-0003-9735-4920 & Investigador -- Expositor \\
-Oscar Alejandro Nava Orihuela & 226037215 & Ing. Informática & 0009-0001-0485-3030 & Investigador -- Expositor \\
-Carla Olivia Cano Quispe & 224026879 & Ing. Informática & 0009-0009-5668-8290 & Investigadora -- Expositora \\
-Diana Nayely Diaz Mamani & 225028190 & Ing. Sistemas & 0009-0003-0550-4996 & Investigadora -- Expositora \\
-Julio Cesar Piuca Achocalla & 224028782 & Ing. Informática & 0009-0004-0056-5201 & Investigador -- Expositor \\
+Ronal Miranda Vasquez & 226159787 & Ing. Informática & 0009-0003-9735-4920 \\
+Oscar Alejandro Nava Orihuela & 226037215 & Ing. Informática & 0009-0001-0485-3030 \\
+Carla Olivia Cano Quispe & 224026879 & Ing. Informática & 0009-0009-5668-8290 \\
+Diana Nayely Diaz Mamani & 225028190 & Ing. Sistemas & 0009-0003-0550-4996 \\
+Julio Cesar Piuca Achocalla & 224028782 & Ing. Informática & 0009-0004-0056-5201 \\
 \bottomrule
 \end{tabularx}
 \fuente{Docente tutor: \DocenteTutor. Coordinador del IICCT: \CoordinadorIICCT.}
 \end{table}
 
-Las responsabilidades del proyecto se distribuyeron por áreas de trabajo en las que participó todo el equipo: implementación del motor en Rust por fases, diseño y ejecución de las pruebas unitarias, ejecución y análisis de los experimentos, elaboración de gráficas y diagramas, redacción del documento y preparación del material y de la exposición en la feria. Cada integrante se encuentra en condiciones de explicar y demostrar cualquiera de los componentes del sistema durante la exposición.
+\begin{table}[!htbp]
+\caption{Responsabilidades principales de los integrantes}\label{tab:responsabilidades}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{4.6cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+Integrante & Responsabilidad principal \\
+\midrule
+Ronal Miranda Vasquez & Módulo de álgebra lineal (\texttt{Vector}, \texttt{Matrix}, \texttt{MathError}) y generador pseudoaleatorio reproducible \\
+Oscar Alejandro Nava Orihuela & Módulo de red neuronal (\texttt{Layer}, \texttt{Network}, retropropagación) e integración del repositorio \\
+Carla Olivia Cano Quispe & Diseño y ejecución de los tres experimentos, exportación CSV y análisis de resultados \\
+Diana Nayely Diaz Mamani & Pruebas unitarias, verificación numérica de gradientes y prueba de escritorio \\
+Julio Cesar Piuca Achocalla & Documentación técnica, gráficas, diagramas y material para la feria \\
+\bottomrule
+\end{tabularx}
+\fuente{La distribución indica la responsabilidad principal de cada integrante; todo el equipo participó en la revisión de los demás componentes y domina la exposición completa del proyecto.}
+\end{table}
 
 \chapter{Carta de Compromiso}\label{anx:carta}
 \begin{center}

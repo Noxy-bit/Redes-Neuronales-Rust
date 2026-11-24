@@ -94,8 +94,8 @@ This work documents the construction of a multilayer artificial neural network i
 \clearpage\phantomsection\addcontentsline{toc}{chapter}{Índice de Figuras}
 \listoffigures
 \renewcommand{\listtablename}{Índice de Tablas}
-\clearpage\phantomsection\addcontentsline{toc}{chapter}{Índice de Tablas}
-\listoftables
-\clearpage\phantomsection\addcontentsline{toc}{chapter}{Lista de Códigos}
-\lstlistoflistings
+\bigskip\phantomsection\addcontentsline{toc}{chapter}{Índice de Tablas}
+{\let\clearpage\relax\listoftables}
+\bigskip\phantomsection\addcontentsline{toc}{chapter}{Lista de Códigos}
+{\let\clearpage\relax\lstlistoflistings}
 }
