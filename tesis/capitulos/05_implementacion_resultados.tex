@@ -1,0 +1,270 @@
+\chapter{Implementación, Experimentos y Resultados}\label{cap:implementacion}
+Este capítulo presenta la implementación de los componentes centrales del motor, la prueba de escritorio que verifica numéricamente el algoritmo y los resultados reales de los tres experimentos y de las mediciones de rendimiento. Todas las cifras provienen de los archivos \path{resultados/*.csv} generados por el comando \texttt{cargo run --release -- --all} con semilla 42; ninguna tabla ni gráfica se ha editado manualmente.
+
+\section{Implementación de los componentes centrales}
+La implementación traduce las ecuaciones del Capítulo~\ref{cap:marco} en funciones de Rust de pocas líneas. Esta sección recorre los componentes en el mismo orden en que interviene cada uno durante el entrenamiento.
+
+\subsection{Funciones de activación}
+El Código~\ref{cod:sigmoid} implementa la Ecuación~\eqref{eq:sigmoid}. La rama condicional selecciona la forma numéricamente estable de la función según el signo de $z$, y la derivada reutiliza el valor de la propia función, tal como indica la derivación del marco teórico. El Código~\ref{cod:relu} implementa la Ecuación~\eqref{eq:relu}.
+
+\lstinputlisting[caption={Función Sigmoid y su derivada (\texttt{src/nn/activation.rs})},label=cod:sigmoid]{generado/codigo/sigmoid.rs}
+\lstinputlisting[caption={Función ReLU y su derivada (\texttt{src/nn/activation.rs})},label=cod:relu]{generado/codigo/relu.rs}
+
+\subsection{Función de pérdida}
+El Código~\ref{cod:mse} implementa el error cuadrático medio y su gradiente según la Ecuación~\eqref{eq:mse}. Ambas funciones validan que la predicción y el objetivo tengan la misma longitud antes de operar.
+
+\lstinputlisting[caption={Error cuadrático medio y su gradiente (\texttt{src/nn/loss.rs})},label=cod:mse]{generado/codigo/mse.rs}
+
+\subsection{Neurona y capa densa}
+La neurona individual (Código~\ref{cod:neuron}) calcula la suma ponderada de la Ecuación~\eqref{eq:neurona} y aplica su activación. La capa densa agrupa $n_l$ neuronas en una matriz de pesos; su constructor (Código~\ref{cod:layernew}) aplica la inicialización de Xavier o de He según la activación, conforme a la Ecuación~\eqref{eq:init}.
+
+\lstinputlisting[caption={Propagación de una neurona individual (\texttt{src/nn/neuron.rs})},label=cod:neuron]{generado/codigo/neuron_forward.rs}
+\lstinputlisting[caption={Constructor de la capa con inicialización Xavier/He (\texttt{src/nn/layer.rs})},label=cod:layernew]{generado/codigo/layer_new.rs}
+
+La propagación hacia adelante de la capa (Código~\ref{cod:forward}) calcula $\mathbf{z} = \mathbf{W}\mathbf{x} + \mathbf{b}$ y $\mathbf{a} = f(\mathbf{z})$, y guarda en caché la entrada, $\mathbf{z}$ y la salida para la retropropagación.
+
+\lstinputlisting[caption={Propagación hacia adelante de una capa (\texttt{src/nn/layer.rs})},label=cod:forward]{generado/codigo/layer_forward.rs}
+
+\subsection{Retropropagación y actualización}
+El Código~\ref{cod:backward} implementa las Ecuaciones~\eqref{eq:deltaL}--\eqref{eq:gradW}: el producto de Hadamard entre el gradiente recibido y la derivada de la activación produce $\boldsymbol{\delta}$; el producto exterior $\boldsymbol{\delta}\,\mathbf{x}^{\top}$ produce el gradiente de los pesos; y $\mathbf{W}^{\top}\boldsymbol{\delta}$ produce el gradiente que se transmite a la capa anterior. El Código~\ref{cod:apply} aplica después la regla de actualización de la Ecuación~\eqref{eq:gd}.
+
+\lstinputlisting[caption={Retropropagación en una capa densa (\texttt{src/nn/layer.rs})},label=cod:backward]{generado/codigo/layer_backward.rs}
+\lstinputlisting[caption={Actualización por descenso de gradiente (\texttt{src/nn/layer.rs})},label=cod:apply]{generado/codigo/apply_gradients.rs}
+
+\subsection{Red multicapa}
+La estructura \texttt{Network} compone las capas. Su constructor (Código~\ref{cod:netnew}) valida la topología y crea cada capa a partir de pares consecutivos de tamaños mediante \texttt{windows(2)}. La retropropagación de la red (Código~\ref{cod:netback}) calcula la pérdida y su gradiente en la salida y recorre las capas en orden inverso, y el paso de entrenamiento (Código~\ref{cod:train}) encadena propagación, retropropagación y actualización.
+
+\lstinputlisting[caption={Construcción validada de la red (\texttt{src/nn/network.rs})},label=cod:netnew]{generado/codigo/network_new.rs}
+\lstinputlisting[caption={Retropropagación de la red completa (\texttt{src/nn/network.rs})},label=cod:netback]{generado/codigo/network_backward.rs}
+\lstinputlisting[caption={Iteración de entrenamiento (\texttt{src/nn/network.rs})},label=cod:train]{generado/codigo/train_step.rs}
+
+\subsection{Validación de dimensiones y reproducibilidad}
+El Código~\ref{cod:matmul} muestra el producto matricial: antes de operar, se verifica que las dimensiones sean compatibles y, en caso contrario, se devuelve un \texttt{MathError::DimensionMismatch} que indica la operación y las formas involucradas. El Código~\ref{cod:rng} muestra el núcleo del generador SplitMix64 que garantiza la reproducibilidad.
+
+\lstinputlisting[caption={Producto matricial con validación de dimensiones (\texttt{src/math/matrix.rs})},label=cod:matmul]{generado/codigo/matmul.rs}
+\lstinputlisting[caption={Generador pseudoaleatorio SplitMix64 (\texttt{src/math/rng.rs})},label=cod:rng]{generado/codigo/rng.rs}
+
+\section{Resultados de verificación}
+La suite de pruebas cuenta con 52 pruebas automatizadas (51 en la biblioteca y 1 en la CLI), todas aprobadas. Incluyen valores calculados a mano, errores de dimensión, propiedades matemáticas, determinismo del PRNG, convergencia real de $y=2x$ y XOR, y verificación numérica de gradientes según la Ecuación~\eqref{eq:gradcheck} sobre redes 2-4-1, 3-5-4-2 y 25-10-5. Adicionalmente, \texttt{cargo clippy --all-targets} no reporta advertencias. La salida completa de ambas herramientas se reproduce en el Anexo~\ref{anx:tests}.
+
+\section{Prueba de escritorio}\label{sec:escritorio}
+La prueba de escritorio registra cada operación de las primeras iteraciones del entrenamiento y permite verificar con calculadora que el código ejecuta exactamente las fórmulas del marco teórico. Para la neurona lineal de $y=2x$ ($\alpha = 0.01$), la primera iteración con $x=1$, $y=2$ y parámetros iniciales $w_0 = \EunoPesoIni$, $b_0 = 0$ es:
+\begin{align*}
+z &= w_0 x + b_0 = 0.836805\cdot 1 + 0 = 0.836805, & a &= z = 0.836805,\\
+e &= a - y = -1.163195, & \mathcal{L} &= e^2 = 1.353022,\\
+\delta &= 2e\cdot f'(z) = -2.326389, & \partial\mathcal{L}/\partial w &= \delta\, x = -2.326389,\\
+w_1 &= w_0 - \alpha\,\delta x = 0.860069, & b_1 &= b_0 - \alpha\,\delta = 0.023264.
+\end{align*}
+La Tabla~\ref{tab:escritorio} resume las diez primeras iteraciones (dos épocas) y la Figura~\ref{fig:escritorio} muestra la evolución de los parámetros a lo largo de esas iteraciones.
+
+\begin{table}[!htbp]
+\caption{Prueba de escritorio de la neurona lineal para $y=2x$ (primeras 10 iteraciones)}\label{tab:escritorio}
+\footnotesize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}rrrrrrrrrr@{}}
+\toprule
+It. & $x$ & $y$ & $w$ & $b$ & $z$ & $e$ & $\partial\mathcal{L}/\partial w$ & $w'$ & $b'$ \\
+\midrule
+\TablaEscritorio
+\bottomrule
+\end{tabular*}
+\fuente{$e = \hat{y}-y$; $w'$ y $b'$ son los parámetros después de la actualización. Fuente: \path{resultados/prueba_escritorio.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Evolución de los parámetros durante la prueba de escritorio}\label{fig:escritorio}
+\centering\includegraphics[width=\textwidth]{figuras/fig11_prueba_escritorio.png}
+\fuente{Valores de la traza registrada por el binario en \path{resultados/prueba_escritorio.csv}.}
+\end{figure}
+
+La traza también incluye las primeras iteraciones de una red \PeXorEsc{} y contiene \PeFilas{} filas en total. La Tabla~\ref{tab:escritorio-xor} muestra las dos primeras iteraciones de esa red. En la primera iteración, la entrada $(0,0)$ anula las sumas ponderadas de la capa oculta, cuyas neuronas producen exactamente $\sigma(0)=0.5$; por ello sus gradientes de pesos son nulos y solo se actualizan los sesgos, comportamiento que coincide con la Ecuación~\eqref{eq:gradW}, pues $\partial\mathcal{L}/\partial w_{ji} = \delta_j\,x_i = 0$ cuando $x_i=0$.
+
+\begin{table}[!htbp]
+\caption{Prueba de escritorio de la red XOR 2-2-1 (dos primeras iteraciones)}\label{tab:escritorio-xor}
+\footnotesize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}rlrrrrrrrr@{}}
+\toprule
+It. & Entrada & $y$ & Capa & Neurona & $z$ & $a$ & $\delta$ & $b$ & $b'$ \\
+\midrule
+\TablaEscritorioXor
+\bottomrule
+\end{tabular*}
+\fuente{Capa 1: oculta; capa 2: salida. $\alpha = 0.5$. Fuente: \path{resultados/prueba_escritorio.csv}.}
+\end{table}
+
+\section{Experimento 1: regresión lineal $y=2x$}\label{sec:exp1}
+El primer experimento verifica que el motor resuelve el problema más simple posible con solución conocida. Se entrena una neurona con activación lineal (red 1-1, dos parámetros) sobre los pares $(1,2),(2,4),(3,6),(4,8),(5,10)$ durante \EunoEpocas{} épocas con $\alpha=\EunoAlpha$. La solución exacta es $w=2$, $b=0$.
+
+\subsection{Resultados}
+El MSE descendió desde \EunoMseIni{} en la época 0 hasta \EunoMseFin{} en la época \EunoEpocas. Los parámetros finales fueron $w=\EunoPesoFin$ y $b=\EunoSesgoFin$, y la predicción para el valor no visto $x=6$ fue $\hat{y}=\EunoPredSeis$. La Tabla~\ref{tab:exp1} muestra la evolución en épocas seleccionadas, la Figura~\ref{fig:exp1conv} la convergencia de los parámetros y la Figura~\ref{fig:exp1mse} la curva de pérdida.
+
+\begin{table}[!htbp]
+\caption{Evolución del entrenamiento del Experimento 1}\label{tab:exp1}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}rrrrr@{}}
+\toprule
+Época & Peso $w$ & Sesgo $b$ & MSE & $\hat{y}(x=5)$ \\
+\midrule
+\TablaEuno
+\bottomrule
+\end{tabular*}
+\fuente{Fuente: \path{resultados/exp1_y2x.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Convergencia del peso y del sesgo en la regresión $y=2x$}\label{fig:exp1conv}
+\centering\includegraphics[width=\textwidth]{figuras/fig02_exp1_convergencia_y2x.png}
+\fuente{El peso converge a 2 y el sesgo a 0, la solución analítica. Fuente: \path{resultados/exp1_y2x.csv}.}
+\end{figure}
+
+\begin{figure}[!htbp]
+\caption{Curva de pérdida MSE del Experimento 1}\label{fig:exp1mse}
+\centering\includegraphics[width=\textwidth]{figuras/fig03_exp1_mse_y2x.png}
+\fuente{Eje vertical en escala logarítmica. Fuente: \path{resultados/exp1_y2x.csv}.}
+\end{figure}
+
+\subsection{Análisis}
+La pérdida decrece de forma monótona y aproximadamente exponencial, comportamiento esperado para un problema cuadrático convexo con una tasa de aprendizaje inferior al límite de estabilidad. Durante las primeras épocas el peso se ajusta rápidamente y el sesgo crece de forma transitoria para compensar el error, para luego decrecer hacia cero a medida que el peso se aproxima a 2. El MSE final, del orden de $10^{-18}$, está en el límite de la precisión de la aritmética de doble precisión. La predicción correcta para $x=6$, valor ausente del conjunto de entrenamiento, muestra que la neurona aprendió la relación y no solo memorizó los cinco pares.
+
+\section{Experimento 2: compuerta XOR}\label{sec:exp2}
+El segundo experimento reproduce el problema que detuvo la investigación en redes neuronales durante la década de 1970. La función XOR devuelve 1 cuando sus dos entradas binarias son distintas. Se comparan un perceptrón de una capa (2-1, Sigmoid) y una red multicapa 2-4-1 (Sigmoid/Sigmoid), ambos entrenados durante \EdosEpocas{} épocas con $\alpha=\EdosAlpha$. Además, la red 2-4-1 se entrena con tres tasas de aprendizaje: baja ($0.01$), óptima ($0.5$) y alta ($50$).
+
+\subsection{Perceptrón frente a red multicapa}
+El perceptrón terminó con MSE de \EdosMsePer{} y exactitud de \EdosAccPer, mientras que la red multicapa alcanzó MSE de \EdosMseMul{} y exactitud de \EdosAccMul{}. La Tabla~\ref{tab:exp2} presenta las predicciones finales y la Figura~\ref{fig:exp2conv} compara las curvas de pérdida.
+
+\begin{table}[!htbp]
+\caption{Predicciones finales para XOR}\label{tab:exp2}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrr@{}}
+\toprule
+Entrada & Objetivo & Perceptrón 2-1 & Multicapa 2-4-1 \\
+\midrule
+\TablaEdos
+\bottomrule
+\end{tabular*}
+\fuente{Se clasifica como 1 cuando la salida es $\ge 0.5$. Fuente: \path{resultados/exp2_xor.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Curvas de pérdida del perceptrón 2-1 y de la red multicapa 2-4-1 en XOR}\label{fig:exp2conv}
+\centering\includegraphics[width=\textwidth]{figuras/fig04_exp2_xor_convergencia.png}
+\fuente{Eje vertical en escala logarítmica. Fuente: \path{resultados/exp2_xor.csv}.}
+\end{figure}
+
+La Figura~\ref{fig:frontera} muestra la salida de ambos modelos sobre una malla del plano de entradas. El perceptrón solo puede trazar una frontera recta, que deja necesariamente a un punto de cada clase del lado equivocado; la red multicapa, en cambio, construye una región de decisión no lineal que separa correctamente las cuatro entradas.
+
+\begin{figure}[!htbp]
+\caption{Fronteras de decisión aprendidas para XOR}\label{fig:frontera}
+\centering\includegraphics[width=\textwidth]{figuras/fig06_exp2_xor_frontera.png}
+\fuente{(a) Perceptrón 2-1. (b) Red multicapa 2-4-1. La línea indica $\hat{y}=0.5$. Fuente: \path{resultados/exp2_xor_frontera.csv}.}
+\end{figure}
+
+\subsection{Efecto de la tasa de aprendizaje}
+La Tabla~\ref{tab:exp2lr} y la Figura~\ref{fig:lr} resumen el comportamiento de la red 2-4-1 con las tres tasas de aprendizaje estudiadas.
+
+\begin{table}[!htbp]
+\caption{Efecto de la tasa de aprendizaje en la red 2-4-1 para XOR}\label{tab:exp2lr}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrl@{}}
+\toprule
+Escenario & $\alpha$ & MSE final & Exactitud & Época de convergencia \\
+\midrule
+\TablaEdosLr
+\bottomrule
+\end{tabular*}
+\fuente{Convergencia: primera época con MSE $<0.01$. Fuente: \path{resultados/exp2_xor_lr.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Curvas de pérdida de la red 2-4-1 con tasas de aprendizaje baja, óptima y alta}\label{fig:lr}
+\centering\includegraphics[width=\textwidth]{figuras/fig05_exp2_xor_learning_rates.png}
+\fuente{Fuente: \path{resultados/exp2_xor_lr.csv}.}
+\end{figure}
+
+\subsection{Análisis}
+El perceptrón no puede resolver XOR porque sus cuatro puntos no son linealmente separables, como se demostró en el Capítulo~\ref{cap:marco}. Su MSE se estanca cerca de $0.25$, valor que corresponde a predecir aproximadamente $0.5$ para todas las entradas: el optimizador encuentra el compromiso menos malo entre clases que no puede separar. La capa oculta de la red 2-4-1 transforma el espacio de entrada en una representación en la que las clases sí son separables, lo que confirma empíricamente el teorema de aproximación universal \citep{cybenko1989}.
+
+Respecto a la tasa de aprendizaje, con $\alpha=0.01$ la red apenas avanza en \EdosEpocas{} épocas (MSE de \EdosMseBaja); con $\alpha=0.5$ converge en la época \EdosConvOptima; y con $\alpha=50$ los pasos son tan grandes que las neuronas Sigmoid se saturan, sus derivadas se anulan y el aprendizaje se detiene con MSE de \EdosMseAlta. Este último valor equivale a que la red produzca salidas saturadas en 0 o en 1 que aciertan exactamente la mitad de los casos. El resultado ilustra que la tasa de aprendizaje no es un detalle de configuración, sino un hiperparámetro que determina si el entrenamiento converge \citep{ruder2016}.
+
+\section{Experimento 3: clasificación de vocales}\label{sec:exp3}
+El tercer experimento aplica el motor a un problema de reconocimiento de patrones con más entradas, varias clases y datos ruidosos, acercándose a una aplicación real de visión por computador a pequeña escala.
+
+\subsection{Conjunto de datos}
+Cada vocal se representa como una matriz binaria de $5\times5$ (Figura~\ref{fig:dataset}), aplanada en un vector de 25 entradas. La salida usa codificación \emph{one-hot} de 5 posiciones. El conjunto de entrenamiento contiene \EtresNEnt{} muestras (los 5 prototipos y 4 variantes por vocal con un píxel invertido). El conjunto de prueba contiene \EtresNPru{} muestras distintas de las de entrenamiento: 10 variantes por vocal para cada nivel de ruido de 1 a 5 píxeles invertidos. El ruido se genera invirtiendo $k$ píxeles elegidos mediante el barajado de Fisher--Yates (Código~\ref{cod:ruido}).
+
+\begin{figure}[!htbp]
+\caption{Prototipos binarios $5\times5$ y ejemplos con ruido del conjunto de vocales}\label{fig:dataset}
+\centering\includegraphics[width=\textwidth,height=0.42\textheight,keepaspectratio]{figuras/fig07_exp3_dataset_vocales.png}
+\fuente{Celda oscura = 1, celda clara = 0. Fuente: \path{resultados/dataset_vocales.csv}.}
+\end{figure}
+
+\lstinputlisting[caption={Generación de variantes con $k$ píxeles invertidos (\texttt{src/experiments/exp3\_vocales.rs})},label=cod:ruido]{generado/codigo/con_ruido.rs}
+
+\subsection{Resultados}
+La red 25-10-5 (Sigmoid/Sigmoid, 315 parámetros) se entrenó durante \EtresEpocas{} épocas con $\alpha=\EtresAlpha$. Alcanzó en entrenamiento un MSE de \EtresMseEnt{} con exactitud de \EtresAccEnt, y en prueba un MSE de \EtresMsePru{} con exactitud de \EtresAccPru. La Figura~\ref{fig:exp3train} muestra la evolución del error, la Tabla~\ref{tab:ruido} desglosa la exactitud por nivel de ruido, y la Tabla~\ref{tab:confusion} y la Figura~\ref{fig:confusion} presentan la matriz de confusión.
+
+\begin{figure}[!htbp]
+\caption{Evolución del error de entrenamiento y de prueba en la clasificación de vocales}\label{fig:exp3train}
+\centering\includegraphics[width=\textwidth]{figuras/fig08_exp3_vocales_entrenamiento.png}
+\fuente{Fuente: \path{resultados/exp3_vocales.csv}.}
+\end{figure}
+
+\begin{table}[!htbp]
+\caption{Exactitud de prueba por nivel de ruido}\label{tab:ruido}
+\small
+\begin{tabular*}{0.7\textwidth}{@{\extracolsep{\fill}}rrr@{}}
+\toprule
+Píxeles invertidos & Muestras & Exactitud \\
+\midrule
+\TablaEtresRuido
+\bottomrule
+\end{tabular*}
+\fuente{Fuente: \path{resultados/resumen.csv}.}
+\end{table}
+
+\begin{table}[!htbp]
+\caption{Matriz de confusión del conjunto de prueba}\label{tab:confusion}
+\small
+\begin{tabular*}{0.7\textwidth}{@{\extracolsep{\fill}}l ccccc@{}}
+\toprule
+& \multicolumn{5}{c}{Predicha} \\
+\cmidrule(l){2-6}
+Real & A & E & I & O & U \\
+\midrule
+\TablaConfusion
+\bottomrule
+\end{tabular*}
+\fuente{Filas: clase real; columnas: clase predicha. Fuente: \path{resultados/exp3_confusion.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Matriz de confusión del Experimento 3}\label{fig:confusion}
+\centering\includegraphics[width=0.72\textwidth]{figuras/fig09_exp3_matriz_confusion.png}
+\fuente{La diagonal concentra las clasificaciones correctas. Fuente: \path{resultados/exp3_confusion.csv}.}
+\end{figure}
+
+\subsection{Análisis}
+La red clasifica sin errores todas las muestras con hasta 3 píxeles invertidos (12\,\% de la imagen), aunque durante el entrenamiento solo vio variantes con un píxel alterado. Con 4 y 5 píxeles invertidos (16\,\% y 20\,\%) la exactitud desciende al 94\,\%. Los errores se concentran entre pares de vocales visualmente parecidas: O y U comparten los laterales y la base, y E comparte la columna izquierda con otras letras. La diferencia entre el MSE de entrenamiento y el de prueba es la esperada al evaluar con niveles de ruido mayores que los de entrenamiento, y no impide una exactitud global de \EtresAccPru. El comportamiento es coherente con la representación aprendida y muestra la capacidad de generalización del modelo frente a perturbaciones no observadas.
+
+\section{Rendimiento y benchmarks}\label{sec:bench}
+Los tiempos se midieron con \texttt{std::time::Instant} sobre el binario compilado en modo \emph{release} (sistema \BenchSO, arquitectura \BenchArch), como promedio de 3 repeticiones; la inferencia se promedió sobre 100\,000 predicciones. El binario resultante ocupa \BinKiB~KiB. La Tabla~\ref{tab:bench} presenta los valores medidos y la Figura~\ref{fig:bench} su representación gráfica.
+
+\begin{table}[!htbp]
+\caption{Tiempos reales de entrenamiento e inferencia}\label{tab:bench}
+\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrrrr@{}}
+\toprule
+Experimento & Red & Parám. & Épocas & Entren. (ms) & µs/época & Inferencia (ns) \\
+\midrule
+\TablaBench
+\bottomrule
+\end{tabular*}
+\fuente{Los tiempos dependen del equipo utilizado. Fuente: \path{resultados/benchmarks.csv}.}
+\end{table}
+
+\begin{figure}[!htbp]
+\caption{Tiempos de entrenamiento e inferencia del motor en Rust}\label{fig:bench}
+\centering\includegraphics[width=\textwidth]{figuras/fig10_benchmarks_rust.png}
+\fuente{(a) Tiempo medio de entrenamiento según el número de épocas, en escala logarítmica. (b) Tiempo medio por predicción. Fuente: \path{resultados/benchmarks.csv}.}
+\end{figure}
+
+El costo por época se mantiene aproximadamente constante para cada arquitectura una vez superadas las primeras ejecuciones, en las que influyen efectos de calentamiento de la caché, lo que confirma la complejidad lineal $O(E\cdot N\cdot P)$ del entrenamiento. La inferencia crece con el número de parámetros: la red de vocales, con 315 parámetros, requiere más tiempo por predicción que la red XOR de 17 parámetros, y ambas operan en el orden de los cientos de nanosegundos. Incluso 100\,000 épocas de XOR se completan en menos de un segundo, lo que demuestra que no se requiere hardware especializado para estudiar estos fundamentos.

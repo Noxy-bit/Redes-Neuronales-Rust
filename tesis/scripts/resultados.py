@@ -148,6 +148,12 @@ T6 = "\n".join(
     f"{r['iteracion']} & {r['entrada_x']} & {r['objetivo_y']} & {f(r['pesos_anteriores'],4)} & {f(r['sesgo_anterior'],4)} & {f(r['z'],4)} & {f(r['error'],4)} & {f(r['grad_pesos'],4)} & {f(r['pesos_nuevos'],4)} & {f(r['sesgo_nuevo'],4)} \\\\"
     for r in pe if r["escenario"].startswith("y=2x"))
 macro("PeFilas", len(pe))
+px = [r for r in pe if r["escenario"].startswith("XOR") and int(r["iteracion"]) <= 2]
+T8 = "\n".join(
+    f"{r['iteracion']} & ({r['entrada_x'].replace(';', ', ')}) & {r['objetivo_y']} & {r['capa']} & {r['neurona']} & "
+    f"{float(r['z']):.4f} & {float(r['a']):.4f} & {float(r['delta']):.4f} & {float(r['sesgo_anterior']):.4f} & {float(r['sesgo_nuevo']):.4f} \\\\"
+    for r in px)
+macro("PeXorEsc", px[0]["escenario"])
 
 # ---------- Benchmarks ----------
 bm = leer("benchmarks.csv")
@@ -161,7 +167,7 @@ macro("BenchArch", bm[0]["cpu_arch"].replace("_", "\\_"))
 out = "% Generado por tesis/scripts/resultados.py desde resultados/*.csv — no editar a mano.\n"
 out += "\n".join(M) + "\n"
 for n, t in (("TablaEuno", T1), ("TablaEdos", T2), ("TablaEdosLr", T3), ("TablaEtresRuido", T4),
-             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7)):
+             ("TablaConfusion", T5), ("TablaEscritorio", T6), ("TablaBench", T7), ("TablaEscritorioXor", T8)):
     out += f"\\newcommand{{\\{n}}}{{%\n{t}\n}}\n"
 (GEN / "resultados.tex").write_text(out, encoding="utf-8")
 print("resultados.tex y figuras generadas")

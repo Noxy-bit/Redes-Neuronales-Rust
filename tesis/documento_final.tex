@@ -1,0 +1,113 @@
+% Documento Final Oficial de Ingeniería — Proyecto 38, Feria FICCT-UAGRM 2-2026
+% Compilar con: tesis/compilar_final.sh  (XeLaTeX + natbib; salida: tesis/build/Proy-38-Doc-Final.PDF)
+\documentclass[12pt,letterpaper,oneside]{report}
+\usepackage[letterpaper,margin=2.54cm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\setmainfont{Liberation Serif}
+\setmonofont{DejaVu Sans Mono}[Scale=0.82,AutoFakeSlant=0.15]
+\usepackage{polyglossia}
+\setdefaultlanguage{spanish}
+\gappto\captionsspanish{\renewcommand{\tablename}{Tabla}\renewcommand{\listtablename}{Índice de Tablas}\renewcommand{\appendixname}{Anexo}}
+\usepackage{setspace}\onehalfspacing
+\usepackage{graphicx,float,booktabs,array,multirow,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{siunitx}\sisetup{output-decimal-marker={.},exponent-product=\times}
+\usepackage[skip=4pt]{caption}
+\captionsetup{labelfont=bf,textfont=it,singlelinecheck=false,justification=raggedright,labelsep=newline}
+\usepackage{needspace}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}\setlist{noitemsep,topsep=3pt}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftloftitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftafterloftitle}{\hfill}
+\renewcommand{\cftlottitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftafterlottitle}{\hfill}
+\usepackage[round]{natbib}
+\setcitestyle{authoryear,round,aysep={,},yysep={;},notesep={, }}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% Paleta institucional sobria: azul marino FICCT y gris pizarra
+\definecolor{marino}{HTML}{0F2A5F}
+\definecolor{pizarra}{HTML}{334155}
+\definecolor{fondocod}{HTML}{F7F8FA}
+\definecolor{bordecod}{HTML}{CBD5E1}
+
+\input{config_caratula}
+\input{generado/resultados}
+\input{generado/anexo_codigo_macros}
+
+% Control editorial: sin viudas ni huérfanas, títulos protegidos contra el pie de página
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=1500
+\setlength{\emergencystretch}{3em}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.12}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+
+\titleformat{\chapter}[display]{\normalfont\bfseries\color{marino}\centering}{\large CAPÍTULO \thechapter}{4pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{-12pt}{20pt}
+\titleformat{\section}{\needspace{7\baselineskip}\normalfont\large\bfseries\color{marino}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\needspace{5\baselineskip}\normalfont\bfseries\color{pizarra}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\needspace{5\baselineskip}\normalfont\bfseries\itshape}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\color{pizarra}Red Neuronal Artificial desde Cero en Rust}
+\fancyhead[R]{\small\color{pizarra}Proyecto \ProyNum{} -- FICCT-UAGRM}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{marino}\hrule height\headrulewidth width\headwidth}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% Tablas APA: reglas horizontales en azul marino, sin bordes verticales
+\arrayrulecolor{marino}
+
+\lstdefinelanguage{Rust}{morekeywords={fn,let,mut,pub,struct,enum,impl,trait,for,in,if,else,match,return,use,mod,self,Self,where,const,as,ref,while,loop,break,continue,crate,super,dyn,type,Some,None,Ok,Err},
+  sensitive=true,morecomment=[l]{//},morestring=[b]"}
+\lstdefinelanguage{TOML}{morecomment=[l]{\#},morestring=[b]"}
+\lstset{language=Rust,basicstyle=\ttfamily\small\linespread{1}\selectfont,numbers=left,numberstyle=\tiny\color{pizarra},
+  keywordstyle=\color{marino}\bfseries,commentstyle=\color{pizarra}\itshape,stringstyle=\color{black!75},
+  backgroundcolor=\color{fondocod},frame=lines,rulecolor=\color{bordecod},breaklines=true,columns=fullflexible,
+  postbreak=\mbox{\textcolor{pizarra}{$\hookrightarrow$}\space},
+  keepspaces=true,showstringspaces=false,xleftmargin=1.8em,framexleftmargin=1.8em,aboveskip=8pt,belowskip=8pt,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {¿}{{?`}}1 {¡}{{!`}}1 {·}{{$\cdot$}}1 {×}{{$\times$}}1 {α}{{$\alpha$}}1 {δ}{{$\delta$}}1 {σ}{{$\sigma$}}1 {ε}{{$\varepsilon$}}1 {⊙}{{$\odot$}}1 {ᵀ}{{$^T$}}1 {≫}{{$\gg$}}1 {→}{{$\to$}}1 {←}{{$\leftarrow$}}1 {≤}{{$\le$}}1 {≥}{{$\ge$}}1 {≈}{{$\approx$}}1 {∂}{{$\partial$}}1 {∑}{{$\Sigma$}}1 {—}{{---}}1 {–}{{--}}1 {ℝ}{{$\mathbb{R}$}}1 {²}{{$^2$}}1 {⁻}{{$^-$}}1 {¹}{{$^1$}}1 {∈}{{$\in$}}1 {θ}{{$\theta$}}1 {η}{{$\eta$}}1 {λ}{{$\lambda$}}1 {∇}{{$\nabla$}}1 {°}{{$^\circ$}}1 {«}{{\guillemotleft}}1 {»}{{\guillemotright}}1 {…}{{\dots}}1}
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\lstlistlistingname}{Lista de Códigos}
+\renewcommand{\bibname}{Bibliografía}
+
+% Recuadro técnico sobrio (fondo gris muy claro, filete azul marino)
+\newtcolorbox{nota}[1][Nota técnica]{enhanced,breakable,colback=black!2,colframe=marino,coltitle=white,colbacktitle=marino,
+  fonttitle=\bfseries\small,title=#1,boxrule=0.5pt,arc=0pt,left=6pt,right=6pt,top=4pt,bottom=4pt}
+
+\newcommand{\fuente}[1]{\par\smallskip{\footnotesize\raggedright\emph{Nota.} #1\par}}
+
+% Bibliografía APA 7: sangría francesa de 1.27 cm
+\setlength{\bibhang}{1.27cm}\setlength{\bibsep}{6pt}
+
+\begin{document}
+\pagenumbering{roman}
+\input{capitulos/00_preliminares}
+\clearpage\pagenumbering{arabic}
+\input{capitulos/01_marco_logico}
+\input{capitulos/02_programacion1}
+\input{capitulos/03_marco_teorico}
+\input{capitulos/04_metodologia_diseno}
+\input{capitulos/05_implementacion_resultados}
+\input{capitulos/06_guia_uso}
+\input{capitulos/07_conclusiones}
+\input{capitulos/08_recomendaciones}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Bibliografía}
+{\singlespacing\input{generado/referencias}}
+\input{capitulos/09_anexos}
+\end{document}

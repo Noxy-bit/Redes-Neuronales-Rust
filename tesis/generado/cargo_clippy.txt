@@ -1,0 +1,2 @@
+    Checking redes_neuronales_rust v0.1.0 (~/repos/Redes-Neuronales-Rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in <t>

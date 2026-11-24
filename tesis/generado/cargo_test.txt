@@ -1,58 +1,58 @@
 running 51 tests
-test experiments::csv::tests::escribe_y_valida_columnas ... ok
 test experiments::exp1_y2x::tests::dataset_es_y_igual_2x ... ok
+test experiments::csv::tests::escribe_y_valida_columnas ... ok
 test experiments::exp3_vocales::tests::prototipos_distintos_y_binarios ... ok
 test experiments::exp3_vocales::tests::ruido_invierte_k_pixeles ... ok
 test experiments::tests::exactitudes_y_errores ... ok
 test math::error::tests::display_es_descriptivo ... ok
-test math::matrix::tests::aleatoria_reproducible ... ok
 test math::matrix::tests::creacion_y_acceso_seguro ... ok
+test math::matrix::tests::aleatoria_reproducible ... ok
 test math::matrix::tests::matriz_por_vector_y_transpuesta ... ok
 test math::matrix::tests::multiplicacion_matricial ... ok
-test math::matrix::tests::producto_exterior ... ok
 test math::matrix::tests::operaciones_elemento_a_elemento ... ok
+test math::matrix::tests::producto_exterior ... ok
 test math::rng::tests::misma_semilla_misma_secuencia ... ok
-test experiments::prueba_escritorio::tests::traza_consistente_con_formulas ... ok
-test math::rng::tests::rangos_uniformes ... ok
 test math::rng::tests::shuffle_es_permutacion ... ok
 test math::rng::tests::vector_de_referencia_splitmix64 ... ok
 test math::vector::tests::argmax_basico ... ok
+test math::vector::tests::creacion_y_acceso ... ok
 test math::vector::tests::errores_de_dimension ... ok
 test math::vector::tests::suma_resta_hadamard_punto ... ok
 test nn::activation::tests::enum_despacha_y_vectoriza ... ok
+test experiments::prueba_escritorio::tests::traza_consistente_con_formulas ... ok
+test math::rng::tests::rangos_uniformes ... ok
 test nn::activation::tests::gradient_checking_derivadas_analiticas ... ok
-test experiments::benchmarks::tests::mide_y_exporta ... ok
+test nn::activation::tests::relu_y_lineal_valores_conocidos ... ok
+test nn::activation::tests::sigmoid_valores_conocidos ... ok
 test nn::layer::tests::backward_sin_forward_es_error ... ok
-test experiments::exp3_vocales::tests::dataset_determinista_y_disjunto ... ok
 test nn::layer::tests::dimensiones_y_parametros ... ok
+test nn::layer::tests::backward_y_actualizacion ... ok
 test nn::layer::tests::forward_calculo_manual_y_neurona ... ok
-test nn::loss::tests::gradient_checking_mse ... ok
 test nn::loss::tests::mse_errores_de_dimension ... ok
+test nn::loss::tests::gradient_checking_mse ... ok
 test nn::loss::tests::mse_valores_conocidos ... ok
 test nn::network::tests::backward_sin_forward_es_error ... ok
 test nn::network::tests::construccion_y_validaciones ... ok
 test nn::network::tests::forward_y_predict_coinciden ... ok
-test nn::activation::tests::relu_y_lineal_valores_conocidos ... ok
-test nn::network::tests::gradient_checking_relu_lineal_profunda ... ok
 test nn::network::tests::gradient_checking_sigmoid ... ok
 test nn::network::tests::inicializacion_reproducible ... ok
+test nn::network::tests::gradient_checking_relu_lineal_profunda ... ok
 test nn::network::tests::train_callback_y_errores ... ok
-test nn::activation::tests::sigmoid_valores_conocidos ... ok
-test math::vector::tests::creacion_y_acceso ... ok
 test nn::network::tests::train_step_reduce_error_en_la_muestra ... ok
-test nn::layer::tests::backward_y_actualizacion ... ok
+test experiments::exp3_vocales::tests::dataset_determinista_y_disjunto ... ok
 test nn::neuron::tests::forward_calculo_manual ... ok
 test nn::neuron::tests::forward_error_de_dimension ... ok
 test nn::neuron::tests::inicializacion_reproducible ... ok
 test nn::network::tests::gradient_checking_vocales_25_10_5 ... ok
+test experiments::benchmarks::tests::mide_y_exporta ... ok
 test nn::network::tests::train_regresion_lineal_converge ... ok
 test experiments::exp1_y2x::tests::converge_y_exporta ... ok
 test nn::network::tests::train_xor_multicapa_converge ... ok
 test experiments::exp2_xor::tests::perceptron_falla_y_multicapa_converge ... ok
 test experiments::exp3_vocales::tests::entrena_clasifica_y_exporta ... ok
-RESULTADO: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
 running 1 test
 test tests::parsea_opciones ... ok
-RESULTADO: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 running 0 tests
-RESULTADO: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -14,6 +14,23 @@ EXTRACTOS = {
     "layer_backward": ("src/nn/layer.rs", "pub fn backward("),
     "train_step": ("src/nn/network.rs", "pub fn train_step("),
     "rng": ("src/math/rng.rs", "pub fn next_u64("),
+    "shuffle": ("src/math/rng.rs", "pub fn shuffle<"),
+    "dot": ("src/math/vector.rs", "pub fn dot("),
+    "argmax": ("src/math/vector.rs", "pub fn argmax("),
+    "mul_vector": ("src/math/matrix.rs", "pub fn mul_vector("),
+    "outer": ("src/math/matrix.rs", "pub fn outer("),
+    "relu": ("src/nn/activation.rs", "impl ActivationFn for ReLU"),
+    "activation_enum": ("src/nn/activation.rs", "pub enum Activation"),
+    "neuron_forward": ("src/nn/neuron.rs", "pub fn forward("),
+    "layer_new": ("src/nn/layer.rs", "pub fn new("),
+    "apply_gradients": ("src/nn/layer.rs", "pub fn apply_gradients("),
+    "network_new": ("src/nn/network.rs", "pub fn new("),
+    "network_backward": ("src/nn/network.rs", "pub fn backward("),
+    "train_callback": ("src/nn/network.rs", "pub fn train_with_callback<"),
+    "con_ruido": ("src/experiments/exp3_vocales.rs", "pub fn con_ruido("),
+    "confusion": ("src/experiments/exp3_vocales.rs", "pub fn matriz_confusion("),
+    "csv_row": ("src/experiments/csv.rs", "pub fn write_row("),
+    "parsear": ("src/main.rs", "fn parsear("),
 }
 
 

@@ -1,0 +1,24 @@
+\chapter{Recomendaciones}\label{cap:recomendaciones}
+Con base en la experiencia obtenida y en las limitaciones identificadas, se formulan recomendaciones para la extensión técnica del motor y para su aprovechamiento educativo en la FICCT.
+
+\section{Recomendaciones técnicas}
+Las siguientes extensiones mejorarían la capacidad del motor sin alterar su principio de implementación desde cero.
+
+\begin{enumerate}[leftmargin=2em,itemsep=4pt]
+\item Incorporar entrenamiento por mini-lotes (\emph{mini-batch}) y optimizadores adaptativos como Momentum o Adam para acelerar la convergencia y reducir la sensibilidad a la tasa de aprendizaje.
+\item Añadir la función de pérdida de entropía cruzada con activación Softmax, más adecuada que el MSE para clasificación multiclase.
+\item Ampliar el Experimento~3 a matrices de mayor resolución, a todo el alfabeto o a dígitos manuscritos, y separar un conjunto de validación para seleccionar hiperparámetros.
+\item Estudiar el efecto del número de neuronas ocultas y de la semilla aleatoria sobre la convergencia mediante experimentos repetidos con análisis estadístico.
+\item Explorar la paralelización con los hilos de la biblioteca estándar de Rust para acelerar el entrenamiento de redes mayores.
+\item Incorporar regularización (por ejemplo, penalización $L_2$) y técnicas de detención temprana para controlar el sobreajuste en conjuntos de datos más grandes.
+\end{enumerate}
+
+\section{Recomendaciones académicas}
+El repositorio puede aprovecharse como recurso didáctico más allá de la Feria Facultativa.
+
+\begin{enumerate}[leftmargin=2em,itemsep=4pt]
+\item Utilizar el repositorio como material de laboratorio en Programación 1, proponiendo a los estudiantes reproducir la prueba de escritorio con calculadora y modificar los parámetros de los experimentos.
+\item Diseñar ejercicios graduados en los que los estudiantes implementen una nueva función de activación o de pérdida y la validen con \emph{gradient checking}.
+\item Articular el proyecto con las asignaturas de Álgebra Lineal y Cálculo, presentando la retropropagación como aplicación directa de la regla de la cadena y del producto matricial.
+\item Mantener el repositorio como proyecto abierto del Semillero de Investigación del IICCT, de modo que futuras cohortes puedan ampliarlo y documentar sus aportes.
+\end{enumerate}

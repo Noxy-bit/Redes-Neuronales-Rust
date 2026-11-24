@@ -21,3 +21,12 @@ cargo run --release -- --all        # ejecuta todo y escribe resultados/*.csv
 cargo run --release -- --exp2       # un experimento concreto (--exp1, --exp3, --escritorio, --bench)
 cargo run --release -- --all --export otra_carpeta --seed 7
 ```
+
+## Documento final (PDF + DOCX)
+
+```bash
+bash tesis/compilar_final.sh                 # usa los CSV existentes
+bash tesis/compilar_final.sh --experimentos  # vuelve a ejecutar el binario y regenera gráficas
+```
+
+Genera `tesis/build/Proy-38-Doc-Final.PDF` (XeLaTeX) y `tesis/build/Proy-38-Doc-Final.docx` (Pandoc + APA 7 con `tesis/estilos/apa.csl`). Fuente principal: `tesis/documento_final.tex`; capítulos en `tesis/capitulos/`; variables de carátula en `tesis/config_caratula.tex`.

@@ -1,0 +1,24 @@
+\chapter{Conclusiones}\label{cap:conclusiones}
+A partir de la implementación y de los resultados experimentales reales, se presentan las conclusiones del proyecto organizadas según los objetivos planteados en el Capítulo~\ref{cap:marco-logico}. Cada conclusión se apoya en evidencia verificable del repositorio.
+
+\section{Respuesta a la pregunta de investigación}
+La pregunta de investigación planteaba si es posible construir, con fines educativos y utilizando únicamente la biblioteca estándar de Rust, una red neuronal multicapa capaz de aprender una relación lineal, resolver XOR y clasificar vocales, verificando su funcionamiento mediante pruebas y experimentos reproducibles. La respuesta es afirmativa: el motor implementado, de aproximadamente 4\,000 líneas de Rust sin dependencias externas, resolvió los tres problemas con las métricas reportadas en el Capítulo~\ref{cap:implementacion}, superó 52 pruebas automatizadas y produjo resultados idénticos en ejecuciones repetidas con la misma semilla.
+
+\section{Conclusiones por objetivo}
+Las conclusiones específicas se presentan en correspondencia con el objetivo general y con cada objetivo específico.
+
+\begin{enumerate}[leftmargin=2em,itemsep=6pt]
+\item \textbf{Objetivo general.} Se construyó una red neuronal multicapa funcional en Rust utilizando únicamente la biblioteca estándar, sin crates de aprendizaje automático ni de álgebra lineal, capaz de resolver problemas de regresión, de lógica no lineal y de clasificación de patrones con ruido.
+\item \textbf{Álgebra lineal (OE1).} Las estructuras \texttt{Vector} y \texttt{Matrix} implementan todas las operaciones requeridas sobre almacenamiento contiguo por filas y detectan los errores de dimensión mediante \texttt{Result}, lo que evita resultados incorrectos silenciosos y permite probar explícitamente los casos de error.
+\item \textbf{Activaciones y pérdida (OE2).} Las derivadas analíticas de Sigmoid, ReLU, lineal y MSE coinciden con sus aproximaciones por diferencias centrales, lo que valida su implementación. La forma numéricamente estable de Sigmoid evita desbordamientos para entradas de gran magnitud.
+\item \textbf{Red y aprendizaje (OE3).} La retropropagación implementada en forma matricial reproduce fielmente las ecuaciones derivadas en el marco teórico, permite entrenar topologías arbitrarias y es reproducible gracias al generador SplitMix64 propio. La prueba de escritorio confirmó, operación por operación, que el código ejecuta exactamente esas ecuaciones.
+\item \textbf{Verificación (OE4).} Las 52 pruebas automatizadas se aprueban en su totalidad, incluida la verificación numérica de gradientes en redes de hasta tres capas (2-4-1, 3-5-4-2 y 25-10-5), y \texttt{cargo clippy} no reporta advertencias.
+\item \textbf{Experimentos (OE5).} La regresión $y=2x$ alcanzó un MSE de \EunoMseFin{} con $w=\EunoPesoFin$; el perceptrón de una capa se estancó en \EdosAccPer{} de exactitud en XOR mientras la red 2-4-1 logró \EdosAccMul, lo que confirma experimentalmente la necesidad de capas ocultas para problemas no lineales; y la clasificación de vocales obtuvo \EtresAccPru{} de exactitud sobre \EtresNPru{} muestras de prueba con ruido no vistas durante el entrenamiento.
+\item \textbf{Rendimiento (OE6).} El binario optimizado ocupa \BinKiB~KiB y entrena cualquiera de los experimentos en fracciones de segundo, con inferencias del orden de cientos de nanosegundos, lo que demuestra que los fundamentos del aprendizaje automático pueden estudiarse con equipos convencionales.
+\end{enumerate}
+
+\section{Conclusiones sobre el aporte educativo}
+El proyecto muestra que los contenidos de Programación 1 ---tipos de datos, ciclos, funciones, arreglos, matrices, estructuras, modularidad, manejo de errores y archivos--- son suficientes para construir un sistema que aprende a partir de datos, cuando se combinan con álgebra lineal y cálculo elemental. La experiencia de implementar cada ecuación y verificarla con pruebas transformó conceptos abstractos, como la regla de la cadena o el producto matriz-vector, en piezas concretas de un programa cuyo funcionamiento puede observarse. El estudio de la tasa de aprendizaje y la comparación entre el perceptrón y la red multicapa ilustran que comprender los fundamentos permite diagnosticar por qué un modelo falla, capacidad que el uso exclusivo de herramientas de caja negra no desarrolla.
+
+\section{Limitaciones}
+Los resultados deben interpretarse dentro del alcance definido. Los conjuntos de datos son sintéticos y pequeños; el entrenamiento utiliza descenso de gradiente estocástico sin mini-lotes ni optimizadores adaptativos; la pérdida MSE no es la más adecuada para clasificación multiclase; y los tiempos de ejecución dependen del equipo utilizado. Estas limitaciones no afectan la validez de las conclusiones sobre la corrección del motor, pero orientan las recomendaciones del capítulo siguiente.

@@ -1,0 +1,66 @@
+\appendix
+\renewcommand{\chaptername}{Anexo}
+\titleformat{\chapter}[display]{\normalfont\bfseries\color{marino}\centering}{\large ANEXO \thechapter}{4pt}{\LARGE}
+\lstdefinestyle{anexo}{basicstyle=\ttfamily\footnotesize\linespread{1}\selectfont,numbersep=6pt}
+
+\chapter{Salida de \texttt{cargo test} y \texttt{cargo clippy}}\label{anx:tests}
+Este anexo reproduce la salida real de las herramientas de verificación ejecutadas sobre el código del repositorio durante la compilación de este documento. El primer listado corresponde a \texttt{cargo test}, con el nombre de cada una de las 52 pruebas (51 de la biblioteca y 1 del binario), y el segundo a \texttt{cargo clippy --all-targets}, cuya ejecución concluye sin advertencias.
+
+{\singlespacing
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Salida completa de \texttt{cargo test}},label=cod:tests]{generado/cargo_test.txt}
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Salida de \texttt{cargo clippy --all-targets}},label=cod:clippy]{generado/cargo_clippy.txt}
+}
+
+\chapter{Código fuente completo}\label{anx:codigo}
+Este anexo contiene el código fuente completo del motor, documentado con comentarios \texttt{///} en español, junto con el archivo de configuración \texttt{Cargo.toml}. Los listados se generan automáticamente desde el repositorio, por lo que coinciden exactamente con la versión compilada y probada. En total se incluyen \LineasFuente{} líneas. El repositorio está disponible en \url{\Repositorio}.
+
+{\singlespacing\input{generado/anexo_codigo}}
+
+\chapter{Inventario de diagramas editables}\label{anx:drawio}
+Los diagramas del documento se elaboraron en formato \texttt{.drawio} (diagrams.net), editable y abierto, y se exportaron a PNG a 300 DPI con el script \path{diagramas/generar_diagramas.py}. La Tabla~\ref{tab:drawio} presenta el inventario completo.
+
+\begin{table}[!htbp]
+\caption{Inventario de archivos \texttt{.drawio} del proyecto}\label{tab:drawio}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{5.4cm} >{\raggedright}X >{\raggedright\arraybackslash}p{1.6cm}@{}}
+\toprule
+Archivo fuente y exportación & Contenido & Figura \\
+\midrule
+\path{01_arbol_problemas.drawio} \newline \path{diag01_arbol_problemas.png} & Causas, problema central y efectos & \ref{fig:arbol} \\
+\path{02_arquitectura_modulos_rust.drawio} \newline \path{diag02_arquitectura_rust.png} & Módulos \texttt{math}, \texttt{nn}, \texttt{experiments} y CLI & \ref{fig:arquitectura} \\
+\path{03_flujo_forward_backprop.drawio} \newline \path{diag03_flujo_entrenamiento.png} & Algoritmo de entrenamiento & \ref{fig:flujo} \\
+\path{04_memoria_ownership_rust.drawio} \newline \path{diag04_memoria_rust.png} & Pila, montón, propiedad y préstamos & \ref{fig:memoria} \\
+\path{05_fases_metodologia.drawio} \newline \path{diag05_fases_metodologia.png} & Fases y etapas de la metodología & \ref{fig:fases} \\
+\bottomrule
+\end{tabularx}
+\fuente{Archivos fuente en \path{diagramas/}; exportaciones en \path{tesis/figuras/}. Pueden abrirse en \url{https://app.diagrams.net} o en la aplicación de escritorio draw.io.}
+\end{table}
+
+Las once gráficas de resultados se generan con \path{scripts/generar_graficas.py} a partir de los CSV, también a 300 DPI, y se conservan en \path{tesis/figuras/} con prefijo \texttt{fig}. Al modificar un diagrama o volver a ejecutar los experimentos, basta repetir los comandos del Código~\ref{cod:regenerar} para actualizar todas las figuras de este documento.
+
+\chapter{Integrantes, ORCID y roles}\label{anx:roles}
+El equipo de investigación está conformado por cinco estudiantes de la FICCT inscritos en la asignatura \Materia{} (\Sigla), grupo \Grupo. La Tabla~\ref{tab:roles} presenta sus datos de identificación y su rol en la Feria Facultativa.
+
+\begin{table}[!htbp]
+\caption{Integrantes del equipo, identificadores ORCID y roles}\label{tab:roles}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}X l >{\raggedright}p{2.4cm} l >{\raggedright\arraybackslash}p{2.6cm}@{}}
+\toprule
+Nombre completo & Registro & Carrera & ORCID & Rol \\
+\midrule
+Ronal Miranda Vasquez & 226159787 & Ing. Informática & 0009-0003-9735-4920 & Investigador -- Expositor \\
+Oscar Alejandro Nava Orihuela & 226037215 & Ing. Informática & 0009-0001-0485-3030 & Investigador -- Expositor \\
+Carla Olivia Cano Quispe & 224026879 & Ing. Informática & 0009-0009-5668-8290 & Investigadora -- Expositora \\
+Diana Nayely Diaz Mamani & 225028190 & Ing. Sistemas & 0009-0003-0550-4996 & Investigadora -- Expositora \\
+Julio Cesar Piuca Achocalla & 224028782 & Ing. Informática & 0009-0004-0056-5201 & Investigador -- Expositor \\
+\bottomrule
+\end{tabularx}
+\fuente{Docente tutor: \DocenteTutor. Coordinador del IICCT: \CoordinadorIICCT.}
+\end{table}
+
+Las responsabilidades del proyecto se distribuyeron por áreas de trabajo en las que participó todo el equipo: implementación del motor en Rust por fases, diseño y ejecución de las pruebas unitarias, ejecución y análisis de los experimentos, elaboración de gráficas y diagramas, redacción del documento y preparación del material y de la exposición en la feria. Cada integrante se encuentra en condiciones de explicar y demostrar cualquiera de los componentes del sistema durante la exposición.
+
+\chapter{Carta de Compromiso}\label{anx:carta}
+\begin{center}
+\includegraphics[width=0.85\textwidth,height=0.78\textheight,keepaspectratio]{\CartaCompromiso}
+\end{center}
