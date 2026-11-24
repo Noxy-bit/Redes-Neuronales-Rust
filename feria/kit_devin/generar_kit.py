@@ -430,10 +430,11 @@ def triptico(m):
   <div class="h2">Romper la<br>caja negra</div><div class="barra"></div>
   <div class="texto"><p>Usamos IA a diario sin ver <b>cómo&nbsp;aprende</b>.</p>
     <p>Programamos una red neuronal <b>desde&nbsp;cero</b>, sin frameworks.</p>
-    <p>Cada ecuación es código Rust legible y trazable.</p></div>
+    <p>Cada ecuación es código Rust trazable.</p></div>
   <div class="rotulo">ARQUITECTURA</div>
   <div class="bloque" style="--c:var(--cian)"><code>math</code><span>Vector · Matrix</span></div>{flecha}
-  <div class="bloque" style="--c:var(--purpura)"><code>neural</code><span>Neuron · Layer · MSE</span></div>{flecha}
+  <div class="bloque" style="--c:#3B82F6"><code>neural</code><span>Neuron · Layer · Network</span></div>{flecha}
+  <div class="bloque" style="--c:var(--purpura)"><code>learning</code><span>MSE · Gradient · Optimizer</span></div>{flecha}
   <div class="bloque" style="--c:var(--rust)"><code>experiments</code><span>y = 2x · Booleano · Vocales</span></div>
 </div></div>
 <div class="panel cen"><div class="caja" data-nombre="interior central" data-panel="Interior central">

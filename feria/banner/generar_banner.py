@@ -200,7 +200,7 @@ def svg_red():
 
 
 def svg_flujo():
-    pasos = [("Datos", "#00D4FF"), ("Forward Pass", "#00D4FF"), ("Backpropagation", "#A855F7"), ("Predicción", "#F97316")]
+    pasos = [("Datos", "#00D4FF"), ("Forward Pass", "#00D4FF"), ("Gradiente", "#A855F7"), ("Predicción", "#F97316")]
     iconos = [
         '<ellipse cx="0" cy="-14" rx="24" ry="8" {s}/><path d="M-24 -14 V14 A24 8 0 0 0 24 14 V-14" {s}/><path d="M-24 0 A24 8 0 0 0 24 0" {s}/>',
         '<circle cx="-22" cy="-12" r="6" {f}/><circle cx="-22" cy="12" r="6" {f}/><circle cx="22" cy="0" r="7" {f}/>'

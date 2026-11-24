@@ -7,10 +7,10 @@
 Este anexo reproduce la salida real de las herramientas de verificación. Para el repositorio oficial (commit \texttt{\OfCommit}), \texttt{cargo test} compila el binario con \OfWarnBuild{} advertencias y ejecuta \OfPruebas{} pruebas; \texttt{cargo clippy} concluye con \OfClippyErr{} error y \OfClippyWarn{} advertencias, cuyo resumen (tipo y ubicación) se reproduce a continuación; la salida completa está en \path{resultados/oficial/}. Para el motor complementario se reproduce \texttt{cargo test}, con el nombre de cada una de sus 52 pruebas (51 de la biblioteca y 1 del binario), y \texttt{cargo clippy --all-targets}, que concluye sin advertencias.
 
 {\singlespacing
-\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Repositorio oficial: resultado de \texttt{cargo test}},label=cod:of-tests]{generado/of_cargo_test.txt}
-\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Repositorio oficial: resumen de \texttt{cargo clippy --release}},label=cod:of-clippy]{generado/of_cargo_clippy.txt}
-\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Motor complementario: salida completa de \texttt{cargo test}},label=cod:tests]{generado/cargo_test.txt}
-\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,caption={Motor complementario: salida de \texttt{cargo clippy --all-targets}},label=cod:clippy]{generado/cargo_clippy.txt}
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,aboveskip=3pt,belowskip=3pt,caption={Repositorio oficial: resultado de \texttt{cargo test}},label=cod:of-tests]{generado/of_cargo_test.txt}
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,aboveskip=3pt,belowskip=3pt,caption={Repositorio oficial: resumen de \texttt{cargo clippy --release}},label=cod:of-clippy]{generado/of_cargo_clippy.txt}
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,aboveskip=3pt,belowskip=3pt,caption={Motor complementario: salida completa de \texttt{cargo test}},label=cod:tests]{generado/cargo_test.txt}
+\lstinputlisting[language={},basicstyle=\ttfamily\scriptsize,numbers=none,aboveskip=3pt,belowskip=3pt,caption={Motor complementario: salida de \texttt{cargo clippy --all-targets}},label=cod:clippy]{generado/cargo_clippy.txt}
 }
 
 \chapter{Código fuente del repositorio oficial}\label{anx:codigo}
