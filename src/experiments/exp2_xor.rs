@@ -19,6 +19,11 @@ pub const TABLA_XOR: [([f64; 2], f64); 4] = [
 pub const ARCHIVO: &str = "exp2_xor.csv";
 /// Archivo de comparación de tasas de aprendizaje.
 pub const ARCHIVO_LR: &str = "exp2_xor_lr.csv";
+/// Archivo con la salida de ambos modelos entrenados sobre una malla 2D
+/// (frontera de decisión).
+pub const ARCHIVO_FRONTERA: &str = "exp2_xor_frontera.csv";
+/// Puntos por eje de la malla `[-0.2, 1.2]²` usada para la frontera de decisión.
+pub const MALLA_FRONTERA: usize = 71;
 
 /// Hiperparámetros del experimento 2.
 #[derive(Debug, Clone)]
@@ -135,7 +140,33 @@ fn debe_registrar(epoca: usize, total: usize, cada: usize) -> bool {
     epoca == 0 || epoca == total || epoca.is_multiple_of(cada.max(1))
 }
 
-/// Ejecuta el experimento y exporta `exp2_xor.csv` y `exp2_xor_lr.csv`.
+/// Evalúa ambos modelos entrenados sobre una malla `n × n` en `[-0.2, 1.2]²`
+/// y exporta `x1, x2, salida_perceptron, salida_multicapa`. `O(n²·P)`.
+fn exportar_frontera(
+    perceptron: &Network,
+    multicapa: &Network,
+    ruta: &Path,
+) -> ExperimentResult<()> {
+    let n = MALLA_FRONTERA;
+    let mut csv = CsvWriter::create(ruta, &["x1", "x2", "salida_perceptron", "salida_multicapa"])?;
+    let coord = |i: usize| -0.2 + 1.4 * i as f64 / (n - 1) as f64;
+    for i in 0..n {
+        for j in 0..n {
+            let x = Vector::new(vec![coord(j), coord(i)]);
+            csv.write_row(&[
+                num(coord(j)),
+                num(coord(i)),
+                num(perceptron.predict(&x)?.get(0)?),
+                num(multicapa.predict(&x)?.get(0)?),
+            ])?;
+        }
+    }
+    csv.finish()?;
+    Ok(())
+}
+
+/// Ejecuta el experimento y exporta `exp2_xor.csv`, `exp2_xor_frontera.csv`
+/// y `exp2_xor_lr.csv`.
 pub fn ejecutar(cfg: &Configuracion, dir: &Path) -> ExperimentResult<Resumen> {
     let (xs, ys) = dataset();
 
@@ -183,6 +214,7 @@ pub fn ejecutar(cfg: &Configuracion, dir: &Path) -> ExperimentResult<Resumen> {
         }
     }
     csv.finish()?;
+    exportar_frontera(&perceptron, &multicapa, &dir.join(ARCHIVO_FRONTERA))?;
 
     // --- Comparación de tasas de aprendizaje (misma inicialización) ---
     let mut csv_lr = CsvWriter::create(
@@ -262,5 +294,7 @@ mod tests {
         assert_eq!(s.lines().count(), 1 + 51);
         let s = std::fs::read_to_string(dir.join(ARCHIVO_LR)).unwrap();
         assert_eq!(s.lines().count(), 1 + 3 * 51);
+        let s = std::fs::read_to_string(dir.join(ARCHIVO_FRONTERA)).unwrap();
+        assert_eq!(s.lines().count(), 1 + MALLA_FRONTERA * MALLA_FRONTERA);
     }
 }
