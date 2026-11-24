@@ -323,22 +323,40 @@ def campo(p, instruccion, texto_previo=""):
 
 
 def encabezado(seccion, ancho_cm):
+    """Título corto en el encabezado y número de página centrado en el pie."""
     seccion.header.is_linked_to_previous = False
     hdr = seccion.header
     p = hdr.paragraphs[0] if hdr.paragraphs else hdr.add_paragraph()
     for r in list(p.runs):
         r._r.getparent().remove(r._r)
-    p.paragraph_format.tab_stops.add_tab_stop(Cm(ancho_cm), alignment=2)
-    r = p.add_run(TITULO_CORTO + "\t")
+    r = p.add_run(TITULO_CORTO)
     r.font.size = Pt(10)
     r.font.name = "Times New Roman"
-    campo(p, "PAGE")
-    for r in p.runs:
-        r.font.size = Pt(10)
     ppr = p._p.get_or_add_pPr()
     bdr = OxmlElement("w:pBdr")
     borde(bdr, "bottom", tam=4, color="000000")
     ppr.append(bdr)
+
+    seccion.footer.is_linked_to_previous = False
+    pie = seccion.footer
+    p = pie.paragraphs[0] if pie.paragraphs else pie.add_paragraph()
+    for r in list(p.runs):
+        r._r.getparent().remove(r._r)
+    p.alignment = 1
+    campo(p, "PAGE")
+    for r in p._p.findall(qn("w:r")):
+        rpr = r.find(qn("w:rPr"))
+        if rpr is None:
+            rpr = OxmlElement("w:rPr")
+            r.insert(0, rpr)
+        for tag, val in (("w:rFonts", None), ("w:color", "000000"), ("w:sz", "22")):
+            e = OxmlElement(tag)
+            if tag == "w:rFonts":
+                e.set(qn("w:ascii"), "Times New Roman")
+                e.set(qn("w:hAnsi"), "Times New Roman")
+            else:
+                e.set(qn("w:val"), val)
+            rpr.append(e)
 
 
 def numeracion_paginas(sectpr, formato, inicio=1):
@@ -506,6 +524,13 @@ def ajustar(ruta):
     encabezado(s2, ancho)
     numeracion_paginas(s1._sectPr, "lowerRoman", 1)
     numeracion_paginas(s2._sectPr, "decimal", 1)
+
+    # Figuras altas: limitar la altura para que rótulo, imagen y nota quepan en una página
+    alto_max = Cm(18.5)
+    for img in doc.inline_shapes:
+        if img.height > alto_max:
+            f = alto_max / img.height
+            img.width, img.height = int(img.width * f), alto_max
 
     # Word actualiza índices y campos al abrir el documento
     ajustes = doc.settings.element

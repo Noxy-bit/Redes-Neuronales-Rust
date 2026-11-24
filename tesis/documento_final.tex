@@ -21,6 +21,7 @@
 \usepackage{enumitem}\setlist{noitemsep,topsep=3pt}
 \usepackage{listings}
 \usepackage{tocloft}
+\setlength{\cftbeforechapskip}{0.5em}\setlength{\cftbeforetoctitleskip}{0pt}\setlength{\cftaftertoctitleskip}{10pt}
 \renewcommand{\cfttoctitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftaftertoctitle}{\hfill}
 \renewcommand{\cftloftitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftafterloftitle}{\hfill}
 \renewcommand{\cftlottitlefont}{\hfill\LARGE\bfseries\color{marino}}\renewcommand{\cftafterlottitle}{\hfill}
@@ -62,9 +63,9 @@
 
 \pagestyle{fancy}\fancyhf{}
 \fancyhead[L]{\small Redes Neuronales desde Cero en Rust}
-\fancyhead[R]{\small\thepage}
+\fancyfoot[C]{\fontsize{11}{13}\selectfont\color{black}\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\fancypagestyle{plain}{\fancyhf{}\fancyhead[L]{\small Redes Neuronales desde Cero en Rust}\fancyhead[R]{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[L]{\small Redes Neuronales desde Cero en Rust}\fancyfoot[C]{\fontsize{11}{13}\selectfont\color{black}\thepage}\renewcommand{\headrulewidth}{0.4pt}}
 
 % Tablas APA: reglas horizontales finas en gris neutro, sin bordes verticales
 \arrayrulecolor{gris}

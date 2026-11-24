@@ -5,7 +5,7 @@ Este capítulo describe cómo se construyó el sistema y por qué se tomaron las
 El proyecto adopta un enfoque cuantitativo de tipo experimental aplicado \citep{hernandez2018}: se construye un artefacto de software, se formulan hipótesis verificables sobre su comportamiento ---por ejemplo, que una red sin capa oculta no puede resolver XOR y que una red 2-4-1 sí puede--- y se contrastan mediante ejecuciones reproducibles cuyos resultados se registran automáticamente. El desarrollo del software sigue un modelo incremental guiado por pruebas: cada módulo se implementa junto con sus pruebas unitarias y no se avanza a la fase siguiente hasta que todas las pruebas de la fase actual se aprueban. Este criterio de avance convierte cada fase en un entregable verificable y evita que los errores de las capas inferiores ---por ejemplo, un índice mal calculado en la multiplicación matricial--- se propaguen y se manifiesten como fallos difíciles de diagnosticar en el entrenamiento.
 
 \section{Fases de desarrollo}
-La Figura~\ref{fig:fases} presenta las ocho fases del proyecto, agrupadas en cuatro etapas: fundamentos, aprendizaje, experimentación y difusión. Cada fase indica su entregable principal y la verificación que habilita el paso a la fase siguiente.
+La Figura~\ref{fig:fases} presenta las nueve fases del proyecto, agrupadas en cuatro etapas: fundamentos matemáticos (fases 1--4), aprendizaje (fases 5--6), experimentación (fases 7--8) y difusión (fase 9). Cada fase indica su entregable principal y la verificación que habilita el paso a la fase siguiente.
 
 \begin{figure}[!htbp]
 \caption{Fases de la metodología incremental del proyecto}\label{fig:fases}
@@ -22,14 +22,15 @@ La Tabla~\ref{tab:fases} detalla las fases en forma tabular, junto con los módu
 \toprule
 Fase & Nombre & Entregable & Criterio de aceptación \\
 \midrule
-1 & Álgebra lineal & \texttt{Vector}, \texttt{Matrix}, \texttt{MathError}, \texttt{Rng} & 15 pruebas de \texttt{math} \\
-2 & Neurona y activaciones & \texttt{Neuron}, Sigmoid, ReLU, lineal & Derivadas verificadas numéricamente \\
-3 & Función de pérdida & \texttt{Mse} y su gradiente & Valores conocidos y \emph{gradient checking} \\
-4 & Capa densa & \texttt{Layer::forward} y \texttt{backward} & Cálculo manual reproducido \\
-5 & Red multicapa & \texttt{Network}: \texttt{forward}, \texttt{backward}, \texttt{predict}, \texttt{train} & Convergencia en $y=2x$ y XOR \\
-6 & Experimentos & Experimentos 1--3 y exportación CSV & CSV con columnas validadas \\
-7 & Validación & Prueba de escritorio y \emph{benchmarks} & Traza coherente con las fórmulas \\
-8 & Documentación & Tesis, gráficas, diagramas y material de feria & PDF y DOCX sin referencias rotas \\
+1 & Matemática & \texttt{Vector}, \texttt{Matrix}, \texttt{MathError}, \texttt{Rng} & 15 pruebas de \texttt{math} \\
+2 & Neurona & \texttt{Neuron}: $z=\mathbf{w}\cdot\mathbf{x}+b$, $a=f(z)$ & Cálculo manual reproducido \\
+3 & Activaciones & Sigmoid, ReLU y lineal con sus derivadas & Derivadas verificadas numéricamente \\
+4 & Error & \texttt{Mse} y su gradiente $\partial L/\partial\hat{y}$ & Valores conocidos y \emph{gradient checking} \\
+5 & Primer aprendizaje & Descenso de gradiente sobre $y=2x$ & El MSE disminuye y $w\to 2$ \\
+6 & Capas y red & \texttt{Layer} y \texttt{Network}: \texttt{forward}, \texttt{backward}, \texttt{predict}, \texttt{train} & \emph{Gradient checking} de la red \\
+7 & XOR & Perceptrón 2-1 frente a red 2-4-1 y tres tasas de aprendizaje & Aprendizaje no lineal demostrado \\
+8 & Vocales & Red 25-10-5 sobre matrices $5\times5$ con ruido & Exactitud y matriz de confusión en CSV \\
+9 & Documentación & Prueba de escritorio, \emph{benchmarks}, tesis, diagramas y material de feria & PDF y DOCX sin referencias rotas \\
 \bottomrule
 \end{tabularx}
 \fuente{Elaboración propia. El número de pruebas por módulo se detalla en la Tabla~\ref{tab:pruebas}.}
@@ -135,7 +136,7 @@ Los tres experimentos se diseñaron con complejidad creciente, de modo que cada 
 
 \begin{table}[!htbp]
 \caption{Configuración de los experimentos}\label{tab:diseno-exp}
-\small
+\footnotesize
 \begin{tabularx}{\textwidth}{@{}l >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
 \toprule
 Aspecto & Experimento 1 & Experimento 2 & Experimento 3 \\

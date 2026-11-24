@@ -144,15 +144,15 @@ Rust no utiliza excepciones. Las operaciones que pueden fallar devuelven \texttt
 Los \emph{traits} definen comportamiento compartido, de forma similar a las interfaces de otros lenguajes. El proyecto define los traits \texttt{ActivationFn} y \texttt{LossFn}, lo que permite añadir nuevas funciones sin modificar la red. Gracias a la monomorfización, el compilador genera código especializado para cada tipo concreto, de modo que estas abstracciones no tienen costo en tiempo de ejecución.
 
 \subsection{Cargo, pruebas integradas y perfiles de compilación}
-Cargo es el gestor de paquetes y sistema de compilación de Rust. Permite compilar en modo depuración o en modo optimizado (\texttt{--release}), ejecutar pruebas unitarias con \texttt{cargo test}, analizar el código con \texttt{cargo clippy} y generar documentación a partir de los comentarios \texttt{///} \citep{klabnik2023}. El perfil \emph{release} aplica optimizaciones del compilador LLVM, como la vectorización y la eliminación de comprobaciones redundantes, que reducen sustancialmente el tiempo de entrenamiento respecto al perfil de depuración.
+Cargo es el gestor de paquetes y sistema de compilación de Rust. Permite compilar en modo depuración o en modo optimizado (\texttt{--release}), ejecutar pruebas unitarias con \texttt{cargo test}, analizar el código con \texttt{cargo clippy} y generar documentación a partir de los comentarios \texttt{///} \citep{klabnik2023}. El perfil \emph{release} aplica optimizaciones del compilador LLVM, como la vectorización y la eliminación de comprobaciones redundantes, que reducen sustancialmente el tiempo de entrenamiento respecto al perfil de depuración.\looseness=-1
 
 \subsection{Comparación con otras opciones de implementación}
-La elección de Rust se contrastó con las dos alternativas más frecuentes para implementar redes neuronales con fines educativos: Python con NumPy y C++. La Tabla~\ref{tab:comparacion} resume la comparación en los criterios que más pesan en un proyecto de Programación 1. Se trata de una comparación cualitativa basada en las características documentadas de cada lenguaje \citep{klabnik2023,blandy2021,matsakis2014}; la única cifra medida corresponde al binario de este proyecto.
+La elección de Rust se contrastó con las dos alternativas más frecuentes para implementar redes neuronales con fines educativos: Python con NumPy y C++. La Tabla~\ref{tab:comparacion} resume la comparación en los criterios que más pesan en un proyecto de Programación 1. Se trata de una comparación cualitativa basada en las características documentadas de cada lenguaje \citep{klabnik2023,blandy2021,matsakis2014}; la única cifra medida corresponde al binario de este proyecto.\looseness=-1
 
 \begin{table}[!htbp]
 \caption{Comparación cualitativa de Rust puro frente a Python/NumPy y C++ con fines educativos}\label{tab:comparacion}
-\small
-\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{3.1cm} >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright}p{2.5cm} >{\raggedright}X >{\raggedright}X >{\raggedright\arraybackslash}X@{}}
 \toprule
 Criterio & Rust puro (\texttt{std}) & Python con NumPy & C++ estándar \\
 \midrule
