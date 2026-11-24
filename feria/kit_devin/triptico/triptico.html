@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!-- Generado por feria/kit_devin/generar_kit.py: edite los PARÁMETROS de ese script y regenere. -->
+<html lang="es"><head><meta charset="UTF-8"><title>Proy-38 · Tríptico Carta</title>
+<style>@page{size:letter landscape;margin:0}
+@font-face{font-family:"Montserrat";src:url("../../banner/fuentes/Montserrat.ttf") format("truetype");font-weight:100 900}
+@font-face{font-family:"Orbitron";src:url("../../banner/fuentes/Orbitron.ttf") format("truetype");font-weight:400 900}
+:root{--marino:#070B1E;--marino2:#0F1736;--cian:#00D4FF;--purpura:#A855F7;--rust:#F97316;--blanco:#FFFFFF;
+  --gris:#CBD5E1;--gris2:#94A3B8;--tinta:#334155;--verde:#16A34A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:"Montserrat",sans-serif}
+.hoja{position:relative;overflow:hidden;break-after:page}
+.hoja:last-child{break-after:auto}
+svg text{font-family:"Orbitron"}
+
+.cara{width:279.4mm;height:215.9mm;display:grid;grid-template-columns:repeat(3,93.133mm)}
+.ext{background:radial-gradient(70mm 60mm at 83% 40%,rgba(0,212,255,.09),transparent 70%),
+  linear-gradient(180deg,var(--marino2) 0%,var(--marino) 70%);color:#fff}
+.int{background:#fff;color:var(--marino)}
+.panel{position:relative;height:215.9mm}
+.panel .caja{position:absolute;top:12mm;bottom:11mm;display:flex;flex-direction:column}
+.panel.izq .caja{left:10mm;right:9mm} .panel.cen .caja{left:9mm;right:9mm} .panel.der .caja{left:9mm;right:10mm}
+.pliegue{position:absolute;width:.2mm;height:5mm;left:93.133mm}
+.pliegue.b{left:186.267mm} .pliegue.top{top:0} .pliegue.bot{bottom:0}
+.ext .pliegue{background:rgba(203,213,225,.35)} .int .pliegue{background:#CBD5E1}
+.ceja{font-family:"Orbitron";font-weight:800;font-size:8pt;letter-spacing:.14em;color:var(--rust)}
+.h2{font-weight:800;font-size:17pt;line-height:1.12;margin-top:2mm}
+.ext .h2{color:#fff} .int .h2{color:var(--marino)}
+.barra{width:12mm;height:.9mm;border-radius:1mm;margin-top:3.5mm;background:linear-gradient(90deg,var(--cian),var(--purpura))}
+/* Portada */
+.inst{background:#fff;border-radius:3mm;height:15mm;display:flex;align-items:center;justify-content:space-evenly;padding:0 3mm}
+.inst img{display:block;object-fit:contain} .inst .uagrm{height:8mm} .inst .ficct{height:12mm} .inst .iicct{height:6.5mm}
+.inst i{width:.25mm;height:7mm;background:#D7DEE8}
+.portada{align-items:center;text-align:center}
+.insignia{margin-top:10mm;font-family:"Orbitron";font-weight:800;font-size:10pt;letter-spacing:.1em;color:#fff;
+  padding:1.8mm 5mm 1.6mm;border-radius:4mm;background:linear-gradient(135deg,#7B2FF7,#3B5BFF 55%,var(--cian))}
+.portada .emblema{width:40mm;height:40mm;margin-top:9mm}
+.portada .titulo{width:68mm;margin-top:7mm}
+.eslogan{margin-top:6mm;font-weight:800;font-size:7.6pt;letter-spacing:.26em;color:var(--cian)}
+.evento{margin-top:auto;font-weight:600;font-size:6.6pt;letter-spacing:.18em;color:var(--gris2)}
+/* Contraportada */
+.contra{align-items:center;text-align:center}
+.contra .h2{font-size:13.5pt;margin-top:0}
+.qr-caja{margin-top:7mm;width:58mm;height:58mm;background:#fff;border-radius:4mm;padding:2.6mm}
+.qr-caja svg{width:100%;height:100%;display:block}
+.url{margin-top:3mm;font-weight:600;font-size:7pt;color:var(--cian)}
+.datos{margin-top:auto;font-size:7.4pt;line-height:1.55;color:var(--gris)}
+.datos b{color:#fff;font-weight:700}
+.equipo{margin-top:6mm;font-weight:800;font-size:6.6pt;letter-spacing:.26em;color:var(--purpura)}
+.nombres{margin-top:2.2mm;list-style:none;font-weight:600;font-size:8pt;line-height:1.6;color:#fff}
+/* Solapa */
+.punto{display:flex;flex-direction:column;margin-top:auto}
+.punto .cifra{font-family:"Orbitron";font-weight:900;font-size:27pt;line-height:1}
+.punto .ico{width:14mm;height:14mm;display:block}
+.punto .que{margin-top:3mm;font-weight:800;font-size:11.5pt;color:#fff}
+.punto .det{margin-top:1.2mm;font-size:8.6pt;color:var(--gris2);line-height:1.4}
+.c-cian{color:var(--cian)} .c-pur{color:var(--purpura)}
+/* Interior */
+.texto{margin-top:7mm;font-size:9.8pt;line-height:1.5;color:var(--tinta)}
+.texto p+p{margin-top:2.4mm}
+.texto b{color:var(--marino)}
+.rotulo{margin-top:auto;font-weight:800;font-size:6.6pt;letter-spacing:.26em;color:#64748B}
+.bloque{margin-top:2.6mm;border-radius:2.6mm;padding:3.4mm 4mm;background:#F4F7FB;border-left:1.2mm solid var(--c)}
+.bloque code{font-family:"JetBrains Mono","DejaVu Sans Mono",monospace;font-weight:700;font-size:9.4pt;color:var(--marino)}
+.bloque span{display:block;margin-top:.6mm;font-size:7.6pt;color:#475569}
+.flecha{align-self:center;margin-top:1.6mm;width:4mm;height:2.6mm}
+.cen .red{width:100%;margin-top:auto}
+.pasos{list-style:none;margin-top:auto}
+.pasos li{display:flex;align-items:center;gap:3.2mm;margin-top:3.2mm}
+.pasos .n{flex:none;width:7mm;height:7mm;border-radius:50%;background:var(--c);color:#fff;font-family:"Orbitron";
+  font-weight:900;font-size:8.5pt;display:flex;align-items:center;justify-content:center}
+.pasos b{display:block;font-size:9.6pt;color:var(--marino)}
+.pasos span{display:block;font-size:7.8pt;color:#475569;margin-top:.3mm}
+.repite{margin-top:4mm;font-size:7.4pt;color:var(--purpura);font-weight:700}
+.dv{font-family:"DejaVu Sans";font-weight:700}
+.kpi{margin-top:5mm;border-radius:2.8mm;padding:5mm 4mm;background:#F4F7FB;border-left:1.2mm solid var(--c);
+  display:flex;align-items:center;justify-content:space-between;gap:3mm}
+.kpis{margin-top:3mm}
+.kpi .v{font-family:"Orbitron";font-weight:900;font-size:17pt;line-height:1;color:var(--c);white-space:nowrap}
+.kpi .v sup{font-size:.55em;vertical-align:.75em;line-height:0}
+.kpi .l{text-align:right;font-size:7.8pt;line-height:1.35;color:#475569}
+.kpi .l b{display:block;font-size:9.6pt;color:var(--marino)}
+.tiempo{margin-top:auto;display:flex;align-items:baseline;gap:3mm;border-top:.3mm solid #E2E8F0;padding-top:3.6mm}
+.tiempo .v{font-family:"Orbitron";font-weight:900;font-size:15pt;color:var(--rust);white-space:nowrap}
+.tiempo span{font-size:7.8pt;color:#475569;line-height:1.35}
+</style></head>
+<body><section class="hoja cara ext"><i class="pliegue top"></i><i class="pliegue bot"></i><i class="pliegue b top"></i><i class="pliegue b bot"></i>
+<div class="panel izq"><div class="caja" data-nombre="solapa" data-panel="Solapa">
+  <div class="ceja">RUST PURO</div>
+  <div class="h2">¿Por qué en<br>Rust puro?</div><div class="barra"></div>
+  <div class="punto"><span class="cifra c-cian">0</span><span class="que">librerías de ML</span>
+    <span class="det">Álgebra lineal propia, solo la biblioteca estándar.</span></div>
+  <div class="punto"><span class="cifra c-pur">682.6&nbsp;KiB</span><span class="que">binario completo</span>
+    <span class="det">Compilado en modo <i>release</i>.</span></div>
+  <div class="punto"><svg viewBox="0 0 48 48" class="ico"><path d="M24 4 L40 10 V23 C40 33 33 40 24 44 C15 40 8 33 8 23 V10 Z"
+ fill="none" stroke="#F97316" stroke-width="3.6" stroke-linejoin="round"/><path d="M16 24 L22 30 L33 18" fill="none"
+ stroke="#F97316" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="que">Memoria segura</span>
+    <span class="det">Sin GPU ni recolector de basura.</span></div>
+</div></div>
+<div class="panel cen"><div class="caja contra" data-nombre="contraportada" data-panel="Contraportada">
+  <div class="h2">Escanea para ver<br>el código y la tesis</div>
+  <div class="qr-caja"><svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450" class="segno"><path transform="scale(10)" class="qrline" stroke="#070b1e" d="M4 4.5h7m4 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m4 0h7m-37 1h1m5 0h1m1 0h4m2 0h2m1 0h1m2 0h1m2 0h3m4 0h1m5 0h1m-37 1h1m1 0h3m1 0h1m2 0h4m2 0h1m1 0h2m2 0h3m1 0h4m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h2m1 0h5m1 0h3m1 0h2m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h4m1 0h4m2 0h1m4 0h1m1 0h3m1 0h1m-37 1h1m5 0h1m3 0h1m2 0h1m3 0h1m1 0h1m3 0h1m1 0h2m3 0h1m5 0h1m-37 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-29 1h1m4 0h1m1 0h1m3 0h1m4 0h1m1 0h3m-28 1h1m1 0h4m1 0h1m1 0h1m1 0h2m3 0h2m3 0h1m2 0h2m2 0h2m1 0h2m1 0h1m-36 1h1m4 0h1m1 0h1m1 0h1m1 0h2m1 0h5m2 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1m-35 1h2m1 0h2m1 0h1m3 0h2m1 0h1m3 0h1m3 0h3m1 0h1m1 0h4m1 0h3m1 0h1m-36 1h1m1 0h1m7 0h1m1 0h4m3 0h1m1 0h3m1 0h1m1 0h4m1 0h2m1 0h1m-33 1h5m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h1m2 0h1m2 0h2m4 0h1m-36 1h1m1 0h1m3 0h6m5 0h1m1 0h1m2 0h1m2 0h4m1 0h2m1 0h1m-35 1h1m1 0h2m2 0h1m2 0h2m4 0h3m2 0h3m1 0h2m1 0h1m1 0h1m2 0h5m-37 1h1m1 0h2m4 0h1m1 0h2m1 0h1m2 0h1m2 0h1m9 0h1m2 0h3m-33 1h3m1 0h5m1 0h1m2 0h2m4 0h1m1 0h1m1 0h4m1 0h1m3 0h1m-35 1h4m3 0h3m1 0h1m1 0h1m3 0h2m4 0h2m2 0h1m1 0h2m3 0h2m-30 1h1m2 0h1m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m2 0h2m4 0h1m3 0h1m-36 1h2m1 0h1m2 0h1m4 0h1m1 0h1m1 0h1m2 0h2m1 0h1m1 0h7m2 0h1m1 0h2m-37 1h1m2 0h1m1 0h3m2 0h2m5 0h1m1 0h2m3 0h1m1 0h1m1 0h3m1 0h2m2 0h1m-36 1h5m1 0h2m4 0h2m5 0h4m2 0h3m1 0h7m-37 1h2m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m2 0h1m2 0h3m1 0h2m1 0h2m1 0h2m2 0h1m-37 1h1m1 0h3m2 0h1m2 0h3m1 0h3m1 0h3m5 0h6m1 0h2m1 0h1m-35 1h2m2 0h2m3 0h4m3 0h4m2 0h3m1 0h3m2 0h1m-34 1h3m1 0h2m3 0h4m2 0h1m2 0h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h2m-34 1h2m3 0h2m2 0h1m1 0h2m4 0h3m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m-37 1h1m1 0h1m1 0h2m1 0h2m4 0h2m1 0h2m1 0h1m3 0h2m2 0h1m1 0h1m2 0h3m-35 1h1m3 0h4m4 0h1m2 0h2m2 0h1m2 0h2m1 0h1m2 0h5m1 0h3m-29 1h2m4 0h1m1 0h1m2 0h3m3 0h1m2 0h1m3 0h4m-36 1h7m3 0h2m1 0h1m1 0h1m1 0h1m5 0h1m1 0h1m2 0h1m1 0h1m1 0h5m-37 1h1m5 0h1m1 0h1m1 0h1m2 0h1m2 0h6m2 0h2m1 0h2m3 0h2m-34 1h1m1 0h3m1 0h1m1 0h10m1 0h3m1 0h2m1 0h7m3 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h2m1 0h2m1 0h1m1 0h1m2 0h2m3 0h2m1 0h1m1 0h1m-36 1h1m1 0h3m1 0h1m2 0h1m1 0h1m2 0h1m9 0h2m2 0h1m2 0h2m1 0h3m-37 1h1m5 0h1m1 0h1m1 0h6m10 0h1m4 0h1m1 0h4m-37 1h7m2 0h1m1 0h4m1 0h5m1 0h1m1 0h1m3 0h2m2 0h2m2 0h1"/></svg>
+</div>
+  <div class="url">github.com/Noxy-bit/Redes-Neuronales-Rust</div>
+  <div class="datos">Programación 1 · INF120 · Grupo SH-SD<br>Tutor: <b>MSc. Ing. Víctor Hugo Acosta Ortega</b></div>
+  <div class="equipo">EQUIPO</div>
+  <ul class="nombres"><li>Ronal Miranda Vasquez</li><li>Oscar Alejandro Nava Orihuela</li><li>Carla Olivia Cano Quispe</li><li>Diana Nayely Diaz Mamani</li><li>Julio Cesar Piuca Achocalla</li></ul>
+</div></div>
+<div class="panel der"><div class="caja portada" data-nombre="portada" data-panel="Portada">
+  <div class="inst" style="width:100%"><img class="uagrm" src="../../banner/recursos/logo_uagrm.png" alt="UAGRM"><i></i>
+    <img class="ficct" src="../../banner/recursos/logo_ficct_escudo.png" alt="FICCT"><i></i><img class="iicct" src="../../banner/recursos/logo_iicct.png" alt="IICCT"></div>
+  <div class="insignia">PROY. #38</div>
+  <svg class="emblema" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00D4FF"/>
+<stop offset=".5" stop-color="#3B82F6"/><stop offset="1" stop-color="#A855F7"/></linearGradient>
+<linearGradient id="gL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00D4FF"/><stop offset="1" stop-color="#A855F7"/></linearGradient>
+<radialGradient id="gF" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#1A2A66"/><stop offset="1" stop-color="#0A1027"/></radialGradient></defs>
+<circle cx="250" cy="250" r="244" fill="#00D4FF" opacity=".08"/>
+<circle cx="250" cy="250" r="232" fill="url(#gF)" stroke="url(#gC)" stroke-width="12"/>
+<circle cx="250" cy="250" r="208" fill="none" stroke="#00D4FF" stroke-opacity=".3" stroke-width="2.5" stroke-dasharray="10 9"/>
+<g stroke="url(#gL)" stroke-width="4" stroke-linecap="round" opacity=".8"><line x1="150" y1="150" x2="250" y2="110"/><line x1="150" y1="150" x2="250" y2="180"/><line x1="150" y1="150" x2="250" y2="250"/><line x1="150" y1="150" x2="250" y2="320"/><line x1="150" y1="225" x2="250" y2="110"/><line x1="150" y1="225" x2="250" y2="180"/><line x1="150" y1="225" x2="250" y2="250"/><line x1="150" y1="225" x2="250" y2="320"/><line x1="150" y1="300" x2="250" y2="110"/><line x1="150" y1="300" x2="250" y2="180"/><line x1="150" y1="300" x2="250" y2="250"/><line x1="150" y1="300" x2="250" y2="320"/><line x1="250" y1="110" x2="350" y2="185"/><line x1="250" y1="110" x2="350" y2="265"/><line x1="250" y1="180" x2="350" y2="185"/><line x1="250" y1="180" x2="350" y2="265"/><line x1="250" y1="250" x2="350" y2="185"/><line x1="250" y1="250" x2="350" y2="265"/><line x1="250" y1="320" x2="350" y2="185"/><line x1="250" y1="320" x2="350" y2="265"/></g>
+<circle cx="150" cy="150" r="30" fill="#00D4FF" opacity=".16"/><circle cx="150" cy="150" r="17" fill="#0B122B" stroke="#00D4FF" stroke-width="6"/><circle cx="150" cy="150" r="7" fill="#00D4FF"/><circle cx="150" cy="225" r="30" fill="#00D4FF" opacity=".16"/><circle cx="150" cy="225" r="17" fill="#0B122B" stroke="#00D4FF" stroke-width="6"/><circle cx="150" cy="225" r="7" fill="#00D4FF"/><circle cx="150" cy="300" r="30" fill="#00D4FF" opacity=".16"/><circle cx="150" cy="300" r="17" fill="#0B122B" stroke="#00D4FF" stroke-width="6"/><circle cx="150" cy="300" r="7" fill="#00D4FF"/><circle cx="250" cy="110" r="30" fill="#6366F1" opacity=".16"/><circle cx="250" cy="110" r="17" fill="#0B122B" stroke="#6366F1" stroke-width="6"/><circle cx="250" cy="110" r="7" fill="#6366F1"/><circle cx="250" cy="180" r="30" fill="#6366F1" opacity=".16"/><circle cx="250" cy="180" r="17" fill="#0B122B" stroke="#6366F1" stroke-width="6"/><circle cx="250" cy="180" r="7" fill="#6366F1"/><circle cx="250" cy="250" r="30" fill="#6366F1" opacity=".16"/><circle cx="250" cy="250" r="17" fill="#0B122B" stroke="#6366F1" stroke-width="6"/><circle cx="250" cy="250" r="7" fill="#6366F1"/><circle cx="250" cy="320" r="30" fill="#6366F1" opacity=".16"/><circle cx="250" cy="320" r="17" fill="#0B122B" stroke="#6366F1" stroke-width="6"/><circle cx="250" cy="320" r="7" fill="#6366F1"/><circle cx="350" cy="185" r="30" fill="#C084FC" opacity=".16"/><circle cx="350" cy="185" r="17" fill="#0B122B" stroke="#C084FC" stroke-width="6"/><circle cx="350" cy="185" r="7" fill="#FFFFFF"/><circle cx="350" cy="265" r="30" fill="#C084FC" opacity=".16"/><circle cx="350" cy="265" r="17" fill="#0B122B" stroke="#C084FC" stroke-width="6"/><circle cx="350" cy="265" r="7" fill="#FFFFFF"/>
+<ellipse cx="250" cy="398" rx="168" ry="34" fill="none" stroke="#00D4FF" stroke-width="4" opacity=".55" transform="rotate(-7 250 398)"/>
+<text x="250" y="436" text-anchor="middle" font-family="Orbitron" font-weight="900" font-size="104" fill="#FFFFFF" letter-spacing="6">RN</text>
+<circle cx="414" cy="378" r="7" fill="#F97316"/>
+</svg>
+  <svg class="titulo" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+<text x="500" y="140" text-anchor="middle" font-weight="900" font-size="150" fill="#FFFFFF" textLength="640" lengthAdjust="spacingAndGlyphs">REDES</text>
+<text x="500" y="285" text-anchor="middle" font-weight="900" font-size="128" fill="#00D4FF" textLength="900" lengthAdjust="spacingAndGlyphs">NEURONALES</text>
+<text x="500" y="395" text-anchor="middle" font-weight="800" font-size="74" fill="#FFFFFF" textLength="900" lengthAdjust="spacingAndGlyphs">DESDE CERO EN <tspan fill="#F97316">RUST</tspan></text>
+</svg>
+  <div class="eslogan">ANALIZA · APRENDE · PREDICE</div>
+  <div class="evento">FERIA FICCT 2-2026</div>
+</div></div>
+</section><section class="hoja cara int"><i class="pliegue top"></i><i class="pliegue bot"></i><i class="pliegue b top"></i><i class="pliegue b bot"></i>
+<div class="panel izq"><div class="caja" data-nombre="interior izquierdo" data-panel="Interior izquierdo">
+  <div class="ceja">01</div>
+  <div class="h2">Romper la<br>caja negra</div><div class="barra"></div>
+  <div class="texto"><p>Usamos IA a diario sin ver <b>cómo&nbsp;aprende</b>.</p>
+    <p>Programamos una red neuronal <b>desde&nbsp;cero</b>, sin frameworks.</p>
+    <p>Cada ecuación es código Rust legible y probado.</p></div>
+  <div class="rotulo">ARQUITECTURA</div>
+  <div class="bloque" style="--c:var(--cian)"><code>math</code><span>Matrix · Vector</span></div><svg class="flecha" viewBox="0 0 16 10"><path d="M2 2 L8 8 L14 2" fill="none" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="bloque" style="--c:var(--purpura)"><code>nn</code><span>Neuron · Layer · Network</span></div><svg class="flecha" viewBox="0 0 16 10"><path d="M2 2 L8 8 L14 2" fill="none" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="bloque" style="--c:var(--rust)"><code>experiments</code><span>y = 2x · XOR · Vocales</span></div>
+</div></div>
+<div class="panel cen"><div class="caja" data-nombre="interior central" data-panel="Interior central">
+  <div class="ceja">02</div>
+  <div class="h2">¿Cómo aprende<br>la red?</div><div class="barra"></div>
+  <svg class="red" viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="gRC" x1="120" y1="0" x2="620" y2="0" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#00D4FF"/><stop offset="1" stop-color="#A855F7"/></linearGradient></defs>
+<g stroke="url(#gRC)" stroke-width="3" opacity=".55"><line x1="120" y1="80" x2="370" y2="50"/><line x1="120" y1="80" x2="370" y2="130"/><line x1="120" y1="80" x2="370" y2="210"/><line x1="120" y1="80" x2="370" y2="290"/><line x1="120" y1="170" x2="370" y2="50"/><line x1="120" y1="170" x2="370" y2="130"/><line x1="120" y1="170" x2="370" y2="210"/><line x1="120" y1="170" x2="370" y2="290"/><line x1="120" y1="260" x2="370" y2="50"/><line x1="120" y1="260" x2="370" y2="130"/><line x1="120" y1="260" x2="370" y2="210"/><line x1="120" y1="260" x2="370" y2="290"/><line x1="370" y1="50" x2="620" y2="125"/><line x1="370" y1="50" x2="620" y2="215"/><line x1="370" y1="130" x2="620" y2="125"/><line x1="370" y1="130" x2="620" y2="215"/><line x1="370" y1="210" x2="620" y2="125"/><line x1="370" y1="210" x2="620" y2="215"/><line x1="370" y1="290" x2="620" y2="125"/><line x1="370" y1="290" x2="620" y2="215"/></g><circle cx="120" cy="80" r="27" fill="#00D4FF" opacity=".14"/><circle cx="120" cy="80" r="17" fill="#FFFFFF" stroke="#00D4FF" stroke-width="6"/><circle cx="120" cy="80" r="6.5" fill="#00D4FF"/><circle cx="120" cy="170" r="27" fill="#00D4FF" opacity=".14"/><circle cx="120" cy="170" r="17" fill="#FFFFFF" stroke="#00D4FF" stroke-width="6"/><circle cx="120" cy="170" r="6.5" fill="#00D4FF"/><circle cx="120" cy="260" r="27" fill="#00D4FF" opacity=".14"/><circle cx="120" cy="260" r="17" fill="#FFFFFF" stroke="#00D4FF" stroke-width="6"/><circle cx="120" cy="260" r="6.5" fill="#00D4FF"/><circle cx="370" cy="50" r="27" fill="#6366F1" opacity=".14"/><circle cx="370" cy="50" r="17" fill="#FFFFFF" stroke="#6366F1" stroke-width="6"/><circle cx="370" cy="50" r="6.5" fill="#6366F1"/><circle cx="370" cy="130" r="27" fill="#6366F1" opacity=".14"/><circle cx="370" cy="130" r="17" fill="#FFFFFF" stroke="#6366F1" stroke-width="6"/><circle cx="370" cy="130" r="6.5" fill="#6366F1"/><circle cx="370" cy="210" r="27" fill="#6366F1" opacity=".14"/><circle cx="370" cy="210" r="17" fill="#FFFFFF" stroke="#6366F1" stroke-width="6"/><circle cx="370" cy="210" r="6.5" fill="#6366F1"/><circle cx="370" cy="290" r="27" fill="#6366F1" opacity=".14"/><circle cx="370" cy="290" r="17" fill="#FFFFFF" stroke="#6366F1" stroke-width="6"/><circle cx="370" cy="290" r="6.5" fill="#6366F1"/><circle cx="620" cy="125" r="27" fill="#A855F7" opacity=".14"/><circle cx="620" cy="125" r="17" fill="#FFFFFF" stroke="#A855F7" stroke-width="6"/><circle cx="620" cy="125" r="6.5" fill="#A855F7"/><circle cx="620" cy="215" r="27" fill="#A855F7" opacity=".14"/><circle cx="620" cy="215" r="17" fill="#FFFFFF" stroke="#A855F7" stroke-width="6"/><circle cx="620" cy="215" r="6.5" fill="#A855F7"/>
+<text x="120" y="362" font-family="Montserrat" font-weight="800" font-size="25" fill="#070B1E" text-anchor="middle" letter-spacing="2">ENTRADA</text><text x="370" y="362" font-family="Montserrat" font-weight="800" font-size="25" fill="#070B1E" text-anchor="middle" letter-spacing="2">OCULTA</text><text x="620" y="362" font-family="Montserrat" font-weight="800" font-size="25" fill="#070B1E" text-anchor="middle" letter-spacing="2">SALIDA</text>
+</svg>
+  <ol class="pasos">
+    <li style="--c:#00D4FF"><span class="n">1</span><div><b>Datos</b><span>Entradas x y objetivo y</span></div></li>
+    <li style="--c:#3B82F6"><span class="n">2</span><div><b>Forward</b><span>ŷ = σ(W·x + b)</span></div></li>
+    <li style="--c:#A855F7"><span class="n">3</span><div><b>Backprop</b><span>Gradiente del error MSE</span></div></li>
+    <li style="--c:#F97316"><span class="n">4</span><div><b>Predicción</b><span>La red generaliza</span></div></li>
+  </ol>
+  <div class="repite">↻ Repite: W <span class="dv">←</span> W − α·∇</div>
+</div></div>
+<div class="panel der"><div class="caja" data-nombre="interior derecho" data-panel="Interior derecho">
+  <div class="ceja">03</div>
+  <div class="h2">Resultados<br>reales</div><div class="barra"></div>
+  <div class="kpis">
+  <div class="kpi" style="--c:var(--verde)"><span class="v">52</span><span class="l"><b>pruebas en verde</b>cargo test</span></div>
+  <div class="kpi" style="--c:#00A9CC"><span class="v">4.6×10<sup>−18</sup></span><span class="l"><b>y = 2x</b>error MSE</span></div>
+  <div class="kpi" style="--c:var(--purpura)"><span class="v">100&#8239;%</span><span class="l"><b>XOR</b>red 2-4-1</span></div>
+  <div class="kpi" style="--c:var(--rust)"><span class="v">97.6&#8239;%</span><span class="l"><b>Vocales</b>con ruido</span></div>
+  </div>
+  <div class="tiempo"><span class="v">51.9&#8239;ms</span><span>entrena XOR durante 10&#8239;000 épocas</span></div>
+</div></div>
+</section><script>
+addEventListener('load', async () => {
+  await document.fonts.ready;
+  const fallos = [];
+  document.querySelectorAll('.caja').forEach((caja, i) => {
+    const r = caja.getBoundingClientRect(), cs = getComputedStyle(caja);
+    const z = {l: r.left + parseFloat(cs.paddingLeft) - .5, t: r.top + parseFloat(cs.paddingTop) - .5,
+               r: r.right - parseFloat(cs.paddingRight) + .5, b: r.bottom - parseFloat(cs.paddingBottom) + .5};
+    caja.querySelectorAll('*').forEach(el => {
+      if (el.closest('svg') && el.tagName.toLowerCase() !== 'svg') return;
+      const e = el.getBoundingClientRect();
+      if (!e.width || !e.height) return;
+      if (e.left < z.l || e.top < z.t || e.right > z.r || e.bottom > z.b)
+        fallos.push((caja.dataset.nombre || 'caja ' + i) + ' → ' + el.tagName + ' «' + (el.textContent || '').trim().slice(0, 30) + '»');
+    });
+    if (caja.scrollHeight > caja.clientHeight + 1 || caja.scrollWidth > caja.clientWidth + 1)
+      fallos.push((caja.dataset.nombre || 'caja ' + i) + ' → desborde de contenido');
+  });
+  const palabras = {};
+  document.querySelectorAll('[data-panel]').forEach(p => {
+    palabras[p.dataset.panel] = p.innerText.replace(/[·→←−=|•]/g, ' ').split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length;
+  });
+  const pre = document.createElement('pre');
+  pre.id = 'verificacion'; pre.style.display = 'none';
+  const fuentes = [...document.fonts].map(f => f.family.replace(/"/g, '') + ':' + f.status);
+  pre.textContent = JSON.stringify({fallos, palabras, fuentes});
+  document.body.appendChild(pre);
+});
+</script></body></html>
