@@ -22,14 +22,17 @@ RES = RAIZ / "resultados"
 FIG = RAIZ / "tesis" / "figuras"
 DPI = 300
 
-MARINO = "#0F1736"
-AZUL = "#1D4ED8"
-CIAN = "#0891B2"
-PURPURA = "#7B2FF7"
-NARANJA = "#F97316"
-GRIS = "#64748B"
-ROJO = "#DC2626"
-VERDE = "#059669"
+# Paleta sobria científica (documento académico): azul marino, rojo técnico, verde bosque y grises.
+MARINO = "#0F2A5F"
+AZUL = MARINO
+ROJO = "#B91C1C"
+VERDE = "#15803D"
+GRIS_OSCURO = "#374151"
+GRIS = "#6B7280"
+CELESTE_GRIS = "#C7D2E0"
+CIAN = GRIS_OSCURO
+PURPURA = VERDE
+NARANJA = ROJO
 
 plt.rcParams.update({
     "font.family": "DejaVu Sans",
@@ -167,7 +170,7 @@ def fig06_xor_frontera():
     x1, x2 = col(d, "x1"), col(d, "x2")
     n = int(round(np.sqrt(len(d))))
     X1, X2 = x1.reshape(n, n), x2.reshape(n, n)
-    cmap = LinearSegmentedColormap.from_list("rn", ["#FFFFFF", "#BAE6FD", CIAN, PURPURA])
+    cmap = LinearSegmentedColormap.from_list("rn", ["#FFFFFF", CELESTE_GRIS, "#5B7299", MARINO])
     fig, axs = plt.subplots(1, 2, figsize=(7.2, 3.3), sharey=True)
     puntos = [((0, 0), 0), ((0, 1), 1), ((1, 0), 1), ((1, 1), 0)]
     for ax, clave, titulo in [(axs[0], "salida_perceptron", "(a) Perceptrón 2-1"),
@@ -241,7 +244,7 @@ def fig09_confusion():
     d = leer("exp3_confusion.csv")
     clases = [k for k in d[0].keys() if k != "real"]
     m = np.array([[int(f[c]) for c in clases] for f in d])
-    cmap = LinearSegmentedColormap.from_list("cf", ["#FFFFFF", "#BAE6FD", AZUL, MARINO])
+    cmap = LinearSegmentedColormap.from_list("cf", ["#FFFFFF", CELESTE_GRIS, "#5B7299", MARINO])
     fig, ax = plt.subplots(figsize=(4.4, 3.8))
     im = ax.imshow(m, cmap=cmap)
     for i in range(len(clases)):
@@ -267,7 +270,7 @@ def fig10_bench():
     for f in d:
         if f["experimento"] not in exps:
             exps.append(f["experimento"])
-    colores = [NARANJA, AZUL, PURPURA]
+    colores = [ROJO, MARINO, VERDE]
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 3.2), gridspec_kw={"width_ratios": [1.5, 1]})
     inf = []
     for e, c in zip(exps, colores):

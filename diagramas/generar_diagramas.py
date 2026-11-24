@@ -17,13 +17,14 @@ DIR = RAIZ / "diagramas"
 FIG = RAIZ / "tesis" / "figuras"
 ESCALA = 300 / 96  # draw.io rasteriza a 96 px/pulgada
 
-MARINO = "#0F1736"
-AZUL = "#1D4ED8"
-CIAN = "#0891B2"
-PURPURA = "#7B2FF7"
-NARANJA = "#F97316"
+# Paleta sobria institucional: azul marino, gris pizarra, rojo técnico y verde bosque.
+MARINO = "#0F2A5F"
+AZUL = "#1E3A8A"
+CIAN = "#334155"
+PURPURA = "#0F2A5F"
+NARANJA = "#374151"
 ROJO = "#B91C1C"
-VERDE = "#047857"
+VERDE = "#15803D"
 GRIS = "#475569"
 FUENTE = "fontFamily=Helvetica;fontSize=13;fontColor=#0F172A;"
 
@@ -116,8 +117,8 @@ def d01_arbol():
                       X0, 300, W, 100, "fontSize=14;", borde=ROJO, relleno="#FEE2E2")
     for k, (e, c) in enumerate(zip(efectos, causas)):
         xc = cols[k] + cw / 2
-        ie = d.caja(e, cols[k], 130, cw, 110, borde=PURPURA, relleno="#F3E8FF")
-        ic = d.caja(c, cols[k], 460, cw, 130, borde=CIAN, relleno="#E0F2FE")
+        ie = d.caja(e, cols[k], 130, cw, 110, borde=PURPURA, relleno="#EEF2F7")
+        ic = d.caja(c, cols[k], 460, cw, 130, borde=CIAN, relleno="#F1F5F9")
         d.flecha(ic, problema, estilo=f"exitX=0.5;exitY=0;entryX={ent(X0, W, xc)};entryY=1;")
         d.flecha(problema, ie, estilo=f"exitX={ent(X0, W, xc)};exitY=0;entryX=0.5;entryY=1;")
         d.flecha(ie, final, estilo=f"exitX=0.5;exitY=0;entryX={ent(X0, W, xc)};entryY=1;")
@@ -130,9 +131,9 @@ def d02_arquitectura():
     paquete = "align=left;verticalAlign=top;spacingLeft=12;spacingTop=4;fontStyle=1;fontSize=14;dashed=0;"
     clase = "align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;arcSize=3;"
     W = 1420
-    pk_exp = d.caja("experiments  (src/experiments/)", 0, 170, W, 210, paquete, borde=NARANJA, relleno="#FFF7ED")
-    pk_nn = d.caja("nn  (src/nn/)", 0, 440, W, 350, paquete, borde=PURPURA, relleno="#FAF5FF")
-    pk_math = d.caja("math  (src/math/)", 0, 850, W, 250, paquete, borde=CIAN, relleno="#ECFEFF")
+    pk_exp = d.caja("experiments  (src/experiments/)", 0, 170, W, 210, paquete, borde=NARANJA, relleno="#F8FAFC")
+    pk_nn = d.caja("nn  (src/nn/)", 0, 440, W, 350, paquete, borde=PURPURA, relleno="#F8FAFC")
+    pk_math = d.caja("math  (src/math/)", 0, 850, W, 250, paquete, borde=CIAN, relleno="#F8FAFC")
     main = d.caja(uml("main.rs — CLI", ["flags: --all · --exp1 · --exp2 · --exp3 · --escritorio · --bench",
                                         "--export &lt;DIR&gt; · --seed &lt;N&gt; (por defecto 42)"],
                       ["+ parsear(args) → Opciones", "+ ejecutar(&amp;Opciones) → resultados/*.csv"]),
@@ -166,11 +167,11 @@ def d02_arquitectura():
     activation = d.caja(uml("Activation", ["Sigmoid · ReLU · Linear"], ["(Copy, sin asignación dinámica)"], "enum"),
                         730, 660, 220, 100, clase, borde=PURPURA)
     act_fn = d.caja(uml("ActivationFn", [], ["+ activate(z) → f(z)", "+ derivative(z) → f'(z)", "+ name()"], "trait"),
-                    1000, 480, 190, 120, clase, borde=PURPURA, relleno="#EDE9FE")
+                    1000, 480, 190, 120, clase, borde=PURPURA, relleno="#E8EDF5")
     structs = d.caja(uml("Sigmoid · ReLU · Linear", ["σ(z) · max(0, z) · z"], [], "struct"),
                      1000, 660, 190, 100, clase, borde=PURPURA)
     loss_fn = d.caja(uml("LossFn", [], ["+ loss(ŷ, y)", "+ derivative(ŷ, y)"], "trait"),
-                     1230, 480, 170, 120, clase, borde=PURPURA, relleno="#EDE9FE")
+                     1230, 480, 170, 120, clase, borde=PURPURA, relleno="#E8EDF5")
     mse = d.caja(uml("Mse", ["(1/n)·Σ(ŷᵢ − yᵢ)²", "∂/∂ŷ = (2/n)(ŷ − y)"], [], "struct"),
                  1230, 660, 170, 100, clase, borde=PURPURA)
     vector = d.caja(uml("Vector", ["- data: Vec&lt;f64&gt;"],
@@ -225,17 +226,17 @@ def d03_flujo():
     nodo("muestra", "<b>Para cada muestra</b> (x, y) del conjunto de entrenamiento", 44, relleno="#F1F5F9")
     y_grupo = y - 16
     nodo("fwd", "<b>1. forward</b>  (propagación hacia adelante)<br>a⁽⁰⁾ = x<br>"
-         "z⁽ˡ⁾ = W⁽ˡ⁾·a⁽ˡ⁻¹⁾ + b⁽ˡ⁾,   a⁽ˡ⁾ = f(z⁽ˡ⁾),   l = 1, …, L<br>ŷ = a⁽ᴸ⁾", 98, borde=AZUL, relleno="#DBEAFE")
-    nodo("loss", "<b>2. Pérdida</b><br>L = MSE(ŷ, y) = (1/n)·Σᵢ (ŷᵢ − yᵢ)²", 58, borde=NARANJA, relleno="#FFEDD5")
+         "z⁽ˡ⁾ = W⁽ˡ⁾·a⁽ˡ⁻¹⁾ + b⁽ˡ⁾,   a⁽ˡ⁾ = f(z⁽ˡ⁾),   l = 1, …, L<br>ŷ = a⁽ᴸ⁾", 98, borde=AZUL, relleno="#E8EDF5")
+    nodo("loss", "<b>2. Pérdida</b><br>L = MSE(ŷ, y) = (1/n)·Σᵢ (ŷᵢ − yᵢ)²", 58, borde=NARANJA, relleno="#F1F5F9")
     nodo("bwd", "<b>3. backward</b>  (retropropagación)<br>δ⁽ᴸ⁾ = (2/n)(ŷ − y) ⊙ f′(z⁽ᴸ⁾)<br>"
          "δ⁽ˡ⁾ = (W⁽ˡ⁺¹⁾)ᵀ·δ⁽ˡ⁺¹⁾ ⊙ f′(z⁽ˡ⁾)<br>∇W⁽ˡ⁾ = δ⁽ˡ⁾·(a⁽ˡ⁻¹⁾)ᵀ,   ∇b⁽ˡ⁾ = δ⁽ˡ⁾", 112,
-         borde=PURPURA, relleno="#EDE9FE")
+         borde=PURPURA, relleno="#E8EDF5")
     nodo("upd", "<b>4. update</b>  (descenso de gradiente)<br>W⁽ˡ⁾ ← W⁽ˡ⁾ − α·∇W⁽ˡ⁾,   b⁽ˡ⁾ ← b⁽ˡ⁾ − α·∇b⁽ˡ⁾",
-         64, borde=VERDE, relleno="#D1FAE5")
+         64, borde=VERDE, relleno="#ECF5EF")
     y_fin_grupo = y - 38 + 16
-    nodo("q1", "¿Quedan<br>muestras?", 92, "rhombus;fontStyle=1;", relleno="#FEF9C3", ancho=200)
+    nodo("q1", "¿Quedan<br>muestras?", 92, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=200)
     nodo("log", "<b>Registrar la época</b>: MSE, exactitud, pesos → resultados/*.csv", 50, relleno="#F1F5F9")
-    nodo("q2", "¿e &lt; E?", 92, "rhombus;fontStyle=1;", relleno="#FEF9C3", ancho=200)
+    nodo("q2", "¿e &lt; E?", 92, "rhombus;fontStyle=1;", relleno="#F1F5F9", ancho=200)
     nodo("eval", "<b>Evaluación final</b> con predict(&amp;self, x): exactitud, matriz de confusión", 50)
     nodo("fin", "Fin", 46, inicio_fin, relleno="#E2E8F0", ancho=180)
     grupo = d.caja("", x - 30, y_grupo, w + 60, y_fin_grupo - y_grupo, "dashed=1;dashPattern=6 4;", borde=GRIS, relleno="none")
@@ -267,9 +268,9 @@ def d04_memoria():
     zona = "align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;fontStyle=1;fontSize=14;"
     fila = "align=left;spacingLeft=8;fontSize=12;rounded=0;"
     d.caja("STACK  (marco de ejecutar(): tamaño fijo)", 0, 0, 430, 470, zona,
-           borde=AZUL, relleno="#EFF6FF")
+           borde=AZUL, relleno="#F8FAFC")
     d.caja("HEAP  (buffers de Vec&lt;T&gt;: tamaño dinámico, liberados por Drop)", 500, 0, 820, 470, zona,
-           borde=PURPURA, relleno="#FAF5FF")
+           borde=PURPURA, relleno="#F8FAFC")
     d.texto("<b>red: Network</b>  (XOR 2-4-1, propietaria de sus capas)", 20, 50, 390, 26, "align=left;")
     red_layers = d.caja("layers: Vec&lt;Layer&gt;  { ptr ●, len = 2, cap = 2 }", 20, 78, 390, 34, fila, borde=AZUL)
     d.caja("loss: Mse  (struct de tamaño 0)", 20, 112, 390, 34, fila, borde=AZUL)
@@ -279,22 +280,22 @@ def d04_memoria():
     d.caja("Un Vec&lt;T&gt; ocupa 24 B en el stack (puntero, longitud y capacidad); "
            "sus elementos viven contiguos en el heap.", 20, 320, 390, 70, "fontSize=12;align=left;", borde=GRIS, relleno="#FFFFFF")
     d.texto("<b>Buffer de Vec&lt;Layer&gt;</b>  (2 capas contiguas)", 520, 40, 500, 26, "align=left;")
-    l0 = d.caja("<b>Layer 0</b>  (2 → 4, Sigmoid)", 520, 68, 380, 30, fila + "fillColor=#EDE9FE;", borde=PURPURA)
+    l0 = d.caja("<b>Layer 0</b>  (2 → 4, Sigmoid)", 520, 68, 380, 30, fila + "fillColor=#E8EDF5;", borde=PURPURA)
     l0w = d.caja("weights: Matrix { rows = 4, cols = 2, data: ptr ● }", 520, 98, 380, 30, fila, borde=PURPURA)
     d.caja("biases, input, z, output, delta: Vector · grad_weights: Matrix", 520, 128, 380, 30, fila + "fontSize=11;", borde=PURPURA)
-    d.caja("<b>Layer 1</b>  (4 → 1, Sigmoid)", 520, 158, 380, 30, fila + "fillColor=#EDE9FE;", borde=PURPURA)
+    d.caja("<b>Layer 1</b>  (4 → 1, Sigmoid)", 520, 158, 380, 30, fila + "fillColor=#E8EDF5;", borde=PURPURA)
     d.caja("weights: Matrix { rows = 1, cols = 4, data: ptr ● } · …", 520, 188, 380, 30, fila + "fontSize=11;", borde=PURPURA)
     d.texto("<b>Datos de weights de Layer 0</b> (W⁽¹⁾): 4 × 2 = 8 valores f64 en orden por filas (64 B contiguos)", 520, 255, 780, 26, "align=left;")
     celdas = []
     for k in range(8):
         i, j = divmod(k, 2)
-        relleno = "#E0F2FE" if i % 2 == 0 else "#CFFAFE"
+        relleno = "#F1F5F9" if i % 2 == 0 else "#E2E8F0"
         celdas.append(d.caja(f"w<sub>{i}{j}</sub><br><font style=\"font-size:10px\">[{k}]</font>", 520 + k * 72, 285, 72, 54,
                              "rounded=0;", borde=CIAN, relleno=relleno))
     d.texto("idx(i, j) = i·cols + j   →   W[i][j] = data[i·2 + j]   ·   recorrido secuencial amigable con la caché",
             520, 345, 780, 26, "align=left;fontSize=12;fontColor=#475569;")
     d.texto("<b>Datos de x</b>", 1120, 40, 180, 26, "align=left;")
-    xb = [d.caja(f"x<sub>{k + 1}</sub>", 1120 + k * 80, 68, 80, 44, "rounded=0;", borde=CIAN, relleno="#E0F2FE") for k in range(2)]
+    xb = [d.caja(f"x<sub>{k + 1}</sub>", 1120 + k * 80, 68, 80, 44, "rounded=0;", borde=CIAN, relleno="#F1F5F9") for k in range(2)]
     puntero = "strokeColor=#B91C1C;endArrow=classic;endFill=1;strokeWidth=1.6;"
     d.flecha(red_layers, l0, "", puntero + "exitX=1;exitY=0.5;entryX=0;entryY=0.5;")
     d.flecha(x_data, xb[0], "", puntero + "exitX=1;exitY=0.5;entryX=0.5;entryY=1;",
@@ -302,13 +303,13 @@ def d04_memoria():
     d.flecha(l0w, celdas[0], "", puntero + "exitX=1;exitY=0.5;entryX=0.5;entryY=0;", puntos=[(940, 113), (940, 240), (556, 240)])
     reglas = [
         ("Ownership", "Network posee su Vec&lt;Layer&gt;; cada Layer posee sus Matrix y Vector. "
-         "Cuando red sale de ámbito, Drop libera todo el heap en cascada: sin recolector de basura y sin fugas.", AZUL, "#DBEAFE"),
+         "Cuando red sale de ámbito, Drop libera todo el heap en cascada: sin recolector de basura y sin fugas.", AZUL, "#E8EDF5"),
         ("Préstamo inmutable  &amp;T", "predict(&amp;self, x: &amp;Vector) y evaluate_mse(&amp;self, …) solo leen: "
-         "admiten varios lectores a la vez y no copian los datos.", VERDE, "#D1FAE5"),
+         "admiten varios lectores a la vez y no copian los datos.", VERDE, "#ECF5EF"),
         ("Préstamo mutable  &amp;mut T", "forward, backward, update y train_step(&amp;mut self, …) modifican pesos y cachés: "
-         "un único escritor; el compilador impide alias con mutación.", PURPURA, "#EDE9FE"),
+         "un único escritor; el compilador impide alias con mutación.", PURPURA, "#E8EDF5"),
         ("Result&lt;T, MathError&gt;", "get(i, j), matmul o add validan índices y dimensiones y devuelven Err "
-         "en lugar de acceder fuera de rango o entrar en pánico.", NARANJA, "#FFEDD5"),
+         "en lugar de acceder fuera de rango o entrar en pánico.", NARANJA, "#F1F5F9"),
     ]
     for k, (t, cuerpo, b, r) in enumerate(reglas):
         d.caja(f"<b>{t}</b><br>{cuerpo}", k * 335, 500, 315, 120, "align=left;verticalAlign=top;fontSize=12;", borde=b, relleno=r)
@@ -332,8 +333,8 @@ def d05_fases():
         ("Documentación", "Documentación ///, prueba de escritorio, benchmarks, tesis APA 7 y kit de feria",
          "Proyecto educativo abierto", NARANJA),
     ]
-    bloques = [("Fundamentos matemáticos", 0, 4, CIAN, "#ECFEFF"), ("Aprendizaje", 4, 6, AZUL, "#EFF6FF"),
-               ("Experimentación", 6, 8, PURPURA, "#FAF5FF"), ("Difusión", 8, 9, NARANJA, "#FFF7ED")]
+    bloques = [("Fundamentos matemáticos", 0, 4, CIAN, "#F8FAFC"), ("Aprendizaje", 4, 6, AZUL, "#F8FAFC"),
+               ("Experimentación", 6, 8, PURPURA, "#F8FAFC"), ("Difusión", 8, 9, NARANJA, "#F8FAFC")]
     W, H, G = 230, 190, 56
     pos = [(k * (W + G), 40) for k in range(4)] + [(k * (W + G), 330) for k in range(5)]
     for nombre, a, b, borde, relleno in bloques:
