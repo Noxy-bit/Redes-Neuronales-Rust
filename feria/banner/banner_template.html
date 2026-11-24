@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--
+  Plantilla del banner oficial del stand — RN · Redes Neuronales desde Cero en Rust.
+  No editar los marcadores {{...}}: los rellena feria/banner/generar_banner.py
+  (número de proyecto, URL del repositorio, medidas y métricas reales de resultados/*.csv).
+  Todo el diseño se expresa en rem: 1rem = 1 % del ancho del banner, por lo que la misma
+  plantilla escala sin cambios a 60×160 cm, 30×60 cm o cualquier otra medida.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Banner RN · Proy. #{{PROY_NUM}} · {{FORMATO}} cm</title>
+<style>
+@font-face{font-family:"Montserrat";src:url("{{FUENTE_MONTSERRAT}}") format("truetype");font-weight:100 900}
+@font-face{font-family:"Orbitron";src:url("{{FUENTE_ORBITRON}}") format("truetype");font-weight:400 900}
+@page{size:{{ANCHO_CM}}cm {{ALTO_CM}}cm;margin:0}
+:root{
+  --ancho:{{ANCHO_CM}}cm; --alto:{{ALTO_CM}}cm;
+  --marino:#070B1E; --marino2:#0F1736; --cian:#00D4FF; --purpura:#7B2FF7; --purpura2:#A855F7;
+  --rust:#F97316; --gris:#CBD5E1; --gris2:#94A3B8;
+  {{VARIABLES_FORMATO}}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:calc(var(--ancho) / 100 * var(--escala))}
+body{width:var(--ancho);height:var(--alto);background:var(--marino);color:#fff;
+  font-family:"Montserrat",sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pagina{position:relative;width:100%;min-height:calc(var(--alto) - 1px);display:flex;flex-direction:column;
+  align-items:center;justify-content:space-between;gap:var(--hueco);padding:0 var(--lateral) var(--seguro-inf);
+  background:linear-gradient(180deg,#0A1130 0%,var(--marino) 28%,var(--marino2) 58%,var(--marino) 100%)}
+.fondo{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.pagina>*:not(.fondo){position:relative;z-index:1}
+
+/* ---------- Franja institucional ---------- */
+.institucional{width:calc(100% + 2 * var(--lateral) + 2px);height:var(--franja);background:#fff;
+  display:flex;align-items:center;justify-content:space-evenly;padding:0 7rem}
+.institucional img{display:block;object-fit:contain}
+.institucional .uagrm{height:calc(var(--franja) * .62)}
+.institucional .ficct{height:calc(var(--franja) * .86)}
+.institucional .iicct{height:calc(var(--franja) * .52)}
+.institucional .sep{width:.25rem;height:calc(var(--franja) * .55);background:#D7DEE8;border-radius:1rem}
+.linea-marca{width:calc(100% + 2 * var(--lateral));height:.8rem;
+  background:linear-gradient(90deg,var(--cian),var(--purpura) 55%,var(--purpura2) 85%,var(--rust))}
+
+.evento{display:flex;align-items:center;justify-content:space-between;gap:3rem;width:100%;margin-top:var(--hueco)}
+.evento .texto{font-weight:800;font-size:2.15rem;letter-spacing:.09em;line-height:1.35;color:var(--gris)}
+.evento .texto b{display:block;color:var(--cian);font-size:2.6rem;letter-spacing:.14em}
+.insignia{flex:none;display:flex;align-items:center;gap:1.4rem;padding:1.4rem 3rem;border-radius:2.4rem;
+  background:linear-gradient(135deg,var(--purpura),#3B5BFF 55%,var(--cian));border:.35rem solid rgba(255,255,255,.85)}
+.insignia small{font-weight:800;font-size:2.3rem;letter-spacing:.12em}
+.insignia strong{font-family:"Orbitron";font-weight:900;font-size:5.6rem;line-height:1}
+
+/* ---------- Hero ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:calc(var(--hueco) * .55)}
+.emblema{width:var(--emblema);height:var(--emblema)}
+.titulo{width:var(--titulo);display:block}
+.subtitulo{font-weight:600;font-size:2.65rem;line-height:1.35;color:var(--gris);max-width:88rem}
+.subtitulo code{font-family:"JetBrains Mono",monospace;font-weight:800;color:var(--rust)}
+.subtitulo .acento{color:#fff;font-weight:800}
+.eslogan{display:flex;align-items:center;gap:2rem;font-weight:800;font-size:2.9rem;letter-spacing:.26em;color:var(--cian)}
+.eslogan i{display:block;width:6rem;height:.3rem;background:linear-gradient(90deg,transparent,var(--purpura2))}
+.eslogan i:last-child{background:linear-gradient(90deg,var(--purpura2),transparent)}
+
+/* ---------- Secciones ---------- */
+.seccion{width:100%;display:flex;flex-direction:column;align-items:center;gap:calc(var(--hueco) * .6)}
+.rotulo{display:flex;align-items:center;gap:2rem;width:100%;font-weight:800;font-size:2.5rem;letter-spacing:.2em;color:#fff;white-space:nowrap}
+.rotulo::before,.rotulo::after{content:"";flex:1;height:.25rem;background:linear-gradient(90deg,transparent,var(--cian))}
+.rotulo::after{background:linear-gradient(90deg,var(--purpura2),transparent)}
+.red{width:var(--red);display:block}
+.flujo{width:var(--flujo);display:block}
+
+/* ---------- KPIs ---------- */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:2rem;width:100%}
+.kpi{background:rgba(15,23,54,.88);border:.35rem solid rgba(0,212,255,.6);border-radius:2.4rem;padding:var(--kpi-pad) 2.6rem;
+  display:flex;flex-direction:column;justify-content:center}
+.kpi.p{border-color:rgba(168,85,247,.75)}
+.kpi.r{border-color:rgba(249,115,22,.75)}
+.kpi.ancho{grid-column:1 / -1}
+.kpi .cifra{font-family:"Orbitron";font-weight:900;font-size:var(--cifra);line-height:1;color:var(--cian)}
+.kpi.p .cifra{color:var(--purpura2)}
+.kpi.r .cifra{color:var(--rust)}
+.kpi .que{font-weight:800;font-size:2.55rem;line-height:1.2;margin-top:1rem}
+.kpi .det{font-weight:500;font-size:1.85rem;line-height:1.3;color:var(--gris2);margin-top:.6rem}
+.kpi .det code,.exp code{font-family:"JetBrains Mono",monospace;color:var(--gris)}
+.fila-kpi{display:flex;align-items:center;gap:3rem}
+.fila-kpi .cifra{flex:none}
+.exps{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.exp{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 1.2rem}
+.exp+.exp{border-left:.25rem solid rgba(203,213,225,.18)}
+.exp .nom{font-family:"JetBrains Mono",monospace;font-weight:800;font-size:2.1rem;color:var(--gris)}
+.exp .val{font-family:"Orbitron";font-weight:900;font-size:var(--cifra-exp);line-height:1;margin:1.2rem 0 .8rem;white-space:nowrap}
+.exp .val sup{font-size:.5em;vertical-align:.9em}
+.exp:nth-child(1) .val{color:var(--cian)}
+.exp:nth-child(2) .val{color:#7C9BFF}
+.exp:nth-child(3) .val{color:var(--purpura2)}
+.exp .det{font-weight:600;font-size:1.7rem;line-height:1.3;color:var(--gris2)}
+.exp .det sup{font-size:.7em}
+
+/* ---------- Pie ---------- */
+.pie{width:100%;display:flex;flex-direction:column;align-items:center;gap:calc(var(--hueco) * .7)}
+.cta{display:flex;align-items:center;gap:4rem;width:100%;justify-content:center}
+.qr{flex:none;width:var(--qr);background:#fff;border-radius:2.4rem;padding:1.2rem;border:.5rem solid var(--cian)}
+.qr svg{display:block;width:100%;height:auto}
+.llamado h3{font-weight:900;font-size:var(--cta);line-height:1.12;letter-spacing:.02em}
+.llamado h3 span{color:var(--cian)}
+.llamado p{font-weight:700;font-size:2.7rem;color:var(--purpura2);margin-top:1.4rem}
+.llamado .url{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:1.75rem;color:var(--gris);margin-top:1.4rem}
+.creditos{width:100%;border-top:.25rem solid rgba(203,213,225,.22);padding-top:calc(var(--hueco) * .6);text-align:center;
+  font-size:1.8rem;line-height:1.45;color:var(--gris)}
+.creditos b{color:#fff;font-weight:800}
+.creditos .equipo{color:var(--gris2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="pagina">
+  {{SVG_FONDO}}
+
+  <header class="institucional">
+    <img class="uagrm" src="{{LOGO_UAGRM}}" alt="UAGRM">
+    <span class="sep"></span>
+    <img class="ficct" src="{{LOGO_FICCT}}" alt="FICCT">
+    <span class="sep"></span>
+    <img class="iicct" src="{{LOGO_IICCT}}" alt="IICCT">
+  </header>
+  <div class="linea-marca"></div>
+
+  <div class="evento">
+    <div class="texto">FERIA FACULTATIVA DE PROYECTOS DE INVESTIGACIÓN<b>· FICCT 2-2026 ·</b></div>
+    <div class="insignia"><small>PROY.</small><strong>#{{PROY_NUM}}</strong></div>
+  </div>
+
+  <section class="hero">
+    {{SVG_ISOTIPO}}
+    {{SVG_TITULO}}
+    <p class="subtitulo">Motor Neuronal <span class="acento">100% Rust Estándar (<code>std</code>)</span> ·<br>Sin Librerías Externas de ML</p>
+    <div class="eslogan"><i></i>ANALIZA · APRENDE · PREDICE<i></i></div>
+  </section>
+
+  <section class="seccion">
+    <div class="rotulo">¿CÓMO APRENDE LA RED?</div>
+    {{SVG_RED}}
+    {{SVG_FLUJO}}
+  </section>
+
+  <section class="seccion">
+    <div class="rotulo">RESULTADOS REALES DEL MOTOR</div>
+    <div class="kpis">
+      <div class="kpi">
+        <div class="cifra">{{CRATES_ML}}</div>
+        <div class="que">crates externos de ML</div>
+        <div class="det">100% Rust <code>std</code> · álgebra lineal propia</div>
+      </div>
+      <div class="kpi p">
+        <div class="cifra">{{TESTS}}</div>
+        <div class="que">pruebas unitarias en verde</div>
+        <div class="det"><code>cargo test</code> · con gradient checking</div>
+      </div>
+      <div class="kpi ancho">
+        <div class="exps">
+          <div class="exp"><span class="nom">y = 2x</span><span class="val">{{Y2X_VAL}}</span><span class="det">{{Y2X_DET}}</span></div>
+          <div class="exp"><span class="nom">XOR 2-4-1</span><span class="val">{{XOR_VAL}}</span><span class="det">{{XOR_DET}}</span></div>
+          <div class="exp"><span class="nom">Vocales A·E·I·O·U</span><span class="val">{{VOC_VAL}}</span><span class="det">{{VOC_DET}}</span></div>
+        </div>
+      </div>
+      <div class="kpi r ancho">
+        <div class="fila-kpi">
+          <div class="cifra">{{BENCH_VAL}}</div>
+          <div><div class="que">{{BENCH_QUE}}</div><div class="det">{{BENCH_DET}}</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <div class="cta">
+      <div class="qr">{{SVG_QR}}</div>
+      <div class="llamado">
+        <h3>ESCANEA PARA<br><span>MÁS INFORMACIÓN</span></h3>
+        <p>Código Fuente, Demos y Tesis</p>
+        <div class="url">{{REPO_CORTO}}</div>
+      </div>
+    </div>
+    <div class="creditos">
+      <b>{{MATERIA}}</b> · Docente Tutor: <b>{{DOCENTE}}</b><br>
+      <span class="equipo">{{INTEGRANTES}}</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
